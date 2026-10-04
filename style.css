@@ -677,4 +677,273 @@ nav {
         align-items: flex-start;
         flex-direction: column;
     }
+    /* ==========================================
+   POTION ROOM
+   ========================================== */
+
+.nav-link {
+    display: block;
+    text-decoration: none;
+}
+
+.nav-disabled {
+    cursor: default;
+    opacity: .55;
+}
+
+.potion-room-grid {
+    display: grid;
+    grid-template-columns: 1.15fr .85fr;
+    gap: 20px;
+}
+
+.potion-panel {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(37, 44, 31, .95),
+            rgba(20, 24, 18, .98)
+        );
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 28px;
+}
+
+.potion-panel h3 {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 34px;
+    margin: 5px 0 8px;
+}
+
+.potion-help {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.cauldron {
+    font-size: 75px;
+    text-align: center;
+    margin: 25px 0 20px;
+}
+
+.ingredient-slots {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.ingredient-slot {
+    min-height: 115px;
+    border-radius: 6px;
+    padding: 12px;
+}
+
+.ingredient-slot.empty {
+    border: 1px dashed #525849;
+    background: #11140f;
+    color: var(--muted);
+}
+
+.ingredient-slot.filled {
+    border: 1px solid #59644a;
+    background: #242a20;
+    color: var(--cream);
+    cursor: pointer;
+}
+
+.ingredient-slot strong,
+.ingredient-slot small {
+    display: block;
+}
+
+.slot-plant {
+    display: block;
+    font-size: 32px;
+    margin-bottom: 7px;
+}
+
+.ingredient-slot strong {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 18px;
+}
+
+.ingredient-slot small {
+    color: var(--muted);
+    margin-top: 5px;
+}
+
+.empty-plus {
+    display: block;
+    font-size: 28px;
+    margin-bottom: 7px;
+}
+
+.brew-button {
+    width: 100%;
+    padding: 14px;
+
+    border: 1px solid #718259;
+    border-radius: 4px;
+
+    background: var(--green-dark);
+    color: var(--cream);
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 20px;
+
+    cursor: pointer;
+}
+
+.brew-button:hover {
+    background: var(--green);
+}
+
+.clear-brew-button {
+    width: 100%;
+
+    border: none;
+    background: transparent;
+
+    color: var(--muted);
+
+    padding: 12px;
+
+    cursor: pointer;
+}
+
+.clear-brew-button:hover {
+    color: var(--cream);
+}
+
+.potion-ingredient {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    margin-top: 20px;
+    padding: 16px;
+
+    border: 1px solid var(--border);
+    border-radius: 6px;
+
+    background: #12150f;
+}
+
+.potion-ingredient-details {
+    flex: 1;
+}
+
+.potion-ingredient-details strong {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 22px;
+}
+
+.potion-ingredient-details p {
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.5;
+    margin: 3px 0 8px;
+}
+
+.potion-ingredient-details span {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.potion-ingredient-details b {
+    color: var(--cream);
+}
+
+.ingredient-add-button {
+    border: 1px solid #718259;
+    border-radius: 4px;
+
+    background: var(--green-dark);
+    color: var(--cream);
+
+    padding: 9px 14px;
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 17px;
+
+    cursor: pointer;
+}
+
+.ingredient-add-button:hover {
+    background: var(--green);
+}
+
+.discovery-summary {
+    margin-top: 30px;
+    padding-top: 25px;
+
+    border-top: 1px solid var(--border);
+}
+
+.discovery-summary p {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 21px;
+
+    margin-top: 9px;
+}
+
+.experiment-result {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+
+    margin-top: 20px;
+    padding: 20px;
+
+    border: 1px solid var(--border);
+    border-radius: 7px;
+
+    background: var(--panel);
+}
+
+.result-symbol {
+    color: var(--gold);
+    font-size: 30px;
+}
+
+.experiment-result strong {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 22px;
+}
+
+.experiment-result p {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.6;
+    margin-top: 4px;
+}
+
+.experiment-result.discovery {
+    border-color: var(--gold);
+
+    background:
+        linear-gradient(
+            120deg,
+            rgba(74, 64, 42, .45),
+            rgba(24, 27, 21, .97)
+        );
+}
+
+.experiment-result.success {
+    border-color: var(--green-light);
+}
+
+.experiment-result.failure {
+    border-color: #574942;
+}
+
+@media (max-width: 900px) {
+
+    .potion-room-grid {
+        grid-template-columns: 1fr;
+    }
+}
 }
