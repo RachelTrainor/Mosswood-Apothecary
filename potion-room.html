@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Potion Room | Mosswood Apothecary</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="game">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <span class="moon">☾</span>
+
+            <h1>
+                Mosswood<br>
+                Apothecary
+            </h1>
+        </div>
+
+        <nav>
+
+            <a class="nav-button nav-link" href="index.html">
+                🌿 Greenhouse
+            </a>
+
+            <a class="nav-button nav-link active" href="potion-room.html">
+                ⚗ Potion Room
+            </a>
+
+            <span class="nav-button nav-disabled">
+                🏚 Apothecary
+            </span>
+
+            <span class="nav-button nav-disabled">
+                🌲 Forage
+            </span>
+
+            <span class="nav-button nav-disabled">
+                📖 Grimoire
+            </span>
+
+            <span class="nav-button nav-disabled">
+                ⚒ Upgrades
+            </span>
+
+            <span class="nav-button nav-disabled">
+                🎒 Inventory
+            </span>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+
+    <main class="content">
+
+        <!-- RESOURCE BAR -->
+
+        <header class="topbar">
+
+            <div class="resource">
+                🪙 <span id="coins">0</span>
+            </div>
+
+            <div class="resource">
+                🌿 <span id="plants">0</span>
+            </div>
+
+            <div class="resource">
+                🧪 <span id="potions">0</span>
+            </div>
+
+        </header>
+
+
+        <!-- POTION ROOM -->
+
+        <section class="screen">
+
+            <p class="eyebrow">
+                MOSSWOOD APOTHECARY
+            </p>
+
+            <h2>Potion Room</h2>
+
+            <p class="description">
+                Combine ingredients and experiment with the unknown.
+                Some mixtures may reveal something useful. Others may
+                be better left forgotten.
+            </p>
+
+
+            <div class="potion-room-grid">
+
+                <!-- EXPERIMENT AREA -->
+
+                <section class="potion-panel">
+
+                    <span class="card-label">
+                        EXPERIMENT
+                    </span>
+
+                    <h3>The Cauldron</h3>
+
+                    <p class="potion-help">
+                        Add up to three ingredients and see what happens.
+                    </p>
+
+
+                    <div class="cauldron">
+                        ⚗
+                    </div>
+
+
+                    <div
+                        class="ingredient-slots"
+                        id="ingredientSlots">
+                    </div>
+
+
+                    <button
+                        class="brew-button"
+                        id="brewButton">
+                        Brew Experiment
+                    </button>
+
+                    <button
+                        class="clear-brew-button"
+                        id="clearButton">
+                        Clear Ingredients
+                    </button>
+
+                </section>
+
+
+                <!-- INGREDIENT SHELF -->
+
+                <section class="potion-panel">
+
+                    <span class="card-label">
+                        INGREDIENT SHELF
+                    </span>
+
+                    <h3>Available Ingredients</h3>
+
+
+                    <div class="potion-ingredient">
+
+                        <div class="ingredient-icon">
+                            🌿
+                        </div>
+
+                        <div class="potion-ingredient-details">
+
+                            <strong>
+                                Moonmint
+                            </strong>
+
+                            <p>
+                                A cool, fragrant herb harvested
+                                from the greenhouse.
+                            </p>
+
+                            <span>
+                                Available:
+                                <b id="moonmintAvailable">0</b>
+                            </span>
+
+                        </div>
+
+                        <button
+                            class="ingredient-add-button"
+                            id="addMoonmint">
+                            Add
+                        </button>
+
+                    </div>
+
+
+                    <div class="discovery-summary">
+
+                        <span class="card-label">
+                            RESEARCH
+                        </span>
+
+                        <p id="recipeCount">
+                            0 recipes discovered
+                        </p>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+
+            <!-- EXPERIMENT RESULT -->
+
+            <section
+                class="experiment-result"
+                id="experimentResult">
+
+                <span class="result-symbol">☾</span>
+
+                <div>
+                    <strong>
+                        The cauldron is quiet.
+                    </strong>
+
+                    <p>
+                        Choose your ingredients to begin experimenting.
+                    </p>
+                </div>
+
+            </section>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<script src="potions.js"></script>
+
+</body>
+</html>
