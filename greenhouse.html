@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Greenhouse | Mosswood Apothecary</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="game">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <span class="moon">☾</span>
+
+            <h1>
+                Mosswood<br>
+                Apothecary
+            </h1>
+        </div>
+
+
+        <nav>
+
+            <a
+                class="nav-button nav-link active"
+                href="greenhouse.html">
+                🌿 Greenhouse
+            </a>
+
+            <a
+                class="nav-button nav-link"
+                href="potion-room.html">
+                ⚗ Potion Room
+            </a>
+
+            <span class="nav-button nav-disabled">
+                🏚 Apothecary
+            </span>
+
+            <span class="nav-button nav-disabled">
+                🌲 Forage
+            </span>
+
+            <span class="nav-button nav-disabled">
+                📖 Grimoire
+            </span>
+
+            <span class="nav-button nav-disabled">
+                ⚒ Upgrades
+            </span>
+
+            <span class="nav-button nav-disabled">
+                🎒 Inventory
+            </span>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+
+    <main class="content">
+
+
+        <!-- RESOURCE BAR -->
+
+        <header class="topbar">
+
+            <div class="resource">
+                🪙
+                <span id="coins">0</span>
+            </div>
+
+            <div class="resource">
+                🌿
+                <span id="plants">0</span>
+            </div>
+
+            <div class="resource">
+                🧪
+                <span id="potions">0</span>
+            </div>
+
+        </header>
+
+
+        <!-- GREENHOUSE -->
+
+        <section class="screen">
+
+            <p class="eyebrow">
+                MOSSWOOD GROUNDS
+            </p>
+
+
+            <h2>
+                Greenhouse
+            </h2>
+
+
+            <p class="description">
+                Grow strange plants, discover rare ingredients,
+                and care for the greenhouse hidden deep within Mosswood.
+            </p>
+
+
+            <!-- GREENHOUSE HEADER -->
+
+            <div class="greenhouse-heading">
+
+                <div>
+
+                    <span class="card-label">
+                        GREENHOUSE LEVEL
+                    </span>
+
+                    <h3>
+                        Level
+                        <span id="greenhouseLevel">
+                            1
+                        </span>
+                    </h3>
+
+                </div>
+
+
+                <div class="seed-counter">
+
+                    Moonmint Seeds
+
+                    <strong id="moonmintSeeds">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- PLANTING PLOTS -->
+
+            <div
+                class="plots"
+                id="plots">
+            </div>
+
+
+            <!-- HARVEST STORAGE -->
+
+            <section class="inventory-panel">
+
+                <div class="inventory-title">
+
+                    <span class="card-label">
+                        HARVEST STORAGE
+                    </span>
+
+                    <h3>
+                        Ingredients
+                    </h3>
+
+                </div>
+
+
+                <div class="ingredient-card">
+
+                    <div class="ingredient-icon">
+                        🌿
+                    </div>
+
+
+                    <div>
+
+                        <strong>
+                            Moonmint
+                        </strong>
+
+                        <p>
+                            A cool, fragrant herb with calming properties.
+                        </p>
+
+                    </div>
+
+
+                    <span
+                        class="ingredient-count"
+                        id="moonmintInventory">
+
+                        0
+
+                    </span>
+
+                </div>
+
+            </section>
+
+
+            <!-- GAME MESSAGE -->
+
+            <div
+                class="game-message"
+                id="gameMessage">
+
+                Your greenhouse is waiting.
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!--
+    IMPORTANT:
+    Shared game.js MUST load first.
+
+    greenhouse.js then uses the shared
+    game object and save functions.
+-->
+
+<script src="js/game.js"></script>
+<script src="js/greenhouse.js"></script>
+
+</body>
+
+</html>
