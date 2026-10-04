@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mosswood Apothecary</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="game">
+
+        <aside class="sidebar">
+            <div class="logo">
+                <span class="moon">☾</span>
+                <h1>Mosswood<br>Apothecary</h1>
+            </div>
+
+            <nav>
+                <button class="nav-button active">🌿 Greenhouse</button>
+                <button class="nav-button">⚗ Potion Room</button>
+                <button class="nav-button">🏚 Apothecary</button>
+                <button class="nav-button">🌲 Forage</button>
+                <button class="nav-button">📖 Grimoire</button>
+                <button class="nav-button">⚒ Upgrades</button>
+                <button class="nav-button">🎒 Inventory</button>
+            </nav>
+        </aside>
+
+        <main class="content">
+
+            <header class="topbar">
+                <div class="resource">
+                    🪙 <span id="coins">100</span>
+                </div>
+
+                <div class="resource">
+                    🌿 <span id="plants">0</span>
+                </div>
+
+                <div class="resource">
+                    🧪 <span id="potions">0</span>
+                </div>
+            </header>
+
+            <section class="screen">
+
+                <p class="eyebrow">MOSSWOOD GROUNDS</p>
+
+                <h2>Greenhouse</h2>
+
+                <p class="description">
+                    Grow strange plants, discover rare ingredients,
+                    and care for the greenhouse hidden deep within Mosswood.
+                </p>
+
+                <div class="greenhouse-card">
+
+                    <div>
+                        <span class="card-label">GREENHOUSE LEVEL</span>
+                        <h3>Level 1</h3>
+
+                        <p>
+                            Your greenhouse is small and weathered,
+                            but there is plenty of room for it to grow.
+                        </p>
+                    </div>
+
+                    <button id="enterGreenhouse">
+                        Enter Greenhouse
+                    </button>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+    <script src="game.js"></script>
+
+</body>
+</html>
