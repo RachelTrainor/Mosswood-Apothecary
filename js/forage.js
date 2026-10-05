@@ -1,1 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Forage | Mosswood Apothecary</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="game">
+
+    <!-- =====================================
+         SHARED SIDEBAR
+    ====================================== -->
+
+    <aside
+        class="sidebar"
+        id="sidebar">
+    </aside>
+
+
+    <!-- =====================================
+         MAIN CONTENT
+    ====================================== -->
+
+    <main class="content">
+
+        <!-- =================================
+             SHARED RESOURCE BAR
+        ================================== -->
+
+        <header
+            class="topbar"
+            id="topbar">
+        </header>
+
+
+        <!-- =================================
+             FORAGE SCREEN
+        ================================== -->
+
+        <section class="screen">
+
+            <p class="eyebrow">
+                BEYOND THE GREENHOUSE
+            </p>
+
+            <h2>
+                Forage
+            </h2>
+
+            <p class="description">
+                Send your familiar into the wilds surrounding Mosswood.
+                Strange plants, forgotten seeds, and other discoveries
+                may be waiting beyond the garden walls.
+            </p>
+
+
+            <!-- =============================
+                 FAMILIAR
+            ============================== -->
+
+            <section class="forage-familiar">
+
+                <div class="familiar-icon">
+                    🐈‍⬛
+                </div>
+
+                <div class="familiar-info">
+
+                    <span class="card-label">
+                        YOUR FAMILIAR
+                    </span>
+
+                    <h3>
+                        Mosswood Familiar
+                    </h3>
+
+                    <p id="familiarStatus">
+                        Your familiar waits patiently for somewhere to explore.
+                    </p>
+
+                </div>
+
+                <div
+                    class="familiar-state"
+                    id="familiarState">
+
+                    READY
+
+                </div>
+
+            </section>
+
+
+            <!-- =============================
+                 FORAGING LOCATIONS
+            ============================== -->
+
+            <section class="forage-section">
+
+                <div class="forage-section-heading">
+
+                    <div>
+
+                        <span class="card-label">
+                            FORAGING LOCATIONS
+                        </span>
+
+                        <h3>
+                            Choose a Destination
+                        </h3>
+
+                    </div>
+
+                    <p>
+                        Different areas of Mosswood contain
+                        different plants and discoveries.
+                    </p>
+
+                </div>
+
+
+                <div class="forage-location-grid">
+
+
+                    <!-- =====================
+                         MOSSWOOD FOREST
+                    ====================== -->
+
+                    <article class="forage-location available">
+
+                        <div class="location-art">
+
+                            <span class="location-symbol">
+                                🌲
+                            </span>
+
+                            <span class="location-status">
+                                AVAILABLE
+                            </span>
+
+                        </div>
+
+
+                        <div class="location-content">
+
+                            <span class="card-label">
+                                FOREST
+                            </span>
+
+                            <h4>
+                                Mosswood Forest
+                            </h4>
+
+                            <p>
+                                A shadowed woodland filled with moss,
+                                old trees, and plants that thrive far
+                                from the greenhouse.
+                            </p>
+
+
+                            <div class="location-details">
+
+                                <span>
+                                    ⏱ 30 seconds
+                                </span>
+
+                                <span>
+                                    ✦ Common Finds
+                                </span>
+
+                            </div>
+
+
+                            <button
+                                class="forage-button"
+                                id="forestForageButton">
+
+                                Send Familiar
+
+                            </button>
+
+                        </div>
+
+                    </article>
+
+
+                    <!-- =====================
+                         LOCKED MARSH
+                    ====================== -->
+
+                    <article class="forage-location locked">
+
+                        <div class="location-art">
+
+                            <span class="location-symbol">
+                                🌫️
+                            </span>
+
+                            <span class="location-status">
+                                LOCKED
+                            </span>
+
+                        </div>
+
+
+                        <div class="location-content">
+
+                            <span class="card-label">
+                                UNKNOWN REGION
+                            </span>
+
+                            <h4>
+                                Mistfen Marsh
+                            </h4>
+
+                            <p>
+                                Pale lights drift through the reeds.
+                                Something unusual grows beneath the mist.
+                            </p>
+
+
+                            <div class="location-details">
+
+                                <span>
+                                    🔒 Discover more of Mosswood
+                                </span>
+
+                            </div>
+
+
+                            <button
+                                class="forage-button"
+                                disabled>
+
+                                Locked
+
+                            </button>
+
+                        </div>
+
+                    </article>
+
+
+                    <!-- =====================
+                         LOCKED RUINS
+                    ====================== -->
+
+                    <article class="forage-location locked">
+
+                        <div class="location-art">
+
+                            <span class="location-symbol">
+                                🕯️
+                            </span>
+
+                            <span class="location-status">
+                                LOCKED
+                            </span>
+
+                        </div>
+
+
+                        <div class="location-content">
+
+                            <span class="card-label">
+                                UNKNOWN REGION
+                            </span>
+
+                            <h4>
+                                Hollowmere Ruins
+                            </h4>
+
+                            <p>
+                                Crumbling stone lies hidden beneath
+                                vines and roots. Few paths still lead there.
+                            </p>
+
+
+                            <div class="location-details">
+
+                                <span>
+                                    🔒 Requirement Unknown
+                                </span>
+
+                            </div>
+
+
+                            <button
+                                class="forage-button"
+                                disabled>
+
+                                Locked
+
+                            </button>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+
+            <!-- =============================
+                 ACTIVE FORAGE
+            ============================== -->
+
+            <section
+                class="forage-progress-panel"
+                id="forageProgressPanel">
+
+                <div>
+
+                    <span class="card-label">
+                        CURRENT EXPEDITION
+                    </span>
+
+                    <h3 id="forageProgressTitle">
+                        No Active Forage
+                    </h3>
+
+                    <p id="forageProgressText">
+                        Send your familiar somewhere to begin searching.
+                    </p>
+
+                </div>
+
+
+                <div class="forage-timer">
+
+                    <span id="forageTimer">
+                        --:--
+                    </span>
+
+                </div>
+
+
+                <div class="forage-progress-track">
+
+                    <div
+                        class="forage-progress-bar"
+                        id="forageProgressBar">
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =============================
+                 LAST DISCOVERY
+            ============================== -->
+
+            <section
+                class="forage-result"
+                id="forageResult">
+
+                <span class="forage-result-icon">
+                    ☾
+                </span>
+
+                <div>
+
+                    <span class="card-label">
+                        FORAGING JOURNAL
+                    </span>
+
+                    <h3>
+                        Nothing discovered yet.
+                    </h3>
+
+                    <p>
+                        Your familiar's discoveries will appear here.
+                    </p>
+
+                </div>
+
+            </section>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- =========================================
+     JAVASCRIPT
+========================================== -->
+
+<script src="js/game.js"></script>
+<script src="js/navigation.js"></script>
+<script src="js/forage.js"></script>
+
+</body>
+
+</html>
