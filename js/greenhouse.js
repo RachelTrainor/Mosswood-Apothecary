@@ -1,25 +1,12 @@
 // ==========================================
 // MOSSWOOD APOTHECARY
-// Greenhouse V3
+// Greenhouse V4
+// Generic Plants + Mystery Seeds
 // ==========================================
 
 
 // ==========================================
-// BASE PLANT SETTINGS
-// ==========================================
-
-const BASE_MOONMINT_GROW_TIME =
-    60 * 1000;
-
-const BASE_NIGHTBELL_GROW_TIME =
-    75 * 1000;
-
-const BASE_DRY_TIME =
-    25 * 1000;
-
-
-// ==========================================
-// UPGRADE MIGRATION
+// UPGRADE SAFETY
 // ==========================================
 
 if (!game.upgrades) {
@@ -32,6 +19,7 @@ if (!game.upgrades) {
 
 }
 
+
 if (
     typeof game.upgrades.expansion
     !== "number"
@@ -41,6 +29,7 @@ if (
 
 }
 
+
 if (
     typeof game.upgrades.irrigation
     !== "number"
@@ -49,6 +38,7 @@ if (
     game.upgrades.irrigation = 0;
 
 }
+
 
 if (
     typeof game.upgrades.growth
@@ -61,33 +51,26 @@ if (
 
 
 // ==========================================
-// NEW INVENTORY MIGRATION
+// GREENHOUSE SAFETY
 // ==========================================
 
-if (
-    typeof game.inventory.nightbell
-    !== "number"
-) {
+if (!game.greenhouse) {
 
-    game.inventory.nightbell = 0;
-
-}
-
-if (
-    typeof game.seeds.unknown
-    !== "number"
-) {
-
-    game.seeds.unknown = 0;
+    game.greenhouse = {
+        level: 1,
+        plots: []
+    };
 
 }
 
+
 if (
-    typeof game.seeds.nightbell
-    !== "number"
+    !Array.isArray(
+        game.greenhouse.plots
+    )
 ) {
 
-    game.seeds.nightbell = 0;
+    game.greenhouse.plots = [];
 
 }
 
@@ -114,13 +97,6 @@ function applyGreenhouseExpansion() {
         getRequiredPlotCount();
 
 
-    if (!game.greenhouse.plots) {
-
-        game.greenhouse.plots = [];
-
-    }
-
-
     while (
         game.greenhouse.plots.length
         < requiredPlots
@@ -143,44 +119,153 @@ applyGreenhouseExpansion();
 
 
 // ==========================================
-// OLD PLANT SAVE MIGRATION
+// PLANT DATA FOR A PLOT
+// ==========================================
+//
+// Normal plant:
+//
+// plot.plant = "moonmint"
+//
+// Mystery plant:
+//
+// plot.plant = "unknown"
+// plot.revealsPlant = "nightbell"
 // ==========================================
 
-game.greenhouse.plots.forEach(
-    (plot) => {
+function getPlotPlantData(
+    plot
+) {
 
-        if (!plot) {
-            return;
+    if (!plot) {
+
+        return null;
+
+    }
+
+
+    if (
+        plot.plant === "unknown"
+    ) {
+
+        if (
+            plot.revealsPlant
+        ) {
+
+            return getPlantData(
+                plot.revealsPlant
+            );
+
         }
 
 
-        // V2 plants used plantedAt.
-        // Convert them into the new
-        // accumulated-growth system.
+        // ----------------------------------
+        // OLD SAVE COMPATIBILITY
+        // ----------------------------------
+        //
+        // Older Strange Seed plants did not
+        // save revealsPlant because they were
+        // always Nightbell.
+        //
+        // Preserve those existing plants.
+        // ----------------------------------
+
+        return getPlantData(
+            "nightbell"
+        );
+
+    }
+
+
+    return getPlantData(
+        plot.plant
+    );
+
+}
+
+
+// ==========================================
+// OLD PLOT MIGRATION
+// ==========================================
+
+game.greenhouse.plots.forEach(
+    plot => {
+
+        if (!plot) {
+
+            return;
+
+        }
+
+
+        // Old unknown plants were Nightbell.
+
+        if (
+            plot.plant === "unknown" &&
+            !plot.revealsPlant
+        ) {
+
+            plot.revealsPlant =
+                "nightbell";
+
+        }
+
+
+        const now =
+            Date.now();
+
+
+        if (
+            typeof plot.lastWatered
+            !== "number"
+        ) {
+
+            plot.lastWatered =
+                plot.plantedAt || now;
+
+        }
+
+
+        // Older plants used plantedAt only.
+        // Convert them to accumulated
+        // active growth.
 
         if (
             typeof plot.growthTime
             !== "number"
         ) {
 
-            const now =
-                Date.now();
-
-
             const plantedAt =
                 plot.plantedAt || now;
 
 
-            const lastWatered =
-                plot.lastWatered || plantedAt;
+            const plantData =
+                getPlotPlantData(
+                    plot
+                );
+
+
+            const baseDryTime =
+                plantData
+                    ? plantData.dryTime
+                    : 25 * 1000;
+
+
+            const irrigationBonus =
+                game.upgrades.irrigation
+                * 0.10;
 
 
             const dryTime =
-                getDryTime();
+                baseDryTime *
+                (
+                    1 +
+                    irrigationBonus
+                );
 
 
             const hydratedUntil =
-                lastWatered + dryTime;
+                plot.lastWatered
+                + dryTime;
 
 
             const activeUntil =
@@ -193,7 +278,8 @@ game.greenhouse.plots.forEach(
             plot.growthTime =
                 Math.max(
                     0,
-                    activeUntil - plantedAt
+                    activeUntil
+                    - plantedAt
                 );
 
         }
@@ -205,18 +291,7 @@ game.greenhouse.plots.forEach(
         ) {
 
             plot.lastGrowthUpdate =
-                Date.now();
-
-        }
-
-
-        if (
-            typeof plot.lastWatered
-            !== "number"
-        ) {
-
-            plot.lastWatered =
-                Date.now();
+                now;
 
         }
 
@@ -231,7 +306,27 @@ saveGame();
 // UPGRADE EFFECTS
 // ==========================================
 
-function getDryTime() {
+function getDryTime(
+    plot
+) {
+
+    const plant =
+        getPlotPlantData(
+            plot
+        );
+
+
+    const baseDryTime =
+        plant &&
+        typeof plant.dryTime === "number"
+
+            ? plant.dryTime
+
+            : 25 * 1000;
+
+
+    // Irrigation keeps soil moist
+    // 10% longer per level.
 
     const bonus =
         game.upgrades.irrigation
@@ -239,7 +334,7 @@ function getDryTime() {
 
 
     return (
-        BASE_DRY_TIME *
+        baseDryTime *
         (
             1 + bonus
         )
@@ -249,24 +344,26 @@ function getDryTime() {
 
 
 function getPlantGrowTime(
-    plant
+    plot
 ) {
 
-    let baseTime =
-        BASE_MOONMINT_GROW_TIME;
+    const plant =
+        getPlotPlantData(
+            plot
+        );
 
 
-    if (
-        plant === "nightbell"
-        ||
-        plant === "unknown"
-    ) {
+    const baseTime =
+        plant &&
+        typeof plant.growTime === "number"
 
-        baseTime =
-            BASE_NIGHTBELL_GROW_TIME;
+            ? plant.growTime
 
-    }
+            : 60 * 1000;
 
+
+    // Growing Conditions reduces
+    // growth time by 5% per level.
 
     const reduction =
         game.upgrades.growth
@@ -318,7 +415,9 @@ function isPlantDry(
     return (
         Date.now()
         - plot.lastWatered
-        >= getDryTime()
+        >= getDryTime(
+            plot
+        )
     );
 
 }
@@ -329,7 +428,9 @@ function updatePlantGrowth(
 ) {
 
     if (!plot) {
+
         return;
+
     }
 
 
@@ -364,11 +465,10 @@ function updatePlantGrowth(
 
     const hydratedUntil =
         plot.lastWatered
-        + getDryTime();
+        + getDryTime(
+            plot
+        );
 
-
-    // Growth can only accumulate until
-    // the moment the soil became dry.
 
     const growthEnd =
         Math.min(
@@ -395,6 +495,10 @@ function updatePlantGrowth(
 }
 
 
+// ==========================================
+// GROWTH PROGRESS
+// ==========================================
+
 function getGrowthProgress(
     plot
 ) {
@@ -406,11 +510,12 @@ function getGrowthProgress(
 
     const growTime =
         getPlantGrowTime(
-            plot.plant
+            plot
         );
 
 
     return Math.min(
+
         100,
 
         (
@@ -418,6 +523,7 @@ function getGrowthProgress(
             /
             growTime
         ) * 100
+
     );
 
 }
@@ -438,7 +544,7 @@ function formatGrowthTime(
 
     const growTime =
         getPlantGrowTime(
-            plot.plant
+            plot
         );
 
 
@@ -466,7 +572,9 @@ function formatGrowthTime(
 
 
     if (
-        isPlantDry(plot)
+        isPlantDry(
+            plot
+        )
     ) {
 
         return (
@@ -498,7 +606,6 @@ function openSeedMenu(
     selectedPlantPlot =
         index;
 
-
     renderGreenhouse();
 
 }
@@ -509,19 +616,55 @@ function closeSeedMenu() {
     selectedPlantPlot =
         null;
 
-
     renderGreenhouse();
 
 }
 
 
 // ==========================================
-// PLANT SEED
+// CAN SHOW NORMAL SEED
 // ==========================================
 
-function plantSeed(
+function canDisplayPlantSeed(
+    plant
+) {
+
+    if (
+        plant.alwaysKnown
+    ) {
+
+        return true;
+
+    }
+
+
+    if (
+        isPlantKnown(
+            plant.id
+        )
+    ) {
+
+        return true;
+
+    }
+
+
+    return (
+        getSeedAmount(
+            plant.id
+        ) > 0
+    );
+
+}
+
+
+// ==========================================
+// PLANT NORMAL SEED
+// ==========================================
+
+function plantNormalSeed(
     index,
-    seedType
+    plantId
 ) {
 
     const plots =
@@ -537,99 +680,46 @@ function plantSeed(
     }
 
 
-    let plantType =
-        seedType;
+    const plant =
+        getPlantData(
+            plantId
+        );
 
 
-    // --------------------------------------
-    // MOONMINT
-    // --------------------------------------
+    if (!plant) {
+
+        greenhouseMessage(
+            "That seed cannot be planted."
+        );
+
+        return;
+
+    }
+
 
     if (
-        seedType === "moonmint"
+        getSeedAmount(
+            plantId
+        ) <= 0
     ) {
 
-        if (
-            getSeedAmount(
-                "moonmint"
-            ) <= 0
-        ) {
+        greenhouseMessage(
+            `You don't have any ${plant.name} seeds.`
+        );
 
-            greenhouseMessage(
-                "You don't have any Moonmint seeds."
-            );
-
-            return;
-
-        }
-
-
-        game.seeds.moonmint--;
+        return;
 
     }
 
 
-    // --------------------------------------
-    // STRANGE SEED
-    // --------------------------------------
-
-    else if (
-        seedType === "unknown"
-    ) {
-
-        if (
-            getSeedAmount(
-                "unknown"
-            ) <= 0
-        ) {
-
-            greenhouseMessage(
-                "You don't have any Strange Seeds."
-            );
-
-            return;
-
-        }
+    const removed =
+        removeSeeds(
+            plantId,
+            1
+        );
 
 
-        game.seeds.unknown--;
-
-
-        plantType =
-            "unknown";
-
-    }
-
-
-    // --------------------------------------
-    // NIGHTBELL
-    // --------------------------------------
-
-    else if (
-        seedType === "nightbell"
-    ) {
-
-        if (
-            getSeedAmount(
-                "nightbell"
-            ) <= 0
-        ) {
-
-            greenhouseMessage(
-                "You don't have any Nightbell seeds."
-            );
-
-            return;
-
-        }
-
-
-        game.seeds.nightbell--;
-
-    }
-
-
-    else {
+    if (!removed) {
 
         return;
 
@@ -643,7 +733,7 @@ function plantSeed(
     plots[index] = {
 
         plant:
-            plantType,
+            plantId,
 
         plantedAt:
             now,
@@ -664,38 +754,173 @@ function plantSeed(
         null;
 
 
-    if (
-        seedType === "unknown"
-    ) {
-
-        greenhouseMessage(
-            "You planted the Strange Seed. Something unfamiliar begins to take root."
-        );
-
-    }
-
-    else if (
-        seedType === "nightbell"
-    ) {
-
-        greenhouseMessage(
-            "You planted a Nightbell seed."
-        );
-
-    }
-
-    else {
-
-        greenhouseMessage(
-            "You planted a Moonmint seed."
-        );
-
-    }
+    greenhouseMessage(
+        `You planted a ${plant.name} seed.`
+    );
 
 
     saveGame();
 
     renderGreenhouse();
+
+}
+
+
+// ==========================================
+// PLANT MYSTERY SEED
+// ==========================================
+
+function plantMysterySeed(
+    index
+) {
+
+    const plots =
+        game.greenhouse.plots;
+
+
+    if (
+        plots[index]
+    ) {
+
+        return;
+
+    }
+
+
+    if (
+        getMysterySeedAmount()
+        <= 0
+    ) {
+
+        greenhouseMessage(
+            "You don't have any Strange Seeds."
+        );
+
+        return;
+
+    }
+
+
+    // Take ONE specific mystery seed.
+    // That seed already knows what plant
+    // it will eventually reveal.
+
+    const mysterySeed =
+        takeMysterySeed();
+
+
+    if (!mysterySeed) {
+
+        greenhouseMessage(
+            "You don't have any Strange Seeds."
+        );
+
+        return;
+
+    }
+
+
+    const hiddenPlant =
+        getPlantData(
+            mysterySeed.revealsPlant
+        );
+
+
+    if (!hiddenPlant) {
+
+        // Put it back so the player does
+        // not lose a seed because of
+        // invalid game data.
+
+        game.mysterySeeds.unshift(
+            mysterySeed
+        );
+
+        saveGame();
+
+
+        greenhouseMessage(
+            "Something is wrong with this Strange Seed."
+        );
+
+        return;
+
+    }
+
+
+    const now =
+        Date.now();
+
+
+    plots[index] = {
+
+        plant:
+            "unknown",
+
+        revealsPlant:
+            mysterySeed.revealsPlant,
+
+        plantedAt:
+            now,
+
+        lastWatered:
+            now,
+
+        lastGrowthUpdate:
+            now,
+
+        growthTime:
+            0
+
+    };
+
+
+    selectedPlantPlot =
+        null;
+
+
+    greenhouseMessage(
+        "You planted the Strange Seed. Something unfamiliar begins to take root."
+    );
+
+
+    saveGame();
+
+    renderGreenhouse();
+
+}
+
+
+// ==========================================
+// PLANT SEED
+// ==========================================
+//
+// Kept so existing onclick code can still
+// call plantSeed().
+// ==========================================
+
+function plantSeed(
+    index,
+    seedType
+) {
+
+    if (
+        seedType === "unknown"
+    ) {
+
+        plantMysterySeed(
+            index
+        );
+
+        return;
+
+    }
+
+
+    plantNormalSeed(
+        index,
+        seedType
+    );
 
 }
 
@@ -713,7 +938,9 @@ function waterPlant(
 
 
     if (!plot) {
+
         return;
+
     }
 
 
@@ -750,7 +977,258 @@ function waterPlant(
 
 
 // ==========================================
-// HARVEST
+// HARVEST NORMAL PLANT
+// ==========================================
+
+function harvestNormalPlant(
+    plot
+) {
+
+    const plant =
+        getPlantData(
+            plot.plant
+        );
+
+
+    if (!plant) {
+
+        greenhouseMessage(
+            "This plant could not be identified."
+        );
+
+        return false;
+
+    }
+
+
+    addIngredient(
+        plant.id,
+        1
+    );
+
+
+    let discoveredNow =
+        false;
+
+
+    if (
+        !plant.alwaysKnown &&
+        !isPlantKnown(
+            plant.id
+        )
+    ) {
+
+        addDiscovery(
+            plant.id
+        );
+
+        discoveredNow =
+            true;
+
+    }
+
+
+    const foundSeed =
+        Math.random()
+        <
+        (
+            plant.seedReturnChance
+            || 0
+        );
+
+
+    if (
+        foundSeed
+    ) {
+
+        addSeeds(
+            plant.id,
+            1
+        );
+
+    }
+
+
+    if (
+        discoveredNow
+    ) {
+
+        if (
+            foundSeed
+        ) {
+
+            greenhouseMessage(
+                `Discovery! You identified ${plant.name} and recovered a seed.`
+            );
+
+        }
+
+        else {
+
+            greenhouseMessage(
+                `Discovery! You identified ${plant.name}.`
+            );
+
+        }
+
+    }
+
+    else if (
+        foundSeed
+    ) {
+
+        greenhouseMessage(
+            `You harvested ${plant.name} and recovered a seed.`
+        );
+
+    }
+
+    else {
+
+        greenhouseMessage(
+            `You harvested ${plant.name}.`
+        );
+
+    }
+
+
+    return true;
+
+}
+
+
+// ==========================================
+// HARVEST MYSTERY PLANT
+// ==========================================
+
+function harvestMysteryPlant(
+    plot
+) {
+
+    const revealedPlantId =
+        plot.revealsPlant;
+
+
+    const plant =
+        getPlantData(
+            revealedPlantId
+        );
+
+
+    if (!plant) {
+
+        greenhouseMessage(
+            "The unfamiliar plant could not be identified."
+        );
+
+        return false;
+
+    }
+
+
+    // Harvest the real ingredient.
+
+    addIngredient(
+        plant.id,
+        1
+    );
+
+
+    const alreadyKnown =
+        isPlantKnown(
+            plant.id
+        );
+
+
+    if (
+        !alreadyKnown
+    ) {
+
+        addDiscovery(
+            plant.id
+        );
+
+    }
+
+
+    // Once harvested, any recovered seed
+    // is now a normal NAMED seed.
+
+    const foundSeed =
+        Math.random()
+        <
+        (
+            plant.seedReturnChance
+            || 0
+        );
+
+
+    if (
+        foundSeed
+    ) {
+
+        addSeeds(
+            plant.id,
+            1
+        );
+
+    }
+
+
+    // --------------------------------------
+    // MESSAGE
+    // --------------------------------------
+
+    if (
+        !alreadyKnown
+    ) {
+
+        if (
+            foundSeed
+        ) {
+
+            greenhouseMessage(
+                `Discovery! The Strange Seed has revealed ${plant.name}. You also recovered a ${plant.name} seed.`
+            );
+
+        }
+
+        else {
+
+            greenhouseMessage(
+                `Discovery! The Strange Seed has revealed ${plant.name}.`
+            );
+
+        }
+
+    }
+
+    else if (
+        foundSeed
+    ) {
+
+        greenhouseMessage(
+            `The Strange Seed grew into ${plant.name}. You recovered a seed.`
+        );
+
+    }
+
+    else {
+
+        greenhouseMessage(
+            `The Strange Seed grew into ${plant.name}.`
+        );
+
+    }
+
+
+    return true;
+
+}
+
+
+// ==========================================
+// HARVEST PLANT
 // ==========================================
 
 function harvestPlant(
@@ -762,7 +1240,9 @@ function harvestPlant(
 
 
     if (!plot) {
+
         return;
+
     }
 
 
@@ -785,130 +1265,34 @@ function harvestPlant(
     }
 
 
-    // ======================================
-    // MOONMINT
-    // ======================================
+    let harvested =
+        false;
+
 
     if (
-        plot.plant ===
-        "moonmint"
+        plot.plant === "unknown"
     ) {
 
-        game.inventory.moonmint++;
-
-
-        // 25% chance to recover a seed.
-
-        if (
-            Math.random() < 0.25
-        ) {
-
-            game.seeds.moonmint++;
-
-
-            greenhouseMessage(
-                "You harvested Moonmint and recovered a seed."
+        harvested =
+            harvestMysteryPlant(
+                plot
             );
 
-        }
+    }
 
-        else {
+    else {
 
-            greenhouseMessage(
-                "You harvested fresh Moonmint."
+        harvested =
+            harvestNormalPlant(
+                plot
             );
-
-        }
 
     }
 
 
-    // ======================================
-    // UNKNOWN PLANT
-    // ======================================
+    if (!harvested) {
 
-    else if (
-        plot.plant ===
-        "unknown"
-    ) {
-
-        game.inventory.nightbell++;
-
-
-        // First harvest identifies Nightbell.
-
-        if (
-            !hasDiscovered(
-                "nightbell"
-            )
-        ) {
-
-            addDiscovery(
-                "nightbell"
-            );
-
-
-            greenhouseMessage(
-                "Discovery! The Strange Seed has revealed Nightbell."
-            );
-
-        }
-
-        else {
-
-            greenhouseMessage(
-                "You harvested Nightbell."
-            );
-
-        }
-
-
-        // Once identified, seeds from this
-        // plant are known as Nightbell Seeds.
-
-        if (
-            Math.random() < 0.25
-        ) {
-
-            game.seeds.nightbell++;
-
-        }
-
-    }
-
-
-    // ======================================
-    // KNOWN NIGHTBELL
-    // ======================================
-
-    else if (
-        plot.plant ===
-        "nightbell"
-    ) {
-
-        game.inventory.nightbell++;
-
-
-        if (
-            Math.random() < 0.25
-        ) {
-
-            game.seeds.nightbell++;
-
-
-            greenhouseMessage(
-                "You harvested Nightbell and recovered a seed."
-            );
-
-        }
-
-        else {
-
-            greenhouseMessage(
-                "You harvested Nightbell."
-            );
-
-        }
+        return;
 
     }
 
@@ -925,34 +1309,41 @@ function harvestPlant(
 
 
 // ==========================================
-// PLANT ICONS
+// PLANT ICON
 // ==========================================
 
-function getPlantIcon(
-    plant,
+function getGreenhousePlantIcon(
+    plot,
     progress
 ) {
 
-    // UNKNOWN PLANT
+    // --------------------------------------
+    // MYSTERY PLANT
+    // --------------------------------------
+    //
+    // Do NOT show the final plant icon
+    // before harvest. That would spoil
+    // the discovery.
+    // --------------------------------------
 
     if (
-        plant === "unknown"
+        plot.plant === "unknown"
     ) {
 
         if (
-            progress >= 100
+            progress >= 75
         ) {
 
-            return "🪻";
+            return "🌿";
 
         }
 
 
         if (
-            progress >= 65
+            progress >= 35
         ) {
 
-            return "🌿";
+            return "☘️";
 
         }
 
@@ -962,60 +1353,46 @@ function getPlantIcon(
     }
 
 
-    // NIGHTBELL
+    // --------------------------------------
+    // NORMAL PLANT
+    // --------------------------------------
 
-    if (
-        plant === "nightbell"
-    ) {
-
-        if (
-            progress >= 100
-        ) {
-
-            return "🪻";
-
-        }
+    const plant =
+        getPlantData(
+            plot.plant
+        );
 
 
-        if (
-            progress >= 50
-        ) {
+    if (!plant) {
 
-            return "🌿";
-
-        }
-
-
-        return "🌱";
+        return "❔";
 
     }
 
-
-    // MOONMINT
 
     if (
         progress >= 100
     ) {
 
+        return plant.icon;
+
+    }
+
+
+    if (
+        progress >= 65
+    ) {
+
         return "🌿";
 
     }
 
 
     if (
-        progress >= 75
+        progress >= 30
     ) {
 
         return "☘️";
-
-    }
-
-
-    if (
-        progress >= 35
-    ) {
-
-        return "🌿";
 
     }
 
@@ -1029,12 +1406,12 @@ function getPlantIcon(
 // PLANT DISPLAY NAME
 // ==========================================
 
-function getPlantName(
-    plant
+function getGreenhousePlantName(
+    plot
 ) {
 
     if (
-        plant === "unknown"
+        plot.plant === "unknown"
     ) {
 
         return "Unknown Plant";
@@ -1042,16 +1419,65 @@ function getPlantName(
     }
 
 
-    if (
-        plant === "nightbell"
-    ) {
+    const plant =
+        getPlantData(
+            plot.plant
+        );
 
-        return "Nightbell";
+
+    if (!plant) {
+
+        return "Unknown Plant";
 
     }
 
 
-    return "Moonmint";
+    return plant.name;
+
+}
+
+
+// ==========================================
+// NORMAL SEED CHOICE HTML
+// ==========================================
+
+function createNormalSeedChoiceHTML(
+    index,
+    plant
+) {
+
+    const seedAmount =
+        getSeedAmount(
+            plant.id
+        );
+
+
+    return `
+
+        <button
+            class="seed-choice"
+            onclick="plantSeed(${index}, '${plant.id}')"
+            ${seedAmount <= 0 ? "disabled" : ""}>
+
+            <span class="seed-choice-icon">
+                ${plant.seedIcon || "🌱"}
+            </span>
+
+            <span>
+
+                <strong>
+                    ${plant.name}
+                </strong>
+
+                <small>
+                    ${seedAmount} seeds
+                </small>
+
+            </span>
+
+        </button>
+
+    `;
 
 }
 
@@ -1064,59 +1490,89 @@ function getSeedMenuHTML(
     index
 ) {
 
-    const moonmintSeeds =
-        getSeedAmount(
-            "moonmint"
-        );
+    let normalSeedChoices =
+        "";
 
 
-    const strangeSeeds =
-        getSeedAmount(
+    Object.values(
+        PLANT_DATA
+    ).forEach(
+        plant => {
+
+            if (
+                !canDisplayPlantSeed(
+                    plant
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            normalSeedChoices +=
+                createNormalSeedChoiceHTML(
+                    index,
+                    plant
+                );
+
+        }
+    );
+
+
+    const mysterySeedAmount =
+        getMysterySeedAmount();
+
+
+    const specialSeed =
+        getSpecialSeedData(
             "unknown"
         );
 
 
-    const nightbellSeeds =
-        getSeedAmount(
-            "nightbell"
-        );
+    const mysteryIcon =
+        specialSeed
+            ? specialSeed.icon
+            : "✦";
 
 
-    const knowsNightbell =
-        hasDiscovered(
-            "nightbell"
-        );
+    const mysteryName =
+        specialSeed
+            ? specialSeed.name
+            : "Strange Seed";
 
 
-    let nightbellOption =
+    let mysterySeedChoice =
         "";
 
 
+    // Show the Strange Seed option if the
+    // player currently owns one.
+
     if (
-        knowsNightbell
-        ||
-        nightbellSeeds > 0
+        mysterySeedAmount > 0
     ) {
 
-        nightbellOption = `
+        mysterySeedChoice = `
 
             <button
-                class="seed-choice"
-                onclick="plantSeed(${index}, 'nightbell')"
-                ${nightbellSeeds <= 0 ? "disabled" : ""}>
+                class="seed-choice strange-seed-choice"
+                onclick="plantSeed(${index}, 'unknown')">
 
                 <span class="seed-choice-icon">
-                    🪻
+                    ${mysteryIcon}
                 </span>
 
                 <span>
+
                     <strong>
-                        Nightbell
+                        ${mysteryName}
                     </strong>
 
                     <small>
-                        ${nightbellSeeds} seeds
+                        ${mysterySeedAmount} seeds
                     </small>
+
                 </span>
 
             </button>
@@ -1135,51 +1591,9 @@ function getSeedMenuHTML(
             </div>
 
 
-            <button
-                class="seed-choice"
-                onclick="plantSeed(${index}, 'moonmint')"
-                ${moonmintSeeds <= 0 ? "disabled" : ""}>
+            ${normalSeedChoices}
 
-                <span class="seed-choice-icon">
-                    🌱
-                </span>
-
-                <span>
-                    <strong>
-                        Moonmint
-                    </strong>
-
-                    <small>
-                        ${moonmintSeeds} seeds
-                    </small>
-                </span>
-
-            </button>
-
-
-            <button
-                class="seed-choice strange-seed-choice"
-                onclick="plantSeed(${index}, 'unknown')"
-                ${strangeSeeds <= 0 ? "disabled" : ""}>
-
-                <span class="seed-choice-icon">
-                    ✦
-                </span>
-
-                <span>
-                    <strong>
-                        Strange Seed
-                    </strong>
-
-                    <small>
-                        ${strangeSeeds} seeds
-                    </small>
-                </span>
-
-            </button>
-
-
-            ${nightbellOption}
+            ${mysterySeedChoice}
 
 
             <button
@@ -1210,7 +1624,9 @@ function renderGreenhousePlots() {
 
 
     if (!container) {
+
         return;
+
     }
 
 
@@ -1331,15 +1747,15 @@ function renderGreenhousePlots() {
 
 
             const icon =
-                getPlantIcon(
-                    plot.plant,
+                getGreenhousePlantIcon(
+                    plot,
                     progress
                 );
 
 
             const plantName =
-                getPlantName(
-                    plot.plant
+                getGreenhousePlantName(
+                    plot
                 );
 
 
@@ -1364,7 +1780,9 @@ function renderGreenhousePlots() {
             let actionButton;
 
 
+            // ----------------------------------
             // READY TO HARVEST
+            // ----------------------------------
 
             if (
                 progress >= 100
@@ -1385,7 +1803,9 @@ function renderGreenhousePlots() {
             }
 
 
+            // ----------------------------------
             // STILL GROWING
+            // ----------------------------------
 
             else {
 
@@ -1473,6 +1893,9 @@ function renderGreenhousePlots() {
 
 function renderGreenhouseInfo() {
 
+    // Keep the existing Moonmint info
+    // elements working for now.
+
     const seedElement =
         document.getElementById(
             "moonmintSeeds"
@@ -1529,7 +1952,6 @@ function renderGreenhouse() {
 
     applyGreenhouseExpansion();
 
-
     updateResourceBar();
 
     renderGreenhouseInfo();
@@ -1554,5 +1976,6 @@ setInterval(
         saveGame();
 
     },
+
     1000
 );
