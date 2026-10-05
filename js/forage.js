@@ -1,832 +1,193 @@
 // ==========================================
 // MOSSWOOD APOTHECARY
-// Greenhouse V5
+// Foraging V6
 // Dynamic Planting Materials
-// Generic Plants + Mystery Seeds
+// Discovery Seeds + Active Foraging
 // ==========================================
 
 
 // ==========================================
-// UPGRADE SAFETY
+// FORAGE SAVE SETUP / MIGRATION
 // ==========================================
 
-if (!game.upgrades) {
+if (!game.forage) {
 
-    game.upgrades = {
-        expansion: 0,
-        irrigation: 0,
-        growth: 0
+    game.forage = {
+        active: false,
+        location: null,
+        locationId: null,
+        startedAt: null,
+        finishesAt: null,
+        lastResult: null,
+        unlockedLocations: [
+            "forest"
+        ]
     };
 
+    saveGame();
 }
 
 
-if (
-    typeof game.upgrades.expansion
-    !== "number"
-) {
+// ------------------------------------------
+// OLDER SAVE SUPPORT
+// ------------------------------------------
 
-    game.upgrades.expansion = 0;
+if (game.forage.lastResult === undefined) {
+    game.forage.lastResult = null;
+}
 
+if (game.forage.locationId === undefined) {
+    game.forage.locationId = null;
+}
+
+if (!Array.isArray(game.forage.unlockedLocations)) {
+    game.forage.unlockedLocations = [];
 }
 
 
-if (
-    typeof game.upgrades.irrigation
-    !== "number"
-) {
+// ------------------------------------------
+// ADD DEFAULT LOCATIONS
+// ------------------------------------------
 
-    game.upgrades.irrigation = 0;
-
-}
-
-
-if (
-    typeof game.upgrades.growth
-    !== "number"
-) {
-
-    game.upgrades.growth = 0;
-
-}
-
-
-// ==========================================
-// GREENHOUSE SAFETY
-// ==========================================
-
-if (!game.greenhouse) {
-
-    game.greenhouse = {
-        level: 1,
-        plots: []
-    };
-
-}
-
-
-if (
-    !Array.isArray(
-        game.greenhouse.plots
-    )
-) {
-
-    game.greenhouse.plots = [];
-
-}
-
-
-// ==========================================
-// GREENHOUSE EXPANSION
-// ==========================================
-
-function getRequiredPlotCount() {
-
-    return (
-        4 +
-        (
-            game.upgrades.expansion * 2
-        )
-    );
-
-}
-
-
-function applyGreenhouseExpansion() {
-
-    const requiredPlots =
-        getRequiredPlotCount();
-
-
-    while (
-        game.greenhouse.plots.length
-        < requiredPlots
-    ) {
-
-        game.greenhouse.plots.push(
-            null
-        );
-
-    }
-
-
-    game.greenhouse.level =
-        game.upgrades.expansion + 1;
-
-}
-
-
-applyGreenhouseExpansion();
-
-
-// ==========================================
-// PLANT DATA FOR A PLOT
-// ==========================================
-//
-// Normal plant:
-//
-// plot.plant = "moonmint"
-//
-// Mystery plant:
-//
-// plot.plant = "unknown"
-// plot.revealsPlant = "nightbell"
-// ==========================================
-
-function getPlotPlantData(
-    plot
-) {
-
-    if (!plot) {
-
-        return null;
-
-    }
-
+Object.values(FORAGE_LOCATION_DATA).forEach(location => {
 
     if (
-        plot.plant === "unknown"
+        location.unlockedByDefault &&
+        !game.forage.unlockedLocations.includes(location.id)
     ) {
 
-        if (
-            plot.revealsPlant
-        ) {
-
-            return getPlantData(
-                plot.revealsPlant
-            );
-
-        }
-
-
-        // ----------------------------------
-        // OLD SAVE COMPATIBILITY
-        // ----------------------------------
-
-        return getPlantData(
-            "nightbell"
-        );
-
+        game.forage.unlockedLocations.push(location.id);
     }
 
-
-    return getPlantData(
-        plot.plant
-    );
-
-}
-
-
-// ==========================================
-// OLD PLOT MIGRATION
-// ==========================================
-
-game.greenhouse.plots.forEach(
-    plot => {
-
-        if (!plot) {
-
-            return;
-
-        }
-
-
-        // Old unknown plants were Nightbell.
-
-        if (
-            plot.plant === "unknown" &&
-            !plot.revealsPlant
-        ) {
-
-            plot.revealsPlant =
-                "nightbell";
-
-        }
-
-
-        const now =
-            Date.now();
-
-
-        if (
-            typeof plot.lastWatered
-            !== "number"
-        ) {
-
-            plot.lastWatered =
-                plot.plantedAt || now;
-
-        }
-
-
-        if (
-            typeof plot.growthTime
-            !== "number"
-        ) {
-
-            const plantedAt =
-                plot.plantedAt || now;
-
-
-            const plantData =
-                getPlotPlantData(
-                    plot
-                );
-
-
-            const baseDryTime =
-                plantData
-                    ? plantData.dryTime
-                    : 25 * 1000;
-
-
-            const irrigationBonus =
-                game.upgrades.irrigation
-                * 0.10;
-
-
-            const dryTime =
-                baseDryTime *
-                (
-                    1 +
-                    irrigationBonus
-                );
-
-
-            const hydratedUntil =
-                plot.lastWatered
-                + dryTime;
-
-
-            const activeUntil =
-                Math.min(
-                    now,
-                    hydratedUntil
-                );
-
-
-            plot.growthTime =
-                Math.max(
-                    0,
-                    activeUntil
-                    - plantedAt
-                );
-
-        }
-
-
-        if (
-            typeof plot.lastGrowthUpdate
-            !== "number"
-        ) {
-
-            plot.lastGrowthUpdate =
-                now;
-
-        }
-
-    }
-);
-
+});
 
 saveGame();
 
 
 // ==========================================
-// UPGRADE EFFECTS
+// LOCATION UNLOCK CHECK
 // ==========================================
 
-function getDryTime(
-    plot
-) {
+function isLocationUnlocked(locationId) {
 
-    const plant =
-        getPlotPlantData(
-            plot
-        );
-
-
-    const baseDryTime =
-        plant &&
-        typeof plant.dryTime === "number"
-
-            ? plant.dryTime
-
-            : 25 * 1000;
-
-
-    const bonus =
-        game.upgrades.irrigation
-        * 0.10;
-
-
-    return (
-        baseDryTime *
-        (
-            1 + bonus
-        )
-    );
-
-}
-
-
-function getPlantGrowTime(
-    plot
-) {
-
-    const plant =
-        getPlotPlantData(
-            plot
-        );
-
-
-    const baseTime =
-        plant &&
-        typeof plant.growTime === "number"
-
-            ? plant.growTime
-
-            : 60 * 1000;
-
-
-    const reduction =
-        game.upgrades.growth
-        * 0.05;
-
-
-    return (
-        baseTime *
-        (
-            1 - reduction
-        )
-    );
-
+    return game.forage.unlockedLocations.includes(locationId);
 }
 
 
 // ==========================================
-// GREENHOUSE MESSAGE
+// LOCATION REQUIREMENT CHECK
 // ==========================================
 
-function greenhouseMessage(
-    text
-) {
+function meetsLocationRequirement(location) {
 
-    const element =
-        document.getElementById(
-            "gameMessage"
-        );
-
-
-    if (element) {
-
-        element.textContent =
-            text;
-
-    }
-
-}
-
-
-// ==========================================
-// SOIL / GROWTH
-// ==========================================
-
-function isPlantDry(
-    plot
-) {
-
-    return (
-        Date.now()
-        - plot.lastWatered
-        >= getDryTime(
-            plot
-        )
-    );
-
-}
-
-
-function updatePlantGrowth(
-    plot
-) {
-
-    if (!plot) {
-
-        return;
-
-    }
-
-
-    const now =
-        Date.now();
-
-
-    if (
-        typeof plot.growthTime
-        !== "number"
-    ) {
-
-        plot.growthTime = 0;
-
-    }
-
-
-    if (
-        typeof plot.lastGrowthUpdate
-        !== "number"
-    ) {
-
-        plot.lastGrowthUpdate =
-            now;
-
-    }
-
-
-    const previousUpdate =
-        plot.lastGrowthUpdate;
-
-
-    const hydratedUntil =
-        plot.lastWatered
-        + getDryTime(
-            plot
-        );
-
-
-    const growthEnd =
-        Math.min(
-            now,
-            hydratedUntil
-        );
-
-
-    if (
-        growthEnd >
-        previousUpdate
-    ) {
-
-        plot.growthTime +=
-            growthEnd
-            - previousUpdate;
-
-    }
-
-
-    plot.lastGrowthUpdate =
-        now;
-
-}
-
-
-// ==========================================
-// GROWTH PROGRESS
-// ==========================================
-
-function getGrowthProgress(
-    plot
-) {
-
-    updatePlantGrowth(
-        plot
-    );
-
-
-    const growTime =
-        getPlantGrowTime(
-            plot
-        );
-
-
-    return Math.min(
-
-        100,
-
-        (
-            plot.growthTime
-            /
-            growTime
-        ) * 100
-
-    );
-
-}
-
-
-// ==========================================
-// TIME REMAINING
-// ==========================================
-
-function formatGrowthTime(
-    plot
-) {
-
-    updatePlantGrowth(
-        plot
-    );
-
-
-    const growTime =
-        getPlantGrowTime(
-            plot
-        );
-
-
-    const remaining =
-        Math.max(
-            0,
-            growTime
-            - plot.growthTime
-        );
-
-
-    if (
-        remaining <= 0
-    ) {
-
-        return "Ready to harvest";
-
-    }
-
-
-    const seconds =
-        Math.ceil(
-            remaining / 1000
-        );
-
-
-    if (
-        isPlantDry(
-            plot
-        )
-    ) {
-
-        return (
-            `Growth paused • ${seconds}s remaining`
-        );
-
-    }
-
-
-    return (
-        `${seconds}s remaining`
-    );
-
-}
-
-
-// ==========================================
-// PLANTING MENU
-// ==========================================
-
-let selectedPlantPlot =
-    null;
-
-
-function openSeedMenu(
-    index
-) {
-
-    selectedPlantPlot =
-        index;
-
-    renderGreenhouse();
-
-}
-
-
-function closeSeedMenu() {
-
-    selectedPlantPlot =
-        null;
-
-    renderGreenhouse();
-
-}
-
-
-// ==========================================
-// CAN SHOW PLANTING MATERIAL
-// ==========================================
-
-function canDisplayPlantSeed(
-    plant
-) {
-
-    if (
-        plant.alwaysKnown
-    ) {
-
+    if (!location.discoveryRequirement) {
         return true;
-
     }
 
-
-    if (
-        isPlantKnown(
-            plant.id
-        )
-    ) {
-
-        return true;
-
-    }
-
-
-    return (
-        getSeedAmount(
-            plant.id
-        ) > 0
-    );
-
+    return hasDiscovered(location.discoveryRequirement);
 }
 
 
 // ==========================================
-// PLANT NORMAL MATERIAL
+// UNLOCK LOCATION
 // ==========================================
 
-function plantNormalSeed(
-    index,
-    plantId
-) {
+function unlockForageLocation(locationId) {
 
-    const plots =
-        game.greenhouse.plots;
+    const location =
+        getForageLocationData(locationId);
 
 
     if (
-        plots[index]
+        !location ||
+        isLocationUnlocked(locationId)
     ) {
-
         return;
-
     }
 
 
-    const plant =
-        getPlantData(
-            plantId
-        );
-
-
-    if (!plant) {
-
-        greenhouseMessage(
-            "That planting material cannot be used."
-        );
-
+    if (location.requirementHidden) {
         return;
-
     }
 
 
-    if (
-        getSeedAmount(
-            plantId
-        ) <= 0
-    ) {
+    if (!meetsLocationRequirement(location)) {
 
-        greenhouseMessage(
-            `You don't have any ${getPlantingItemName(
-                plantId,
-                2
-            )}.`
+        const requirementName =
+            location.discoveryRequirementName ||
+            "the required botanical";
+
+
+        showForageMessage(
+            "Path Still Hidden",
+            `Discover ${requirementName} before attempting to travel deeper into Mosswood.`,
+            location.icon
         );
 
         return;
-
     }
 
 
-    const removed =
-        removeSeeds(
-            plantId,
-            1
+    const cost =
+        location.unlockCost || 0;
+
+
+    if (game.coins < cost) {
+
+        showForageMessage(
+            "Not Enough Coins",
+            `Opening the route to ${location.name} requires ${cost} coins.`,
+            "🪙"
         );
 
-
-    if (!removed) {
-
         return;
-
     }
 
 
-    const now =
-        Date.now();
+    game.coins -= cost;
 
-
-    plots[index] = {
-
-        plant:
-            plantId,
-
-        plantedAt:
-            now,
-
-        lastWatered:
-            now,
-
-        lastGrowthUpdate:
-            now,
-
-        growthTime:
-            0
-
-    };
-
-
-    selectedPlantPlot =
-        null;
-
-
-    greenhouseMessage(
-        `You planted a ${getPlantingItemName(
-            plantId,
-            1
-        )}.`
+    game.forage.unlockedLocations.push(
+        locationId
     );
 
 
     saveGame();
 
-    renderGreenhouse();
+    updateResourceBar();
 
+    renderForage();
+
+
+    showForageMessage(
+        `${location.name} Unlocked`,
+        `A new route has opened. Your familiar can now explore ${location.name}.`,
+        location.icon
+    );
 }
 
 
 // ==========================================
-// PLANT MYSTERY SEED
+// START FORAGE
 // ==========================================
 
-function plantMysterySeed(
-    index
-) {
+function startForage(locationId) {
 
-    const plots =
-        game.greenhouse.plots;
-
-
-    if (
-        plots[index]
-    ) {
-
+    if (game.forage.active) {
         return;
-
     }
 
 
-    if (
-        getMysterySeedAmount()
-        <= 0
-    ) {
-
-        greenhouseMessage(
-            "You don't have any Strange Seeds."
-        );
-
+    if (!isLocationUnlocked(locationId)) {
         return;
-
     }
 
 
-    const mysterySeed =
-        takeMysterySeed();
+    const location =
+        getForageLocationData(locationId);
 
 
-    if (!mysterySeed) {
-
-        greenhouseMessage(
-            "You don't have any Strange Seeds."
-        );
-
+    if (!location) {
         return;
-
-    }
-
-
-    const hiddenPlant =
-        getPlantData(
-            mysterySeed.revealsPlant
-        );
-
-
-    if (!hiddenPlant) {
-
-        game.mysterySeeds.unshift(
-            mysterySeed
-        );
-
-        saveGame();
-
-
-        greenhouseMessage(
-            "Something is wrong with this Strange Seed."
-        );
-
-        return;
-
     }
 
 
@@ -834,1152 +195,1239 @@ function plantMysterySeed(
         Date.now();
 
 
-    plots[index] = {
+    game.forage.active = true;
 
-        plant:
-            "unknown",
+    game.forage.locationId =
+        locationId;
 
-        revealsPlant:
-            mysterySeed.revealsPlant,
+    game.forage.location =
+        location.name;
 
-        plantedAt:
-            now,
-
-        lastWatered:
-            now,
-
-        lastGrowthUpdate:
-            now,
-
-        growthTime:
-            0
-
-    };
-
-
-    selectedPlantPlot =
-        null;
-
-
-    greenhouseMessage(
-        "You planted the Strange Seed. Something unfamiliar begins to take root."
-    );
-
-
-    saveGame();
-
-    renderGreenhouse();
-
-}
-
-
-// ==========================================
-// PLANT SEED
-// ==========================================
-//
-// Function name is kept for compatibility
-// with existing HTML/on-click behavior.
-// Internally this can now represent seeds,
-// spores, cuttings, or other materials.
-// ==========================================
-
-function plantSeed(
-    index,
-    seedType
-) {
-
-    if (
-        seedType === "unknown"
-    ) {
-
-        plantMysterySeed(
-            index
-        );
-
-        return;
-
-    }
-
-
-    plantNormalSeed(
-        index,
-        seedType
-    );
-
-}
-
-
-// ==========================================
-// WATER PLANT
-// ==========================================
-
-function waterPlant(
-    index
-) {
-
-    const plot =
-        game.greenhouse.plots[index];
-
-
-    if (!plot) {
-
-        return;
-
-    }
-
-
-    updatePlantGrowth(
-        plot
-    );
-
-
-    const now =
-        Date.now();
-
-
-    plot.lastWatered =
+    game.forage.startedAt =
         now;
 
-
-    plot.lastGrowthUpdate =
-        now;
-
-
-    greenhouseMessage(
-        "The soil is damp again. Growth resumes."
-    );
+    game.forage.finishesAt =
+        now + location.duration;
 
 
     saveGame();
 
-    renderGreenhouse();
-
+    renderForage();
 }
 
 
 // ==========================================
-// HARVEST NORMAL PLANT
+// ACTIVE FORAGING CLICK
 // ==========================================
 
-function harvestNormalPlant(
-    plot
-) {
+function activeForageClick() {
 
-    const plant =
-        getPlantData(
-            plot.plant
-        );
-
-
-    if (!plant) {
-
-        greenhouseMessage(
-            "This plant could not be identified."
-        );
-
-        return false;
-
+    if (!game.forage.active) {
+        return;
     }
 
 
-    addIngredient(
-        plant.id,
-        1
-    );
+    game.forage.finishesAt -=
+        FORAGE_ACTIVE_CLICK_BOOST;
 
 
-    let discoveredNow =
+    if (
+        Date.now() >=
+        game.forage.finishesAt
+    ) {
+
+        completeForage();
+
+        return;
+    }
+
+
+    saveGame();
+
+    renderForageProgress();
+}
+
+
+// ==========================================
+// COMPLETE FORAGE
+// ==========================================
+
+function completeForage() {
+
+    if (!game.forage.active) {
+        return;
+    }
+
+
+    if (
+        Date.now() <
+        game.forage.finishesAt
+    ) {
+        return;
+    }
+
+
+    const locationId =
+        game.forage.locationId ||
+        "forest";
+
+
+    rollForageReward(locationId);
+
+
+    game.forage.active =
         false;
 
+    game.forage.location =
+        null;
+
+    game.forage.locationId =
+        null;
+
+    game.forage.startedAt =
+        null;
+
+    game.forage.finishesAt =
+        null;
+
+
+    saveGame();
+
+    updateResourceBar();
+
+    renderForage();
+}
+
+
+// ==========================================
+// RANDOM INTEGER
+// ==========================================
+
+function getRandomAmount(
+    minimum,
+    maximum
+) {
+
+    return (
+        Math.floor(
+            Math.random() *
+            (maximum - minimum + 1)
+        ) +
+        minimum
+    );
+}
+
+
+// ==========================================
+// ROLL FORAGE REWARD
+// ==========================================
+
+function rollForageReward(locationId) {
+
+    const rewards =
+        getForageRewardTable(locationId);
+
 
     if (
-        !plant.alwaysKnown &&
-        !isPlantKnown(
-            plant.id
-        )
+        !rewards ||
+        rewards.length === 0
     ) {
 
-        addDiscovery(
-            plant.id
+        saveForageResult(
+            "Nothing This Time",
+            "Your familiar returned without finding anything useful.",
+            "🐈‍⬛"
         );
 
-        discoveredNow =
-            true;
-
+        return;
     }
 
 
-    const foundSeed =
-        Math.random()
-        <
-        (
-            plant.seedReturnChance
-            || 0
+    const roll =
+        Math.random();
+
+
+    let cumulativeChance =
+        0;
+
+
+    let selectedReward =
+        rewards[
+            rewards.length - 1
+        ];
+
+
+    for (const reward of rewards) {
+
+        cumulativeChance +=
+            reward.chance;
+
+
+        if (
+            roll <
+            cumulativeChance
+        ) {
+
+            selectedReward =
+                reward;
+
+            break;
+        }
+    }
+
+
+    giveForageReward(
+        selectedReward
+    );
+}
+
+
+// ==========================================
+// GIVE FORAGE REWARD
+// ==========================================
+
+function giveForageReward(reward) {
+
+    const minimum =
+        reward.minAmount || 1;
+
+
+    const maximum =
+        reward.maxAmount || minimum;
+
+
+    const amount =
+        getRandomAmount(
+            minimum,
+            maximum
         );
 
 
+    let title =
+        reward.title || "";
+
+
+    let text =
+        reward.text || "";
+
+
+    let icon =
+        reward.icon || "✦";
+
+
+    // ======================================
+    // INGREDIENT
+    // ======================================
+
     if (
-        foundSeed
+        reward.type ===
+        "ingredient"
+    ) {
+
+        addIngredient(
+            reward.itemId,
+            amount
+        );
+
+
+        const plant =
+            getPlantData(
+                reward.itemId
+            );
+
+
+        const plantName =
+            plant
+                ? plant.name
+                : "Ingredient";
+
+
+        title =
+            `Found ${amount} ${plantName}`;
+    }
+
+
+    // ======================================
+    // NORMAL PLANTING MATERIAL
+    // ======================================
+
+    else if (
+        reward.type ===
+        "seed"
     ) {
 
         addSeeds(
-            plant.id,
-            1
+            reward.itemId,
+            amount
         );
 
+
+        title =
+            `Found ${amount} ${getPlantingItemName(
+                reward.itemId,
+                amount
+            )}`;
+
+
+        icon =
+            getPlantingItemIcon(
+                reward.itemId
+            );
     }
 
 
-    const recoveredItem =
-        getPlantingItemName(
-            plant.id,
-            1
-        );
+    // ======================================
+    // DISCOVERY PLANTING MATERIAL
+    // ======================================
 
-
-    if (
-        discoveredNow
+    else if (
+        reward.type ===
+        "discoverySeed"
     ) {
 
-        if (
-            foundSeed
-        ) {
-
-            greenhouseMessage(
-                `Discovery! You identified ${plant.name} and recovered a ${recoveredItem}.`
+        const plant =
+            getPlantData(
+                reward.plantId
             );
 
+
+        const discovered =
+            hasDiscovered(
+                reward.plantId
+            );
+
+
+        // ----------------------------------
+        // BOTANICAL ALREADY DISCOVERED
+        // ----------------------------------
+
+        if (discovered) {
+
+            addSeeds(
+                reward.plantId,
+                amount
+            );
+
+
+            const plantName =
+                plant
+                    ? plant.name
+                    : "Plant";
+
+
+            const plantingItemName =
+                getPlantingItemName(
+                    reward.plantId,
+                    amount
+                );
+
+
+            const genericPlantingItemName =
+                getPlantingItemGenericName(
+                    reward.plantId,
+                    amount
+                );
+
+
+            title =
+                `Found ${amount} ${plantingItemName}`;
+
+
+            text =
+                reward.discoveredText ||
+                `Your familiar returned with ${plantName} ${genericPlantingItemName}.`;
+
+
+            icon =
+                getPlantingItemIcon(
+                    reward.plantId
+                );
         }
+
+
+        // ----------------------------------
+        // BOTANICAL NOT DISCOVERED
+        // ----------------------------------
 
         else {
 
-            greenhouseMessage(
-                `Discovery! You identified ${plant.name}.`
-            );
-
-        }
-
-    }
-
-    else if (
-        foundSeed
-    ) {
-
-        greenhouseMessage(
-            `You harvested ${plant.name} and recovered a ${recoveredItem}.`
-        );
-
-    }
-
-    else {
-
-        greenhouseMessage(
-            `You harvested ${plant.name}.`
-        );
-
-    }
-
-
-    return true;
-
-}
-
-
-// ==========================================
-// HARVEST MYSTERY PLANT
-// ==========================================
-
-function harvestMysteryPlant(
-    plot
-) {
-
-    const revealedPlantId =
-        plot.revealsPlant;
-
-
-    const plant =
-        getPlantData(
-            revealedPlantId
-        );
-
-
-    if (!plant) {
-
-        greenhouseMessage(
-            "The unfamiliar plant could not be identified."
-        );
-
-        return false;
-
-    }
-
-
-    addIngredient(
-        plant.id,
-        1
-    );
-
-
-    const alreadyKnown =
-        isPlantKnown(
-            plant.id
-        );
-
-
-    if (
-        !alreadyKnown
-    ) {
-
-        addDiscovery(
-            plant.id
-        );
-
-    }
-
-
-    const foundSeed =
-        Math.random()
-        <
-        (
-            plant.seedReturnChance
-            || 0
-        );
-
-
-    if (
-        foundSeed
-    ) {
-
-        addSeeds(
-            plant.id,
-            1
-        );
-
-    }
-
-
-    const recoveredItem =
-        getPlantingItemName(
-            plant.id,
-            1
-        );
-
-
-    // --------------------------------------
-    // MESSAGE
-    // --------------------------------------
-
-    if (
-        !alreadyKnown
-    ) {
-
-        if (
-            foundSeed
-        ) {
-
-            greenhouseMessage(
-                `Discovery! The Strange Seed has revealed ${plant.name}. You also recovered a ${recoveredItem}.`
-            );
-
-        }
-
-        else {
-
-            greenhouseMessage(
-                `Discovery! The Strange Seed has revealed ${plant.name}.`
-            );
-
-        }
-
-    }
-
-    else if (
-        foundSeed
-    ) {
-
-        greenhouseMessage(
-            `The Strange Seed grew into ${plant.name}. You recovered a ${recoveredItem}.`
-        );
-
-    }
-
-    else {
-
-        greenhouseMessage(
-            `The Strange Seed grew into ${plant.name}.`
-        );
-
-    }
-
-
-    return true;
-
-}
-
-
-// ==========================================
-// HARVEST PLANT
-// ==========================================
-
-function harvestPlant(
-    index
-) {
-
-    const plot =
-        game.greenhouse.plots[index];
-
-
-    if (!plot) {
-
-        return;
-
-    }
-
-
-    const progress =
-        getGrowthProgress(
-            plot
-        );
-
-
-    if (
-        progress < 100
-    ) {
-
-        greenhouseMessage(
-            "This plant isn't ready yet."
-        );
-
-        return;
-
-    }
-
-
-    let harvested =
-        false;
-
-
-    if (
-        plot.plant === "unknown"
-    ) {
-
-        harvested =
-            harvestMysteryPlant(
-                plot
-            );
-
-    }
-
-    else {
-
-        harvested =
-            harvestNormalPlant(
-                plot
-            );
-
-    }
-
-
-    if (!harvested) {
-
-        return;
-
-    }
-
-
-    game.greenhouse.plots[index] =
-        null;
-
-
-    saveGame();
-
-    renderGreenhouse();
-
-}
-
-
-// ==========================================
-// PLANT ICON
-// ==========================================
-
-function getGreenhousePlantIcon(
-    plot,
-    progress
-) {
-
-    // --------------------------------------
-    // MYSTERY PLANT
-    // --------------------------------------
-
-    if (
-        plot.plant === "unknown"
-    ) {
-
-        if (
-            progress >= 75
-        ) {
-
-            return "🌿";
-
-        }
-
-
-        if (
-            progress >= 35
-        ) {
-
-            return "☘️";
-
-        }
-
-
-        return "🌱";
-
-    }
-
-
-    // --------------------------------------
-    // NORMAL PLANT
-    // --------------------------------------
-
-    const plant =
-        getPlantData(
-            plot.plant
-        );
-
-
-    if (!plant) {
-
-        return "❔";
-
-    }
-
-
-    if (
-        progress >= 100
-    ) {
-
-        return plant.icon;
-
-    }
-
-
-    if (
-        progress >= 65
-    ) {
-
-        return "🌿";
-
-    }
-
-
-    if (
-        progress >= 30
-    ) {
-
-        return "☘️";
-
-    }
-
-
-    return "🌱";
-
-}
-
-
-// ==========================================
-// PLANT DISPLAY NAME
-// ==========================================
-
-function getGreenhousePlantName(
-    plot
-) {
-
-    if (
-        plot.plant === "unknown"
-    ) {
-
-        return "Unknown Plant";
-
-    }
-
-
-    const plant =
-        getPlantData(
-            plot.plant
-        );
-
-
-    if (!plant) {
-
-        return "Unknown Plant";
-
-    }
-
-
-    return plant.name;
-
-}
-
-
-// ==========================================
-// NORMAL PLANTING CHOICE HTML
-// ==========================================
-
-function createNormalSeedChoiceHTML(
-    index,
-    plant
-) {
-
-    const seedAmount =
-        getSeedAmount(
-            plant.id
-        );
-
-
-    const plantingName =
-        getPlantingItemName(
-            plant.id,
-            1
-        );
-
-
-    const plantingCountName =
-        getPlantingItemGenericName(
-            plant.id,
-            seedAmount
-        );
-
-
-    const plantingIcon =
-        getPlantingItemIcon(
-            plant.id
-        );
-
-
-    return `
-
-        <button
-            class="seed-choice"
-            onclick="plantSeed(${index}, '${plant.id}')"
-            ${seedAmount <= 0 ? "disabled" : ""}>
-
-            <span class="seed-choice-icon">
-                ${plantingIcon}
-            </span>
-
-            <span>
-
-                <strong>
-                    ${plantingName}
-                </strong>
-
-                <small>
-                    ${seedAmount} ${plantingCountName}
-                </small>
-
-            </span>
-
-        </button>
-
-    `;
-
-}
-
-
-// ==========================================
-// PLANTING SELECTION HTML
-// ==========================================
-
-function getSeedMenuHTML(
-    index
-) {
-
-    let normalSeedChoices =
-        "";
-
-
-    Object.values(
-        PLANT_DATA
-    ).forEach(
-        plant => {
-
-            if (
-                !canDisplayPlantSeed(
-                    plant
-                )
+            for (
+                let i = 0;
+                i < amount;
+                i++
             ) {
 
-                return;
-
+                addMysterySeed(
+                    reward.plantId
+                );
             }
 
 
-            normalSeedChoices +=
-                createNormalSeedChoiceHTML(
-                    index,
-                    plant
+            title =
+                reward.mysteryTitle ||
+                (
+                    amount === 1
+                        ? "Found a Strange Seed"
+                        : `Found ${amount} Strange Seeds`
                 );
 
+
+            text =
+                reward.mysteryText ||
+                "Your familiar returned with an unfamiliar seed.";
+
+
+            icon =
+                reward.mysteryIcon ||
+                "✦";
         }
-    );
-
-
-    const mysterySeedAmount =
-        getMysterySeedAmount();
-
-
-    const specialSeed =
-        getSpecialSeedData(
-            "unknown"
-        );
-
-
-    const mysteryIcon =
-        specialSeed
-            ? specialSeed.icon
-            : "✦";
-
-
-    const mysteryName =
-        specialSeed
-            ? specialSeed.name
-            : "Strange Seed";
-
-
-    let mysterySeedChoice =
-        "";
-
-
-    if (
-        mysterySeedAmount > 0
-    ) {
-
-        mysterySeedChoice = `
-
-            <button
-                class="seed-choice strange-seed-choice"
-                onclick="plantSeed(${index}, 'unknown')">
-
-                <span class="seed-choice-icon">
-                    ${mysteryIcon}
-                </span>
-
-                <span>
-
-                    <strong>
-                        ${mysteryName}
-                    </strong>
-
-                    <small>
-                        ${mysterySeedAmount}
-                        ${
-                            mysterySeedAmount === 1
-                                ? "seed"
-                                : "seeds"
-                        }
-                    </small>
-
-                </span>
-
-            </button>
-
-        `;
-
     }
 
 
-    return `
+    // ======================================
+    // LEGACY MYSTERY SEED SUPPORT
+    // ======================================
 
-        <div class="seed-menu">
+    else if (
+        reward.type ===
+        "mysterySeed"
+    ) {
 
-            <div class="seed-menu-title">
-                Choose Planting Material
+        for (
+            let i = 0;
+            i < amount;
+            i++
+        ) {
+
+            addMysterySeed(
+                reward.revealsPlant
+            );
+        }
+
+
+        title =
+            reward.title ||
+            (
+                amount === 1
+                    ? "Found a Strange Seed"
+                    : `Found ${amount} Strange Seeds`
+            );
+    }
+
+
+    // ======================================
+    // NOTHING
+    // ======================================
+
+    else if (
+        reward.type ===
+        "nothing"
+    ) {
+
+        title =
+            reward.title ||
+            "Nothing This Time";
+    }
+
+
+    saveForageResult(
+        title,
+        text,
+        icon
+    );
+}
+
+
+// ==========================================
+// SAVE FORAGE RESULT
+// ==========================================
+
+function saveForageResult(
+    title,
+    text,
+    icon
+) {
+
+    game.forage.lastResult = {
+
+        title:
+            title,
+
+        text:
+            text,
+
+        icon:
+            icon,
+
+        foundAt:
+            Date.now()
+
+    };
+}
+
+
+// ==========================================
+// SHOW FORAGE MESSAGE
+// ==========================================
+
+function showForageMessage(
+    title,
+    text,
+    icon
+) {
+
+    game.forage.lastResult = {
+
+        title:
+            title,
+
+        text:
+            text,
+
+        icon:
+            icon,
+
+        foundAt:
+            Date.now()
+
+    };
+
+
+    saveGame();
+
+    renderForageResult();
+}
+
+
+// ==========================================
+// FORMAT COUNTDOWN
+// ==========================================
+
+function formatForageTime(milliseconds) {
+
+    const totalSeconds =
+        Math.max(
+            0,
+            Math.ceil(
+                milliseconds /
+                1000
+            )
+        );
+
+
+    const minutes =
+        Math.floor(
+            totalSeconds /
+            60
+        );
+
+
+    const seconds =
+        totalSeconds %
+        60;
+
+
+    return (
+        String(minutes)
+            .padStart(2, "0")
+        +
+        ":"
+        +
+        String(seconds)
+            .padStart(2, "0")
+    );
+}
+
+
+// ==========================================
+// LOCATION REQUIREMENT TEXT
+// ==========================================
+
+function getLocationRequirementText(
+    location
+) {
+
+    if (
+        location.requirementHidden
+    ) {
+
+        return "🔒 Requirement Unknown";
+    }
+
+
+    const requirements =
+        [];
+
+
+    if (
+        location.discoveryRequirement
+    ) {
+
+        requirements.push(
+            `Discover ${
+                location.discoveryRequirementName ||
+                location.discoveryRequirement
+            }`
+        );
+    }
+
+
+    if (
+        location.unlockCost
+    ) {
+
+        requirements.push(
+            `${location.unlockCost} coins`
+        );
+    }
+
+
+    if (
+        requirements.length === 0
+    ) {
+
+        return "🔒 Locked";
+    }
+
+
+    return (
+        "🔒 " +
+        requirements.join(" + ")
+    );
+}
+
+
+// ==========================================
+// CREATE LOCATION CARD
+// ==========================================
+
+function createLocationCard(location) {
+
+    const unlocked =
+        isLocationUnlocked(
+            location.id
+        );
+
+
+    const card =
+        document.createElement(
+            "article"
+        );
+
+
+    card.className =
+        `forage-location ${
+            unlocked
+                ? "available"
+                : "locked"
+        }`;
+
+
+    const statusText =
+        unlocked
+            ? "AVAILABLE"
+            : "LOCKED";
+
+
+    const typeText =
+        unlocked
+            ? location.type
+            : (
+                location.unlockedByDefault
+                    ? location.type
+                    : "UNKNOWN REGION"
+            );
+
+
+    const detailText =
+        unlocked
+            ? `✦ ${location.findLabel}`
+            : getLocationRequirementText(
+                location
+            );
+
+
+    const seconds =
+        Math.round(
+            location.duration /
+            1000
+        );
+
+
+    card.innerHTML = `
+
+        <div class="location-art">
+
+            <span class="location-symbol">
+                ${location.icon}
+            </span>
+
+            <span class="location-status">
+                ${statusText}
+            </span>
+
+        </div>
+
+
+        <div class="location-content">
+
+            <span class="card-label">
+                ${typeText}
+            </span>
+
+            <h4>
+                ${location.name}
+            </h4>
+
+            <p>
+                ${location.description}
+            </p>
+
+
+            <div class="location-details">
+
+                ${
+                    unlocked
+                        ? `
+                            <span>
+                                ⏱ ${seconds} seconds
+                            </span>
+                        `
+                        : ""
+                }
+
+                <span>
+                    ${detailText}
+                </span>
+
             </div>
-
-
-            ${normalSeedChoices}
-
-            ${mysterySeedChoice}
-
-
-            <button
-                class="seed-menu-cancel"
-                onclick="closeSeedMenu()">
-
-                Cancel
-
-            </button>
 
         </div>
 
     `;
 
+
+    const content =
+        card.querySelector(
+            ".location-content"
+        );
+
+
+    const button =
+        document.createElement(
+            "button"
+        );
+
+
+    button.className =
+        "forage-button";
+
+
+    // ======================================
+    // UNLOCKED LOCATION
+    // ======================================
+
+    if (unlocked) {
+
+        button.disabled =
+            game.forage.active;
+
+
+        button.textContent =
+            game.forage.active
+                ? "Familiar Away"
+                : "Send Familiar";
+
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                startForage(
+                    location.id
+                );
+            }
+        );
+    }
+
+
+    // ======================================
+    // SECRET LOCATION
+    // ======================================
+
+    else if (
+        location.requirementHidden
+    ) {
+
+        button.disabled =
+            true;
+
+        button.textContent =
+            "Locked";
+    }
+
+
+    // ======================================
+    // DISCOVERY REQUIREMENT NOT MET
+    // ======================================
+
+    else if (
+        !meetsLocationRequirement(
+            location
+        )
+    ) {
+
+        button.disabled =
+            true;
+
+        button.textContent =
+            "Locked";
+    }
+
+
+    // ======================================
+    // CAN PURCHASE LOCATION
+    // ======================================
+
+    else {
+
+        button.disabled =
+            game.forage.active;
+
+
+        button.textContent =
+            `Unlock — 🪙 ${location.unlockCost}`;
+
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                unlockForageLocation(
+                    location.id
+                );
+            }
+        );
+    }
+
+
+    content.appendChild(
+        button
+    );
+
+
+    return card;
 }
 
 
 // ==========================================
-// RENDER PLOTS
+// RENDER LOCATIONS
 // ==========================================
 
-function renderGreenhousePlots() {
+function renderLocations() {
 
-    const container =
+    const grid =
         document.getElementById(
-            "plots"
+            "forageLocationGrid"
         );
 
 
-    if (!container) {
-
+    if (!grid) {
         return;
-
     }
 
 
-    container.innerHTML =
+    grid.innerHTML =
         "";
 
 
-    game.greenhouse.plots.forEach(
-        (plot, index) => {
-
-            const card =
-                document.createElement(
-                    "div"
-                );
-
-
-            card.className =
-                "plot";
-
-
-            // ==================================
-            // EMPTY PLOT
-            // ==================================
-
-            if (!plot) {
-
-                let actions;
-
-
-                if (
-                    selectedPlantPlot ===
-                    index
-                ) {
-
-                    actions =
-                        getSeedMenuHTML(
-                            index
-                        );
-
-                }
-
-                else {
-
-                    actions = `
-
-                        <button
-                            class="game-button"
-                            onclick="openSeedMenu(${index})">
-
-                            Choose Plant
-
-                        </button>
-
-                    `;
-
-                }
-
-
-                card.innerHTML = `
-
-                    <div class="plot-content">
-
-                        <div class="plot-number">
-                            PLOT ${index + 1}
-                        </div>
-
-
-                        <div class="plant-icon">
-                            ◌
-                        </div>
-
-
-                        <h4>
-                            Empty Plot
-                        </h4>
-
-
-                        <div class="plot-status">
-                            Rich soil waits beneath the glass.
-                        </div>
-
-                    </div>
-
-
-                    <div class="plot-actions">
-
-                        ${actions}
-
-                    </div>
-
-                `;
-
-
-                container.appendChild(
-                    card
-                );
-
-
-                return;
-
-            }
-
-
-            // ==================================
-            // ACTIVE PLANT
-            // ==================================
-
-            const progress =
-                getGrowthProgress(
-                    plot
-                );
-
-
-            const dry =
-                isPlantDry(
-                    plot
-                );
-
-
-            const icon =
-                getGreenhousePlantIcon(
-                    plot,
-                    progress
-                );
-
-
-            const plantName =
-                getGreenhousePlantName(
-                    plot
-                );
-
-
-            let status =
-                formatGrowthTime(
-                    plot
-                );
-
-
-            if (
-                dry &&
-                progress < 100
-            ) {
-
-                status =
-                    "Soil is dry • "
-                    + status;
-
-            }
-
-
-            let actionButton;
-
-
-            // ----------------------------------
-            // READY TO HARVEST
-            // ----------------------------------
-
-            if (
-                progress >= 100
-            ) {
-
-                actionButton = `
-
-                    <button
-                        class="game-button"
-                        onclick="harvestPlant(${index})">
-
-                        Harvest
-
-                    </button>
-
-                `;
-
-            }
-
-
-            // ----------------------------------
-            // STILL GROWING
-            // ----------------------------------
-
-            else {
-
-                actionButton = `
-
-                    <button
-                        class="game-button secondary"
-                        onclick="waterPlant(${index})"
-                        ${dry ? "" : "disabled"}>
-
-                        ${
-                            dry
-                                ? "Water Plant"
-                                : "Soil Moist"
-                        }
-
-                    </button>
-
-                `;
-
-            }
-
-
-            card.innerHTML = `
-
-                <div class="plot-content">
-
-                    <div class="plot-number">
-                        PLOT ${index + 1}
-                    </div>
-
-
-                    <div class="plant-icon">
-                        ${icon}
-                    </div>
-
-
-                    <h4>
-                        ${plantName}
-                    </h4>
-
-
-                    <div class="plot-status">
-                        ${status}
-                    </div>
-
-
-                    <div class="progress-track">
-
-                        <div
-                            class="progress-bar"
-                            style="
-                                width:
-                                ${progress}%;
-                            ">
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="plot-actions">
-
-                    ${actionButton}
-
-                </div>
-
-            `;
-
-
-            container.appendChild(
-                card
+    Object.values(
+        FORAGE_LOCATION_DATA
+    ).forEach(
+        location => {
+
+            grid.appendChild(
+                createLocationCard(
+                    location
+                )
             );
-
         }
     );
-
 }
 
 
 // ==========================================
-// GREENHOUSE INFORMATION
+// RENDER FAMILIAR
 // ==========================================
 
-function renderGreenhouseInfo() {
+function renderFamiliar() {
 
-    const seedElement =
+    const status =
         document.getElementById(
-            "moonmintSeeds"
+            "familiarStatus"
         );
 
 
-    if (seedElement) {
-
-        seedElement.textContent =
-            getSeedAmount(
-                "moonmint"
-            );
-
-    }
-
-
-    const inventoryElement =
+    const state =
         document.getElementById(
-            "moonmintInventory"
+            "familiarState"
         );
 
 
-    if (inventoryElement) {
+    if (game.forage.active) {
 
-        inventoryElement.textContent =
-            getIngredientAmount(
-                "moonmint"
-            );
+        if (status) {
 
+            status.textContent =
+                `Your familiar is exploring ${game.forage.location}.`;
+        }
+
+
+        if (state) {
+
+            state.textContent =
+                "FORAGING";
+        }
     }
 
+    else {
 
-    const levelElement =
-        document.getElementById(
-            "greenhouseLevel"
-        );
+        if (status) {
+
+            status.textContent =
+                "Your familiar waits patiently for somewhere to explore.";
+        }
 
 
-    if (levelElement) {
+        if (state) {
 
-        levelElement.textContent =
-            game.greenhouse.level;
-
+            state.textContent =
+                "READY";
+        }
     }
-
 }
 
 
 // ==========================================
-// RENDER GREENHOUSE
+// RENDER ACTIVE SEARCH
 // ==========================================
 
-function renderGreenhouse() {
+function renderActiveForaging() {
 
-    applyGreenhouseExpansion();
+    const button =
+        document.getElementById(
+            "activeForageButton"
+        );
+
+
+    const help =
+        document.getElementById(
+            "activeForageHelp"
+        );
+
+
+    if (!button) {
+        return;
+    }
+
+
+    if (!game.forage.active) {
+
+        button.disabled =
+            true;
+
+        button.textContent =
+            "Search the Path";
+
+
+        if (help) {
+
+            help.textContent =
+                "Begin an expedition to actively help your familiar search.";
+        }
+
+        return;
+    }
+
+
+    button.disabled =
+        false;
+
+    button.textContent =
+        "Search the Path";
+
+
+    if (help) {
+
+        help.textContent =
+            "Click to help your familiar search faster. Each search advances the expedition by 1 second.";
+    }
+}
+
+
+// ==========================================
+// RENDER EXPEDITION PROGRESS
+// ==========================================
+
+function renderForageProgress() {
+
+    const title =
+        document.getElementById(
+            "forageProgressTitle"
+        );
+
+
+    const text =
+        document.getElementById(
+            "forageProgressText"
+        );
+
+
+    const timer =
+        document.getElementById(
+            "forageTimer"
+        );
+
+
+    const progressBar =
+        document.getElementById(
+            "forageProgressBar"
+        );
+
+
+    if (!game.forage.active) {
+
+        if (title) {
+
+            title.textContent =
+                "No Active Forage";
+        }
+
+
+        if (text) {
+
+            text.textContent =
+                "Send your familiar somewhere to begin searching.";
+        }
+
+
+        if (timer) {
+
+            timer.textContent =
+                "--:--";
+        }
+
+
+        if (progressBar) {
+
+            progressBar.style.width =
+                "0%";
+        }
+
+        return;
+    }
+
+
+    const location =
+        getForageLocationData(
+            game.forage.locationId
+        );
+
+
+    const now =
+        Date.now();
+
+
+    const remaining =
+        Math.max(
+            0,
+            game.forage.finishesAt -
+            now
+        );
+
+
+    const totalTime =
+        location
+            ? location.duration
+            : (
+                game.forage.finishesAt -
+                game.forage.startedAt
+            );
+
+
+    const progress =
+        Math.min(
+            100,
+            Math.max(
+                0,
+                (
+                    1 -
+                    (
+                        remaining /
+                        totalTime
+                    )
+                ) * 100
+            )
+        );
+
+
+    if (title) {
+
+        title.textContent =
+            game.forage.location;
+    }
+
+
+    if (text) {
+
+        text.textContent =
+            location
+                ? location.activeText
+                : "Your familiar is searching the wilds.";
+    }
+
+
+    if (timer) {
+
+        timer.textContent =
+            formatForageTime(
+                remaining
+            );
+    }
+
+
+    if (progressBar) {
+
+        progressBar.style.width =
+            `${progress}%`;
+    }
+}
+
+
+// ==========================================
+// RENDER FORAGING JOURNAL
+// ==========================================
+
+function renderForageResult() {
+
+    const result =
+        document.getElementById(
+            "forageResult"
+        );
+
+
+    if (
+        !result ||
+        !game.forage.lastResult
+    ) {
+
+        return;
+    }
+
+
+    const lastResult =
+        game.forage.lastResult;
+
+
+    result.innerHTML = `
+
+        <span class="forage-result-icon">
+            ${lastResult.icon}
+        </span>
+
+        <div>
+
+            <span class="card-label">
+                FORAGING JOURNAL
+            </span>
+
+            <h3>
+                ${lastResult.title}
+            </h3>
+
+            <p>
+                ${lastResult.text}
+            </p>
+
+        </div>
+
+    `;
+}
+
+
+// ==========================================
+// RENDER FORAGE PAGE
+// ==========================================
+
+function renderForage() {
 
     updateResourceBar();
 
-    renderGreenhouseInfo();
+    renderLocations();
 
-    renderGreenhousePlots();
+    renderFamiliar();
 
+    renderForageProgress();
+
+    renderActiveForaging();
+
+    renderForageResult();
 }
 
 
 // ==========================================
-// GAME LOOP
+// ACTIVE SEARCH BUTTON
 // ==========================================
 
-renderGreenhouse();
+const activeForageButton =
+    document.getElementById(
+        "activeForageButton"
+    );
 
+
+if (activeForageButton) {
+
+    activeForageButton.addEventListener(
+        "click",
+        activeForageClick
+    );
+}
+
+
+// ==========================================
+// UPDATE FORAGE
+// ==========================================
+
+function updateForage() {
+
+    if (
+        game.forage.active &&
+        Date.now() >=
+        game.forage.finishesAt
+    ) {
+
+        completeForage();
+
+        return;
+    }
+
+
+    renderForage();
+}
+
+
+// ==========================================
+// START PAGE
+// ==========================================
+
+updateForage();
+
+
+// ==========================================
+// TIMER
+// ==========================================
 
 setInterval(
-    function () {
-
-        renderGreenhouse();
-
-        saveGame();
-
-    },
-
+    updateForage,
     1000
 );
