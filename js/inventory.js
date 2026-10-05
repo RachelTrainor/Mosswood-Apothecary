@@ -1,7 +1,7 @@
 // ==========================================
 // MOSSWOOD APOTHECARY
-// Inventory V3
-// Dynamic Inventory System
+// Inventory V4
+// Dynamic Planting Materials
 // ==========================================
 
 
@@ -88,7 +88,7 @@ function getInventoryTotal() {
 
 
     // --------------------------------------
-    // NORMAL SEEDS
+    // PLANTING MATERIALS
     // --------------------------------------
 
     Object.values(
@@ -289,7 +289,7 @@ function renderIngredients() {
 
 
 // ==========================================
-// RENDER SEEDS
+// RENDER PLANTING MATERIALS
 // ==========================================
 
 function renderSeeds() {
@@ -311,7 +311,7 @@ function renderSeeds() {
 
 
     // --------------------------------------
-    // NORMAL PLANT SEEDS
+    // KNOWN PLANTING MATERIALS
     // --------------------------------------
 
     Object.values(
@@ -332,19 +332,40 @@ function renderSeeds() {
                     );
 
 
+                const plantingName =
+                    getPlantingItemName(
+                        plant.id,
+                        amount === 1
+                            ? 1
+                            : 2
+                    );
+
+
+                const plantingType =
+                    getPlantingItemGenericName(
+                        plant.id,
+                        1
+                    );
+
+
+                const plantingIcon =
+                    getPlantingItemIcon(
+                        plant.id
+                    );
+
+
                 const description =
-                    `Seeds from ${plant.name}, ready to be planted in the greenhouse.`;
+                    `${plantingName} from ${plant.name}, ready to be planted in the greenhouse.`;
 
 
                 const card =
                     createInventoryCard(
 
-                        plant.seedIcon ||
-                        "🌱",
+                        plantingIcon,
 
-                        "KNOWN SEED",
+                        `KNOWN ${plantingType.toUpperCase()}`,
 
-                        `${plant.name} Seeds`,
+                        plantingName,
 
                         description,
 
