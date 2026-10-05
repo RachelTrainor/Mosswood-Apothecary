@@ -80,12 +80,14 @@ function createNavigation() {
             </span>
 
 
-            <span
-                class="nav-button nav-disabled">
+            <a
+    class="nav-button nav-link
+    ${currentPage === "grimoire.html" ? "active" : ""}"
+    href="grimoire.html">
 
-                📖 Grimoire
+    📖 Grimoire
 
-            </span>
+</a>
 
 
             <span
