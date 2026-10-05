@@ -1,52 +1,12 @@
 // ==========================================
 // MOSSWOOD APOTHECARY
 // Foraging V4
-// Location Progression + Active Foraging
+// Data-Driven Locations + Active Foraging
 // ==========================================
 
 
 // ==========================================
-// FORAGING SETTINGS
-// ==========================================
-
-const FORAGE_SETTINGS = {
-
-    forest: {
-        time: 30 * 1000
-    },
-
-    marsh: {
-        time: 45 * 1000
-    },
-
-    ruins: {
-        time: 60 * 1000
-    }
-
-};
-
-
-// ==========================================
-// LOCATION UNLOCK COSTS
-// ==========================================
-
-const MARSH_UNLOCK_COST =
-    500;
-
-
-// ==========================================
-// ACTIVE FORAGING
-// ==========================================
-
-// Each click removes one second
-// from the remaining expedition time.
-
-const ACTIVE_FORAGE_BOOST =
-    1000;
-
-
-// ==========================================
-// FORAGE SAVE MIGRATION
+// FORAGE SAVE SETUP / MIGRATION
 // ==========================================
 
 if (!game.forage) {
@@ -54,17 +14,11 @@ if (!game.forage) {
     game.forage = {
 
         active: false,
-
         location: null,
-
         locationId: null,
-
         startedAt: null,
-
         finishesAt: null,
-
         lastResult: null,
-
         unlockedLocations: [
             "forest"
         ]
@@ -76,9 +30,9 @@ if (!game.forage) {
 }
 
 
-// ==========================================
-// UPDATE OLDER FORAGE SAVES
-// ==========================================
+// ------------------------------------------
+// OLDER SAVE SUPPORT
+// ------------------------------------------
 
 if (
     game.forage.lastResult ===
@@ -108,31 +62,43 @@ if (
     )
 ) {
 
-    game.forage.unlockedLocations = [
-        "forest"
-    ];
+    game.forage.unlockedLocations =
+        [];
 
 }
 
 
-if (
-    !game.forage.unlockedLocations.includes(
-        "forest"
-    )
-) {
+// ------------------------------------------
+// ADD DEFAULT LOCATIONS
+// ------------------------------------------
 
-    game.forage.unlockedLocations.push(
-        "forest"
-    );
+Object.values(
+    FORAGE_LOCATION_DATA
+).forEach(
+    location => {
 
-}
+        if (
+            location.unlockedByDefault &&
+            !game.forage.unlockedLocations.includes(
+                location.id
+            )
+        ) {
+
+            game.forage.unlockedLocations.push(
+                location.id
+            );
+
+        }
+
+    }
+);
 
 
 saveGame();
 
 
 // ==========================================
-// LOCATION HELPERS
+// LOCATION UNLOCK CHECK
 // ==========================================
 
 function isLocationUnlocked(
@@ -149,14 +115,47 @@ function isLocationUnlocked(
 
 
 // ==========================================
-// UNLOCK MARSH
+// LOCATION REQUIREMENT CHECK
 // ==========================================
 
-function unlockMarsh() {
+function meetsLocationRequirement(
+    location
+) {
 
     if (
+        !location.discoveryRequirement
+    ) {
+
+        return true;
+
+    }
+
+
+    return hasDiscovered(
+        location.discoveryRequirement
+    );
+
+}
+
+
+// ==========================================
+// UNLOCK LOCATION
+// ==========================================
+
+function unlockForageLocation(
+    locationId
+) {
+
+    const location =
+        getForageLocationData(
+            locationId
+        );
+
+
+    if (
+        !location ||
         isLocationUnlocked(
-            "marsh"
+            locationId
         )
     ) {
 
@@ -166,19 +165,37 @@ function unlockMarsh() {
 
 
     // --------------------------------------
-    // NIGHTBELL REQUIREMENT
+    // HIDDEN / FUTURE LOCATION
     // --------------------------------------
 
     if (
-        !hasDiscovered(
-            "nightbell"
+        location.requirementHidden
+    ) {
+
+        return;
+
+    }
+
+
+    // --------------------------------------
+    // DISCOVERY REQUIREMENT
+    // --------------------------------------
+
+    if (
+        !meetsLocationRequirement(
+            location
         )
     ) {
 
+        const requirementName =
+            location.discoveryRequirementName ||
+            "the required botanical";
+
+
         showForageMessage(
             "Path Still Hidden",
-            "Discover Nightbell before attempting to travel deeper into Mosswood.",
-            "🌫️"
+            `Discover ${requirementName} before attempting to travel deeper into Mosswood.`,
+            location.icon
         );
 
         return;
@@ -190,14 +207,19 @@ function unlockMarsh() {
     // COIN REQUIREMENT
     // --------------------------------------
 
+    const cost =
+        location.unlockCost ||
+        0;
+
+
     if (
         game.coins <
-        MARSH_UNLOCK_COST
+        cost
     ) {
 
         showForageMessage(
             "Not Enough Coins",
-            `Opening the route to Mistfen Marsh requires ${MARSH_UNLOCK_COST} coins.`,
+            `Opening the route to ${location.name} requires ${cost} coins.`,
             "🪙"
         );
 
@@ -211,17 +233,17 @@ function unlockMarsh() {
     // --------------------------------------
 
     game.coins -=
-        MARSH_UNLOCK_COST;
+        cost;
 
 
     // --------------------------------------
-    // UNLOCK
+    // UNLOCK LOCATION
     // --------------------------------------
 
     game.forage
         .unlockedLocations
         .push(
-            "marsh"
+            locationId
         );
 
 
@@ -233,9 +255,9 @@ function unlockMarsh() {
 
 
     showForageMessage(
-        "Mistfen Marsh Unlocked",
-        "A narrow path through the fog has been cleared. Your familiar can now explore Mistfen Marsh.",
-        "🌫️"
+        `${location.name} Unlocked`,
+        `A new route has opened. Your familiar can now explore ${location.name}.`,
+        location.icon
     );
 
 }
@@ -275,16 +297,7 @@ function startForage(
         );
 
 
-    const settings =
-        FORAGE_SETTINGS[
-            locationId
-        ];
-
-
-    if (
-        !location ||
-        !settings
-    ) {
+    if (!location) {
 
         return;
 
@@ -313,7 +326,7 @@ function startForage(
 
     game.forage.finishesAt =
         now +
-        settings.time;
+        location.duration;
 
 
     saveGame();
@@ -339,15 +352,15 @@ function activeForageClick() {
 
 
     // --------------------------------------
-    // REDUCE REMAINING TIME
+    // REMOVE TIME FROM EXPEDITION
     // --------------------------------------
 
     game.forage.finishesAt -=
-        ACTIVE_FORAGE_BOOST;
+        FORAGE_ACTIVE_CLICK_BOOST;
 
 
     // --------------------------------------
-    // CHECK FOR COMPLETION
+    // COMPLETE IMMEDIATELY IF FINISHED
     // --------------------------------------
 
     if (
@@ -362,16 +375,7 @@ function activeForageClick() {
     }
 
 
-    // --------------------------------------
-    // SAVE NEW FINISH TIME
-    // --------------------------------------
-
     saveGame();
-
-
-    // --------------------------------------
-    // UPDATE PROGRESS IMMEDIATELY
-    // --------------------------------------
 
     renderForageProgress();
 
@@ -408,24 +412,9 @@ function completeForage() {
         "forest";
 
 
-    // --------------------------------------
-    // CHOOSE REWARD TABLE
-    // --------------------------------------
-
-    if (
-        locationId ===
-        "marsh"
-    ) {
-
-        completeMarshForage();
-
-    }
-
-    else {
-
-        completeForestForage();
-
-    }
+    rollForageReward(
+        locationId
+    );
 
 
     // --------------------------------------
@@ -462,303 +451,253 @@ function completeForage() {
 
 
 // ==========================================
-// FOREST REWARDS
+// RANDOM INTEGER
 // ==========================================
 
-function completeForestForage() {
+function getRandomAmount(
+    minimum,
+    maximum
+) {
 
-    const roll =
-        Math.random();
-
-
-    let title =
-        "";
-
-
-    let text =
-        "";
-
-
-    let icon =
-        "🌿";
-
-
-    // ======================================
-    // 45% - MOONMINT
-    // ======================================
-
-    if (
-        roll < 0.45
-    ) {
-
-        const amount =
-            Math.floor(
-                Math.random() * 2
-            ) + 1;
-
-
-        addIngredient(
-            "moonmint",
-            amount
-        );
-
-
-        title =
-            `Found ${amount} Moonmint`;
-
-
-        text =
-            "Your familiar returned carrying fresh Moonmint gathered beneath the forest canopy.";
-
-
-        icon =
-            "🌿";
-
-    }
-
-
-    // ======================================
-    // 30% - MOONMINT SEEDS
-    // ======================================
-
-    else if (
-        roll < 0.75
-    ) {
-
-        const amount =
-            Math.floor(
-                Math.random() * 2
-            ) + 1;
-
-
-        addSeeds(
-            "moonmint",
-            amount
-        );
-
-
-        title =
-            `Found ${amount} Moonmint Seed${amount === 1 ? "" : "s"}`;
-
-
-        text =
-            "A few small seeds were discovered tangled among the moss.";
-
-
-        icon =
-            "🌱";
-
-    }
-
-
-    // ======================================
-    // 17% - STRANGE SEED
-    // ======================================
-
-    else if (
-        roll < 0.92
-    ) {
-
-        addMysterySeed(
-            "nightbell"
-        );
-
-
-        title =
-            "Found a Strange Seed";
-
-
-        text =
-            "Your familiar returned with a dark, unfamiliar seed. Whatever it grows into remains a mystery.";
-
-
-        icon =
-            "✦";
-
-    }
-
-
-    // ======================================
-    // 8% - NOTHING
-    // ======================================
-
-    else {
-
-        title =
-            "Nothing This Time";
-
-
-        text =
-            "Your familiar returned empty-pawed, though perhaps the forest will be more generous next time.";
-
-
-        icon =
-            "🐈‍⬛";
-
-    }
-
-
-    saveForageResult(
-        title,
-        text,
-        icon
+    return (
+        Math.floor(
+            Math.random() *
+            (
+                maximum -
+                minimum +
+                1
+            )
+        ) +
+        minimum
     );
 
 }
 
 
 // ==========================================
-// MARSH REWARDS
+// ROLL FORAGE REWARD
 // ==========================================
 
-function completeMarshForage() {
+function rollForageReward(
+    locationId
+) {
+
+    const rewards =
+        getForageRewardTable(
+            locationId
+        );
+
+
+    if (
+        !rewards ||
+        rewards.length === 0
+    ) {
+
+        saveForageResult(
+            "Nothing This Time",
+            "Your familiar returned without finding anything useful.",
+            "🐈‍⬛"
+        );
+
+        return;
+
+    }
+
 
     const roll =
         Math.random();
 
 
+    let cumulativeChance =
+        0;
+
+
+    let selectedReward =
+        rewards[
+            rewards.length - 1
+        ];
+
+
+    for (
+        const reward
+        of rewards
+    ) {
+
+        cumulativeChance +=
+            reward.chance;
+
+
+        if (
+            roll <
+            cumulativeChance
+        ) {
+
+            selectedReward =
+                reward;
+
+            break;
+
+        }
+
+    }
+
+
+    giveForageReward(
+        selectedReward
+    );
+
+}
+
+
+// ==========================================
+// GIVE FORAGE REWARD
+// ==========================================
+
+function giveForageReward(
+    reward
+) {
+
+    const minimum =
+        reward.minAmount ||
+        1;
+
+
+    const maximum =
+        reward.maxAmount ||
+        minimum;
+
+
+    const amount =
+        getRandomAmount(
+            minimum,
+            maximum
+        );
+
+
     let title =
+        reward.title ||
         "";
 
 
-    let text =
-        "";
-
-
-    let icon =
-        "🌫️";
-
-
     // ======================================
-    // TEMPORARY MARSH LOOT TABLE
-    // ======================================
-    //
-    // No new botanical yet.
-    // This can later award a new
-    // mystery seed species.
-    // ======================================
-
-
-    // ======================================
-    // 40% - MOONMINT
+    // INGREDIENT
     // ======================================
 
     if (
-        roll < 0.40
+        reward.type ===
+        "ingredient"
     ) {
 
-        const amount =
-            Math.floor(
-                Math.random() * 2
-            ) + 2;
-
-
         addIngredient(
-            "moonmint",
+            reward.itemId,
             amount
         );
 
 
+        const plant =
+            getPlantData(
+                reward.itemId
+            );
+
+
+        const plantName =
+            plant
+                ? plant.name
+                : "Ingredient";
+
+
         title =
-            `Found ${amount} Moonmint`;
-
-
-        text =
-            "Your familiar found Moonmint growing thickly along the damp edges of the marsh.";
-
-
-        icon =
-            "🌿";
+            `Found ${amount} ${plantName}`;
 
     }
 
 
     // ======================================
-    // 30% - NIGHTBELL
+    // NORMAL SEED
     // ======================================
 
     else if (
-        roll < 0.70
-    ) {
-
-        const amount =
-            Math.floor(
-                Math.random() * 2
-            ) + 1;
-
-
-        addIngredient(
-            "nightbell",
-            amount
-        );
-
-
-        title =
-            `Found ${amount} Nightbell`;
-
-
-        text =
-            "A cluster of Nightbell was discovered among the mist-covered reeds.";
-
-
-        icon =
-            "🪻";
-
-    }
-
-
-    // ======================================
-    // 20% - NIGHTBELL SEED
-    // ======================================
-
-    else if (
-        roll < 0.90
+        reward.type ===
+        "seed"
     ) {
 
         addSeeds(
-            "nightbell",
-            1
+            reward.itemId,
+            amount
         );
 
 
+        const plant =
+            getPlantData(
+                reward.itemId
+            );
+
+
+        const plantName =
+            plant
+                ? plant.name
+                : "Plant";
+
+
         title =
-            "Found a Nightbell Seed";
-
-
-        text =
-            "Your familiar returned with a Nightbell seed caught carefully between its paws.";
-
-
-        icon =
-            "🪻";
+            `Found ${amount} ${plantName} Seed${amount === 1 ? "" : "s"}`;
 
     }
 
 
     // ======================================
-    // 10% - NOTHING
+    // MYSTERY SEED
     // ======================================
 
-    else {
+    else if (
+        reward.type ===
+        "mysterySeed"
+    ) {
+
+        for (
+            let i = 0;
+            i < amount;
+            i++
+        ) {
+
+            addMysterySeed(
+                reward.revealsPlant
+            );
+
+        }
+
 
         title =
-            "Lost in the Mist";
+            reward.title ||
+            (
+                amount === 1
+                    ? "Found a Strange Seed"
+                    : `Found ${amount} Strange Seeds`
+            );
+
+    }
 
 
-        text =
-            "The marsh gave up no treasures this time. Your familiar returned damp, annoyed, and empty-pawed.";
+    // ======================================
+    // NOTHING
+    // ======================================
 
+    else if (
+        reward.type ===
+        "nothing"
+    ) {
 
-        icon =
-            "🐈‍⬛";
+        title =
+            reward.title ||
+            "Nothing This Time";
 
     }
 
 
     saveForageResult(
         title,
-        text,
-        icon
+        reward.text,
+        reward.icon
     );
 
 }
@@ -860,21 +799,84 @@ function formatForageTime(
     return (
         String(
             minutes
+        ).padStart(
+            2,
+            "0"
         )
-            .padStart(
-                2,
-                "0"
-            )
         +
         ":"
         +
         String(
             seconds
+        ).padStart(
+            2,
+            "0"
         )
-            .padStart(
-                2,
-                "0"
-            )
+    );
+
+}
+
+
+// ==========================================
+// LOCATION REQUIREMENT TEXT
+// ==========================================
+
+function getLocationRequirementText(
+    location
+) {
+
+    if (
+        location.requirementHidden
+    ) {
+
+        return "🔒 Requirement Unknown";
+
+    }
+
+
+    const requirements =
+        [];
+
+
+    if (
+        location.discoveryRequirement
+    ) {
+
+        requirements.push(
+            `Discover ${
+                location.discoveryRequirementName ||
+                location.discoveryRequirement
+            }`
+        );
+
+    }
+
+
+    if (
+        location.unlockCost
+    ) {
+
+        requirements.push(
+            `${location.unlockCost} coins`
+        );
+
+    }
+
+
+    if (
+        requirements.length === 0
+    ) {
+
+        return "🔒 Locked";
+
+    }
+
+
+    return (
+        "🔒 " +
+        requirements.join(
+            " + "
+        )
     );
 
 }
@@ -885,25 +887,12 @@ function formatForageTime(
 // ==========================================
 
 function createLocationCard(
-    locationId
+    location
 ) {
-
-    const location =
-        getForageLocationData(
-            locationId
-        );
-
-
-    if (!location) {
-
-        return null;
-
-    }
-
 
     const unlocked =
         isLocationUnlocked(
-            locationId
+            location.id
         );
 
 
@@ -921,94 +910,35 @@ function createLocationCard(
         }`;
 
 
-    // --------------------------------------
-    // FOREST
-    // --------------------------------------
-
-    let symbol =
-        "🌲";
+    const statusText =
+        unlocked
+            ? "AVAILABLE"
+            : "LOCKED";
 
 
-    let type =
-        "FOREST";
+    const typeText =
+        unlocked
+            ? location.type
+            : (
+                location.unlockedByDefault
+                    ? location.type
+                    : "UNKNOWN REGION"
+            );
 
 
-    let description =
-        "A shadowed woodland filled with moss, old trees, and plants that thrive far from the greenhouse.";
-
-
-    let detail =
-        "✦ Common Finds";
-
-
-    // --------------------------------------
-    // MARSH
-    // --------------------------------------
-
-    if (
-        locationId ===
-        "marsh"
-    ) {
-
-        symbol =
-            "🌫️";
-
-
-        type =
-            unlocked
-                ? "MARSH"
-                : "UNKNOWN REGION";
-
-
-        description =
-            "Pale lights drift through the reeds. Something unusual grows beneath the mist.";
-
-
-        detail =
-            unlocked
-                ? "✦ Uncommon Finds"
-                : `🔒 Discover Nightbell + ${MARSH_UNLOCK_COST} coins`;
-
-    }
-
-
-    // --------------------------------------
-    // RUINS
-    // --------------------------------------
-
-    if (
-        locationId ===
-        "ruins"
-    ) {
-
-        symbol =
-            "🕯️";
-
-
-        type =
-            "UNKNOWN REGION";
-
-
-        description =
-            "Crumbling stone lies hidden beneath vines and roots. Few paths still lead there.";
-
-
-        detail =
-            "🔒 Requirement Unknown";
-
-    }
-
-
-    const settings =
-        FORAGE_SETTINGS[
-            locationId
-        ];
+    const detailText =
+        unlocked
+            ? `✦ ${location.findLabel}`
+            : getLocationRequirementText(
+                location
+            );
 
 
     const seconds =
-        settings
-            ? settings.time / 1000
-            : 0;
+        Math.round(
+            location.duration /
+            1000
+        );
 
 
     card.innerHTML = `
@@ -1016,15 +946,11 @@ function createLocationCard(
         <div class="location-art">
 
             <span class="location-symbol">
-                ${symbol}
+                ${location.icon}
             </span>
 
             <span class="location-status">
-                ${
-                    unlocked
-                        ? "AVAILABLE"
-                        : "LOCKED"
-                }
+                ${statusText}
             </span>
 
         </div>
@@ -1033,7 +959,7 @@ function createLocationCard(
         <div class="location-content">
 
             <span class="card-label">
-                ${type}
+                ${typeText}
             </span>
 
             <h4>
@@ -1041,7 +967,7 @@ function createLocationCard(
             </h4>
 
             <p>
-                ${description}
+                ${location.description}
             </p>
 
 
@@ -1058,7 +984,7 @@ function createLocationCard(
                 }
 
                 <span>
-                    ${detail}
+                    ${detailText}
                 </span>
 
             </div>
@@ -1084,9 +1010,9 @@ function createLocationCard(
         "forage-button";
 
 
-    // --------------------------------------
-    // AVAILABLE
-    // --------------------------------------
+    // ======================================
+    // UNLOCKED LOCATION
+    // ======================================
 
     if (
         unlocked
@@ -1107,7 +1033,7 @@ function createLocationCard(
             () => {
 
                 startForage(
-                    locationId
+                    location.id
                 );
 
             }
@@ -1116,39 +1042,13 @@ function createLocationCard(
     }
 
 
-    // --------------------------------------
-    // MARSH UNLOCK
-    // --------------------------------------
+    // ======================================
+    // FUTURE / SECRET LOCATION
+    // ======================================
 
     else if (
-        locationId ===
-        "marsh" &&
-        hasDiscovered(
-            "nightbell"
-        )
+        location.requirementHidden
     ) {
-
-        button.disabled =
-            game.forage.active;
-
-
-        button.textContent =
-            `Unlock — 🪙 ${MARSH_UNLOCK_COST}`;
-
-
-        button.addEventListener(
-            "click",
-            unlockMarsh
-        );
-
-    }
-
-
-    // --------------------------------------
-    // LOCKED
-    // --------------------------------------
-
-    else {
 
         button.disabled =
             true;
@@ -1156,6 +1056,54 @@ function createLocationCard(
 
         button.textContent =
             "Locked";
+
+    }
+
+
+    // ======================================
+    // DISCOVERY REQUIREMENT NOT MET
+    // ======================================
+
+    else if (
+        !meetsLocationRequirement(
+            location
+        )
+    ) {
+
+        button.disabled =
+            true;
+
+
+        button.textContent =
+            "Locked";
+
+    }
+
+
+    // ======================================
+    // LOCATION CAN BE PURCHASED
+    // ======================================
+
+    else {
+
+        button.disabled =
+            game.forage.active;
+
+
+        button.textContent =
+            `Unlock — 🪙 ${location.unlockCost}`;
+
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                unlockForageLocation(
+                    location.id
+                );
+
+            }
+        );
 
     }
 
@@ -1193,26 +1141,20 @@ function renderLocations() {
         "";
 
 
-    [
-        "forest",
-        "marsh",
-        "ruins"
-    ].forEach(
-        locationId => {
+    Object.values(
+        FORAGE_LOCATION_DATA
+    ).forEach(
+        location => {
 
             const card =
                 createLocationCard(
-                    locationId
+                    location
                 );
 
 
-            if (card) {
-
-                grid.appendChild(
-                    card
-                );
-
-            }
+            grid.appendChild(
+                card
+            );
 
         }
     );
@@ -1306,10 +1248,6 @@ function renderActiveForaging() {
     }
 
 
-    // --------------------------------------
-    // NO EXPEDITION
-    // --------------------------------------
-
     if (
         !game.forage.active
     ) {
@@ -1334,10 +1272,6 @@ function renderActiveForaging() {
 
     }
 
-
-    // --------------------------------------
-    // ACTIVE EXPEDITION
-    // --------------------------------------
 
     button.disabled =
         false;
@@ -1387,9 +1321,9 @@ function renderForageProgress() {
         );
 
 
-    // --------------------------------------
+    // ======================================
     // NO ACTIVE EXPEDITION
-    // --------------------------------------
+    // ======================================
 
     if (
         !game.forage.active
@@ -1432,27 +1366,18 @@ function renderForageProgress() {
     }
 
 
-    // --------------------------------------
+    // ======================================
     // ACTIVE EXPEDITION
-    // --------------------------------------
+    // ======================================
+
+    const location =
+        getForageLocationData(
+            game.forage.locationId
+        );
+
 
     const now =
         Date.now();
-
-
-    const settings =
-        FORAGE_SETTINGS[
-            game.forage.locationId
-        ];
-
-
-    const totalTime =
-        settings
-            ? settings.time
-            : (
-                game.forage.finishesAt -
-                game.forage.startedAt
-            );
 
 
     const remaining =
@@ -1461,6 +1386,15 @@ function renderForageProgress() {
             game.forage.finishesAt -
             now
         );
+
+
+    const totalTime =
+        location
+            ? location.duration
+            : (
+                game.forage.finishesAt -
+                game.forage.startedAt
+            );
 
 
     const progress =
@@ -1489,22 +1423,10 @@ function renderForageProgress() {
 
     if (text) {
 
-        if (
-            game.forage.locationId ===
-            "marsh"
-        ) {
-
-            text.textContent =
-                "Your familiar disappears into the reeds and pale marsh mist.";
-
-        }
-
-        else {
-
-            text.textContent =
-                "Your familiar is searching the forest floor, roots, and forgotten paths.";
-
-        }
+        text.textContent =
+            location
+                ? location.activeText
+                : "Your familiar is searching the wilds.";
 
     }
 
@@ -1607,7 +1529,7 @@ function renderForage() {
 
 
 // ==========================================
-// ACTIVE FORAGE BUTTON
+// ACTIVE SEARCH BUTTON
 // ==========================================
 
 const activeForageButton =
