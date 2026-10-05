@@ -1,7 +1,7 @@
 // ==========================================
 // MOSSWOOD APOTHECARY
-// Potion Room V2
-// Central Data Integration
+// Potion Room V3
+// Dynamic Ingredient + Recipe System
 // ==========================================
 
 
@@ -9,17 +9,11 @@
 // CURRENT EXPERIMENT
 // ==========================================
 
-// Ingredients placed into the cauldron
-// are stored here temporarily.
-//
-// They are NOT removed from inventory
-// until the player actually brews.
-
 let experiment = [];
 
 
 // ==========================================
-// INGREDIENT DATA HELPERS
+// INGREDIENT DATA
 // ==========================================
 
 function getPotionIngredientData(
@@ -59,14 +53,71 @@ function getPotionIngredientData(
 
 
 // ==========================================
+// CAN USE INGREDIENT
+// ==========================================
+
+function canUsePotionIngredient(
+    plantId
+) {
+
+    const plant =
+        PLANT_DATA[
+            plantId
+        ];
+
+
+    if (!plant) {
+
+        return false;
+
+    }
+
+
+    // Plants that are always known,
+    // such as Moonmint, are always shown.
+
+    if (
+        plant.alwaysKnown
+    ) {
+
+        return true;
+
+    }
+
+
+    // Discovered plants become available
+    // for experimentation.
+
+    if (
+        hasDiscovered(
+            plantId
+        )
+    ) {
+
+        return true;
+
+    }
+
+
+    // Also show an ingredient if the
+    // player already owns some of it.
+
+    return (
+        getIngredientAmount(
+            plantId
+        ) > 0
+    );
+
+}
+
+
+// ==========================================
 // ADD INGREDIENT
 // ==========================================
 
 function addIngredientToExperiment(
     ingredient
 ) {
-
-    // Maximum of three ingredients.
 
     if (
         experiment.length >= 3
@@ -82,8 +133,6 @@ function addIngredientToExperiment(
     }
 
 
-    // Make sure the ingredient exists.
-
     const ingredientInfo =
         getPotionIngredientData(
             ingredient
@@ -97,9 +146,6 @@ function addIngredientToExperiment(
     }
 
 
-    // Count how many of this ingredient
-    // are already in the cauldron.
-
     const selectedAmount =
         experiment.filter(
             item =>
@@ -107,15 +153,11 @@ function addIngredientToExperiment(
         ).length;
 
 
-    // Amount currently owned.
-
     const availableAmount =
         getIngredientAmount(
             ingredient
         );
 
-
-    // Prevent selecting more than owned.
 
     if (
         selectedAmount >=
@@ -262,8 +304,6 @@ function findRecipeByIngredients(
 
 function brewExperiment() {
 
-    // Nothing selected.
-
     if (
         experiment.length === 0
     ) {
@@ -366,7 +406,7 @@ function brewExperiment() {
 
 
     // --------------------------------------
-    // FIND MATCHING RECIPE
+    // FIND RECIPE
     // --------------------------------------
 
     const recipe =
@@ -408,10 +448,6 @@ function brewExperiment() {
 
         if (potion) {
 
-            // ----------------------------------
-            // ADD POTION
-            // ----------------------------------
-
             if (
                 typeof game.potions[
                     potion.id
@@ -429,10 +465,6 @@ function brewExperiment() {
                 potion.id
             ]++;
 
-
-            // ----------------------------------
-            // FIRST DISCOVERY
-            // ----------------------------------
 
             const firstDiscovery =
                 !hasDiscovered(
@@ -455,10 +487,6 @@ function brewExperiment() {
 
             }
 
-
-            // ----------------------------------
-            // ALREADY DISCOVERED
-            // ----------------------------------
 
             else {
 
@@ -509,18 +537,12 @@ function brewExperiment() {
 
 
     // --------------------------------------
-    // SAVE SHARED GAME
+    // SAVE
     // --------------------------------------
 
     saveGame();
 
-
-    // Update resource bar.
-
     updateResourceBar();
-
-
-    // Refresh Potion Room UI.
 
     renderPotionRoom();
 
@@ -638,8 +660,6 @@ function renderExperimentSlots() {
     container.innerHTML = "";
 
 
-    // Three cauldron slots.
-
     for (
         let i = 0;
         i < 3;
@@ -656,53 +676,51 @@ function renderExperimentSlots() {
             experiment[i];
 
 
+        const data =
+            ingredient
+                ? getPotionIngredientData(
+                    ingredient
+                )
+                : null;
+
+
         // ----------------------------------
         // FILLED SLOT
         // ----------------------------------
 
-        if (ingredient) {
+        if (data) {
 
-            const data =
-                getPotionIngredientData(
-                    ingredient
-                );
+            slot.className =
+                "ingredient-slot filled";
 
 
-            if (data) {
+            slot.innerHTML = `
 
-                slot.className =
-                    "ingredient-slot filled";
+                <span class="slot-plant">
+                    ${data.icon}
+                </span>
 
+                <strong>
+                    ${data.name}
+                </strong>
 
-                slot.innerHTML = `
+                <small>
+                    Remove
+                </small>
 
-                    <span class="slot-plant">
-                        ${data.icon}
-                    </span>
-
-                    <strong>
-                        ${data.name}
-                    </strong>
-
-                    <small>
-                        Remove
-                    </small>
-
-                `;
+            `;
 
 
-                slot.addEventListener(
-                    "click",
-                    () => {
+            slot.addEventListener(
+                "click",
+                () => {
 
-                        removeExperimentIngredient(
-                            i
-                        );
+                    removeExperimentIngredient(
+                        i
+                    );
 
-                    }
-                );
-
-            }
+                }
+            );
 
         }
 
@@ -711,12 +729,7 @@ function renderExperimentSlots() {
         // EMPTY SLOT
         // ----------------------------------
 
-        if (
-            !ingredient ||
-            !getPotionIngredientData(
-                ingredient
-            )
-        ) {
+        else {
 
             slot.className =
                 "ingredient-slot empty";
@@ -755,26 +768,174 @@ function renderExperimentSlots() {
 
 function renderIngredientShelf() {
 
-    const moonmintAmount =
+    const shelf =
         document.getElementById(
-            "moonmintAvailable"
+            "ingredientShelf"
         );
 
 
-    if (moonmintAmount) {
+    if (!shelf) {
 
-        moonmintAmount.textContent =
-            getIngredientAmount(
-                "moonmint"
-            );
+        return;
 
     }
+
+
+    shelf.innerHTML = "";
+
+
+    const availablePlants =
+        Object.values(
+            PLANT_DATA
+        ).filter(
+            plant =>
+                canUsePotionIngredient(
+                    plant.id
+                )
+        );
+
+
+    // --------------------------------------
+    // NO INGREDIENTS
+    // --------------------------------------
+
+    if (
+        availablePlants.length === 0
+    ) {
+
+        const emptyMessage =
+            document.createElement(
+                "p"
+            );
+
+
+        emptyMessage.className =
+            "potion-help";
+
+
+        emptyMessage.textContent =
+            "No known ingredients are available yet.";
+
+
+        shelf.appendChild(
+            emptyMessage
+        );
+
+
+        return;
+
+    }
+
+
+    // --------------------------------------
+    // CREATE INGREDIENT CARDS
+    // --------------------------------------
+
+    availablePlants.forEach(
+        plant => {
+
+            const amount =
+                getIngredientAmount(
+                    plant.id
+                );
+
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "potion-ingredient";
+
+
+            // Use a shorter description on
+            // the Potion Room shelf.
+
+            const description =
+                plant.description ||
+                "An ingredient gathered in Mosswood.";
+
+
+            card.innerHTML = `
+
+                <div class="ingredient-icon">
+                    ${plant.icon}
+                </div>
+
+                <div class="potion-ingredient-details">
+
+                    <strong>
+                        ${plant.name}
+                    </strong>
+
+                    <p>
+                        ${description}
+                    </p>
+
+                    <span>
+                        Available:
+                        <b>
+                            ${amount}
+                        </b>
+                    </span>
+
+                </div>
+
+            `;
+
+
+            const addButton =
+                document.createElement(
+                    "button"
+                );
+
+
+            addButton.className =
+                "ingredient-add-button";
+
+
+            addButton.textContent =
+                "Add";
+
+
+            // Keep the button visible but
+            // disable it when none are owned.
+
+            addButton.disabled =
+                amount <= 0;
+
+
+            addButton.addEventListener(
+                "click",
+                () => {
+
+                    addIngredientToExperiment(
+                        plant.id
+                    );
+
+                }
+            );
+
+
+            card.appendChild(
+                addButton
+            );
+
+
+            shelf.appendChild(
+                card
+            );
+
+        }
+    );
 
 }
 
 
 // ==========================================
-// GET DISCOVERED RECIPE COUNT
+// DISCOVERED RECIPE COUNT
 // ==========================================
 
 function getDiscoveredRecipeCount() {
@@ -823,6 +984,7 @@ function renderDiscoveryCount() {
 
     }
 
+
     else {
 
         element.textContent =
@@ -853,28 +1015,6 @@ function renderPotionRoom() {
 // ==========================================
 // BUTTON EVENTS
 // ==========================================
-
-const addMoonmintButton =
-    document.getElementById(
-        "addMoonmint"
-    );
-
-
-if (addMoonmintButton) {
-
-    addMoonmintButton.addEventListener(
-        "click",
-        () => {
-
-            addIngredientToExperiment(
-                "moonmint"
-            );
-
-        }
-    );
-
-}
-
 
 const brewButton =
     document.getElementById(
