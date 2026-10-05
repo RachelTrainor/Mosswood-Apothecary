@@ -1,48 +1,61 @@
 // ==========================================
 // MOSSWOOD APOTHECARY
-// Inventory V2
+// Inventory V3
+// Dynamic Inventory System
 // ==========================================
 
 
 // ==========================================
-// INVENTORY VALUES
+// SHOULD SHOW PLANT
 // ==========================================
 
-function getInventoryValues() {
+function shouldShowPlant(
+    plant
+) {
 
-    return {
+    if (
+        plant.alwaysKnown
+    ) {
 
-        moonmint:
-            getIngredientAmount(
-                "moonmint"
-            ),
+        return true;
 
-        nightbell:
-            getIngredientAmount(
-                "nightbell"
-            ),
+    }
 
-        moonmintSeeds:
-            getSeedAmount(
-                "moonmint"
-            ),
 
-        strangeSeeds:
-            getSeedAmount(
-                "unknown"
-            ),
+    if (
+        hasDiscovered(
+            plant.id
+        )
+    ) {
 
-        nightbellSeeds:
-            getSeedAmount(
-                "nightbell"
-            ),
+        return true;
 
-        calmPotions:
-            getPotionAmount(
-                "calm"
-            )
+    }
 
-    };
+
+    if (
+        getIngredientAmount(
+            plant.id
+        ) > 0
+    ) {
+
+        return true;
+
+    }
+
+
+    if (
+        getSeedAmount(
+            plant.id
+        ) > 0
+    ) {
+
+        return true;
+
+    }
+
+
+    return false;
 
 }
 
@@ -53,247 +66,507 @@ function getInventoryValues() {
 
 function getInventoryTotal() {
 
-    const items =
-        getInventoryValues();
+    let total = 0;
 
 
-    return (
-        items.moonmint
-        +
-        items.nightbell
-        +
-        items.moonmintSeeds
-        +
-        items.strangeSeeds
-        +
-        items.nightbellSeeds
-        +
-        items.calmPotions
+    // --------------------------------------
+    // INGREDIENTS
+    // --------------------------------------
+
+    Object.values(
+        PLANT_DATA
+    ).forEach(
+        plant => {
+
+            total +=
+                getIngredientAmount(
+                    plant.id
+                );
+
+        }
+    );
+
+
+    // --------------------------------------
+    // NORMAL SEEDS
+    // --------------------------------------
+
+    Object.values(
+        PLANT_DATA
+    ).forEach(
+        plant => {
+
+            total +=
+                getSeedAmount(
+                    plant.id
+                );
+
+        }
+    );
+
+
+    // --------------------------------------
+    // MYSTERY SEEDS
+    // --------------------------------------
+
+    total +=
+        getSeedAmount(
+            "unknown"
+        );
+
+
+    // --------------------------------------
+    // POTIONS
+    // --------------------------------------
+
+    Object.values(
+        POTION_DATA
+    ).forEach(
+        potion => {
+
+            total +=
+                getPotionAmount(
+                    potion.id
+                );
+
+        }
+    );
+
+
+    return total;
+
+}
+
+
+// ==========================================
+// CREATE INVENTORY CARD
+// ==========================================
+
+function createInventoryCard(
+    icon,
+    label,
+    name,
+    description,
+    amount,
+    extraClass = ""
+) {
+
+    const card =
+        document.createElement(
+            "article"
+        );
+
+
+    card.className =
+        "inventory-card";
+
+
+    if (extraClass) {
+
+        card.classList.add(
+            extraClass
+        );
+
+    }
+
+
+    card.innerHTML = `
+
+        <div class="inventory-icon">
+            ${icon}
+        </div>
+
+        <div class="inventory-card-content">
+
+            <span class="card-label">
+                ${label}
+            </span>
+
+            <h4>
+                ${name}
+            </h4>
+
+            <p>
+                ${description}
+            </p>
+
+        </div>
+
+        <div class="inventory-quantity">
+
+            <span>
+                OWNED
+            </span>
+
+            <strong>
+                ${amount}
+            </strong>
+
+        </div>
+
+    `;
+
+
+    return card;
+
+}
+
+
+// ==========================================
+// RENDER INGREDIENTS
+// ==========================================
+
+function renderIngredients() {
+
+    const container =
+        document.getElementById(
+            "ingredientInventory"
+        );
+
+
+    if (!container) {
+
+        return;
+
+    }
+
+
+    container.innerHTML = "";
+
+
+    const plants =
+        Object.values(
+            PLANT_DATA
+        ).filter(
+            plant =>
+                shouldShowPlant(
+                    plant
+                )
+        );
+
+
+    plants.forEach(
+        plant => {
+
+            const amount =
+                getIngredientAmount(
+                    plant.id
+                );
+
+
+            const card =
+                createInventoryCard(
+
+                    plant.icon,
+
+                    plant.type
+                        ? plant.type.toUpperCase()
+                        : "BOTANICAL",
+
+                    plant.name,
+
+                    plant.description,
+
+                    amount,
+
+                    hasDiscovered(
+                        plant.id
+                    )
+                        ? "discovered-item"
+                        : ""
+
+                );
+
+
+            container.appendChild(
+                card
+            );
+
+        }
     );
 
 }
 
 
 // ==========================================
-// UPDATE DISPLAY
+// RENDER SEEDS
 // ==========================================
 
-function renderInventory() {
+function renderSeeds() {
 
-    updateResourceBar();
-
-
-    const items =
-        getInventoryValues();
-
-
-    // --------------------------------------
-    // TOTAL
-    // --------------------------------------
-
-    const totalElement =
+    const container =
         document.getElementById(
-            "inventoryTotal"
+            "seedInventory"
         );
 
 
-    if (totalElement) {
+    if (!container) {
 
-        totalElement.textContent =
-            getInventoryTotal();
+        return;
 
     }
 
 
+    container.innerHTML = "";
+
+
     // --------------------------------------
-    // MOONMINT
+    // NORMAL PLANT SEEDS
     // --------------------------------------
 
-    const moonmintElement =
-        document.getElementById(
-            "inventoryMoonmint"
+    Object.values(
+        PLANT_DATA
+    )
+        .filter(
+            plant =>
+                shouldShowPlant(
+                    plant
+                )
+        )
+        .forEach(
+            plant => {
+
+                const amount =
+                    getSeedAmount(
+                        plant.id
+                    );
+
+
+                const description =
+                    `Seeds from ${plant.name}, ready to be planted in the greenhouse.`;
+
+
+                const card =
+                    createInventoryCard(
+
+                        plant.seedIcon ||
+                        "🌱",
+
+                        "KNOWN SEED",
+
+                        `${plant.name} Seeds`,
+
+                        description,
+
+                        amount,
+
+                        hasDiscovered(
+                            plant.id
+                        )
+                            ? "discovered-item"
+                            : ""
+
+                    );
+
+
+                container.appendChild(
+                    card
+                );
+
+            }
         );
-
-
-    if (moonmintElement) {
-
-        moonmintElement.textContent =
-            items.moonmint;
-
-    }
-
-
-    // --------------------------------------
-    // NIGHTBELL
-    // --------------------------------------
-
-    const nightbellElement =
-        document.getElementById(
-            "inventoryNightbell"
-        );
-
-
-    if (nightbellElement) {
-
-        nightbellElement.textContent =
-            items.nightbell;
-
-    }
-
-
-    // --------------------------------------
-    // MOONMINT SEEDS
-    // --------------------------------------
-
-    const seedElement =
-        document.getElementById(
-            "inventoryMoonmintSeeds"
-        );
-
-
-    if (seedElement) {
-
-        seedElement.textContent =
-            items.moonmintSeeds;
-
-    }
 
 
     // --------------------------------------
     // STRANGE SEEDS
     // --------------------------------------
 
-    const strangeSeedElement =
-        document.getElementById(
-            "inventoryStrangeSeeds"
+    const strangeSeed =
+        getSpecialSeedData(
+            "unknown"
         );
 
 
-    if (strangeSeedElement) {
-
-        strangeSeedElement.textContent =
-            items.strangeSeeds;
-
-    }
-
-
-    // --------------------------------------
-    // NIGHTBELL SEEDS
-    // --------------------------------------
-
-    const nightbellSeedElement =
-        document.getElementById(
-            "inventoryNightbellSeeds"
+    const strangeAmount =
+        getSeedAmount(
+            "unknown"
         );
 
 
-    if (nightbellSeedElement) {
+    if (
+        strangeSeed &&
+        strangeAmount > 0
+    ) {
 
-        nightbellSeedElement.textContent =
-            items.nightbellSeeds;
+        const card =
+            createInventoryCard(
 
-    }
+                strangeSeed.icon,
 
+                "UNIDENTIFIED",
 
-    // --------------------------------------
-    // POTION OF CALM
-    // --------------------------------------
+                strangeSeed.name,
 
-    const calmElement =
-        document.getElementById(
-            "inventoryCalmPotions"
-        );
+                strangeSeed.description,
 
+                strangeAmount,
 
-    if (calmElement) {
-
-        calmElement.textContent =
-            items.calmPotions;
-
-    }
-
-
-    // --------------------------------------
-    // STRANGE SEED APPEARANCE
-    // --------------------------------------
-
-    const strangeSeedCard =
-        document.getElementById(
-            "strangeSeedCard"
-        );
-
-
-    if (strangeSeedCard) {
-
-        if (
-            items.strangeSeeds > 0
-        ) {
-
-            strangeSeedCard.classList.add(
                 "discovered-item"
+
+            );
+
+
+        container.appendChild(
+            card
+        );
+
+    }
+
+}
+
+
+// ==========================================
+// RENDER POTIONS
+// ==========================================
+
+function renderPotions() {
+
+    const container =
+        document.getElementById(
+            "potionInventory"
+        );
+
+
+    if (!container) {
+
+        return;
+
+    }
+
+
+    container.innerHTML = "";
+
+
+    Object.values(
+        POTION_DATA
+    ).forEach(
+        potion => {
+
+            const amount =
+                getPotionAmount(
+                    potion.id
+                );
+
+
+            const discovered =
+                hasDiscovered(
+                    potion.discoveryId
+                );
+
+
+            // ----------------------------------
+            // HIDE UNKNOWN POTIONS
+            // ----------------------------------
+
+            if (
+                !discovered &&
+                amount <= 0
+            ) {
+
+                return;
+
+            }
+
+
+            const card =
+                createInventoryCard(
+
+                    potion.inventoryIcon ||
+                    potion.icon ||
+                    "🧪",
+
+                    "REMEDY",
+
+                    potion.name,
+
+                    potion.description,
+
+                    amount,
+
+                    "discovered-item"
+
+                );
+
+
+            container.appendChild(
+                card
             );
 
         }
-
-        else {
-
-            strangeSeedCard.classList.remove(
-                "discovered-item"
-            );
-
-        }
-
-    }
+    );
 
 
     // --------------------------------------
-    // NIGHTBELL APPEARANCE
+    // NOTHING DISCOVERED YET
     // --------------------------------------
 
-    const nightbellCard =
+    if (
+        container.children.length === 0
+    ) {
+
+        const message =
+            document.createElement(
+                "p"
+            );
+
+
+        message.className =
+            "potion-help";
+
+
+        message.textContent =
+            "No remedies have been discovered yet.";
+
+
+        container.appendChild(
+            message
+        );
+
+    }
+
+}
+
+
+// ==========================================
+// RENDER INVENTORY TOTAL
+// ==========================================
+
+function renderInventoryTotal() {
+
+    const element =
         document.getElementById(
-            "nightbellCard"
+            "inventoryTotal"
         );
 
 
-    if (nightbellCard) {
+    if (!element) {
 
-        if (
-            hasDiscovered("nightbell")
-            ||
-            items.nightbell > 0
-        ) {
-
-            nightbellCard.classList.add(
-                "discovered-item"
-            );
-
-        }
+        return;
 
     }
 
 
-    const nightbellSeedCard =
-        document.getElementById(
-            "nightbellSeedCard"
-        );
+    element.textContent =
+        getInventoryTotal();
+
+}
 
 
-    if (nightbellSeedCard) {
+// ==========================================
+// RENDER INVENTORY
+// ==========================================
 
-        if (
-            hasDiscovered("nightbell")
-            ||
-            items.nightbellSeeds > 0
-        ) {
+function renderInventory() {
 
-            nightbellSeedCard.classList.add(
-                "discovered-item"
-            );
+    updateResourceBar();
 
-        }
+    renderInventoryTotal();
 
-    }
+    renderIngredients();
+
+    renderSeeds();
+
+    renderPotions();
 
 }
 
