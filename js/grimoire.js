@@ -1,7 +1,40 @@
 // ==========================================
 // MOSSWOOD APOTHECARY
-// Grimoire V1
+// Grimoire V2
 // ==========================================
+
+
+// ==========================================
+// BOTANICAL INFORMATION
+// ==========================================
+
+const grimoirePlants = [
+
+    {
+        id: "moonmint",
+        name: "Moonmint",
+        icon: "🌿",
+        type: "Herb",
+        description:
+            "A cool-scented herb commonly cultivated in the Mosswood greenhouse.",
+        notes:
+            "Known for its calming properties and pale, fragrant leaves.",
+        alwaysKnown: true
+    },
+
+    {
+        id: "nightbell",
+        name: "Nightbell",
+        icon: "🪻",
+        type: "Woodland Flower",
+        description:
+            "A dusky woodland flower first identified after cultivating a mysterious Strange Seed.",
+        notes:
+            "Its deeper alchemical properties remain uncertain. Experimentation may reveal more.",
+        alwaysKnown: false
+    }
+
+];
 
 
 // ==========================================
@@ -61,13 +94,201 @@ const grimoireRecipes = [
 
 
 // ==========================================
+// CHECK PLANT DISCOVERY
+// ==========================================
+
+function isPlantDiscovered(
+    plant
+) {
+
+    if (
+        plant.alwaysKnown
+    ) {
+
+        return true;
+
+    }
+
+
+    return hasDiscovered(
+        plant.id
+    );
+
+}
+
+
+// ==========================================
 // CHECK RECIPE DISCOVERY
 // ==========================================
 
-function isRecipeDiscovered(recipe) {
+function isRecipeDiscovered(
+    recipe
+) {
 
-    return game.discoveries.includes(
+    return hasDiscovered(
         recipe.id
+    );
+
+}
+
+
+// ==========================================
+// CREATE BOTANICAL ENTRY
+// ==========================================
+
+function createBotanicalEntry(
+    plant
+) {
+
+    return `
+
+        <article class="botanical-card discovered">
+
+            <div class="botanical-icon">
+                ${plant.icon}
+            </div>
+
+
+            <div class="botanical-content">
+
+                <span class="card-label">
+                    ${plant.type.toUpperCase()}
+                </span>
+
+
+                <h4>
+                    ${plant.name}
+                </h4>
+
+
+                <p>
+                    ${plant.description}
+                </p>
+
+
+                <div class="botanical-notes">
+
+                    <span class="recipe-subheading">
+                        FIELD NOTES
+                    </span>
+
+                    <p>
+                        ${plant.notes}
+                    </p>
+
+                </div>
+
+            </div>
+
+        </article>
+
+    `;
+
+}
+
+
+// ==========================================
+// CREATE UNKNOWN BOTANICAL
+// ==========================================
+
+function createUnknownBotanical() {
+
+    return `
+
+        <article class="botanical-card locked">
+
+            <div class="botanical-icon">
+                ?
+            </div>
+
+
+            <div class="botanical-content">
+
+                <span class="card-label">
+                    UNIDENTIFIED
+                </span>
+
+
+                <h4>
+                    Unknown Botanical
+                </h4>
+
+
+                <p>
+                    Mosswood still holds plants
+                    that have yet to be identified.
+                </p>
+
+
+                <div class="botanical-notes">
+
+                    <span class="recipe-subheading">
+                        FIELD NOTES
+                    </span>
+
+                    <p>
+                        Cultivate unfamiliar seeds
+                        to learn what grows from them.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </article>
+
+    `;
+
+}
+
+
+// ==========================================
+// RENDER BOTANICALS
+// ==========================================
+
+function renderBotanicals() {
+
+    const botanicalGrid =
+        document.getElementById(
+            "botanicalGrid"
+        );
+
+
+    if (!botanicalGrid) {
+
+        return;
+
+    }
+
+
+    botanicalGrid.innerHTML =
+        "";
+
+
+    grimoirePlants.forEach(
+        plant => {
+
+            if (
+                isPlantDiscovered(
+                    plant
+                )
+            ) {
+
+                botanicalGrid.innerHTML +=
+                    createBotanicalEntry(
+                        plant
+                    );
+
+            }
+
+            else {
+
+                botanicalGrid.innerHTML +=
+                    createUnknownBotanical();
+
+            }
+
+        }
     );
 
 }
@@ -77,15 +298,19 @@ function isRecipeDiscovered(recipe) {
 // CREATE DISCOVERED RECIPE
 // ==========================================
 
-function createDiscoveredRecipe(recipe) {
+function createDiscoveredRecipe(
+    recipe
+) {
 
     const ingredients =
         recipe.ingredients
             .map(
                 ingredient => `
+
                     <span class="recipe-ingredient">
                         🌿 ${ingredient}
                     </span>
+
                 `
             )
             .join("");
@@ -100,6 +325,7 @@ function createDiscoveredRecipe(recipe) {
                 <div class="recipe-icon">
                     ${recipe.icon}
                 </div>
+
 
                 <div>
 
@@ -229,14 +455,17 @@ function renderRecipes() {
     }
 
 
-    recipeGrid.innerHTML = "";
+    recipeGrid.innerHTML =
+        "";
 
 
     grimoireRecipes.forEach(
         recipe => {
 
             if (
-                isRecipeDiscovered(recipe)
+                isRecipeDiscovered(
+                    recipe
+                )
             ) {
 
                 recipeGrid.innerHTML +=
@@ -260,35 +489,59 @@ function renderRecipes() {
 
 
 // ==========================================
-// DISCOVERY COUNT
+// DISCOVERY COUNTS
 // ==========================================
 
 function renderDiscoveryCount() {
 
-    const countElement =
+    const recipeCountElement =
         document.getElementById(
             "discoveredRecipeCount"
         );
 
 
-    if (!countElement) {
+    if (
+        recipeCountElement
+    ) {
 
-        return;
+        const discoveredRecipes =
+            grimoireRecipes.filter(
+                recipe =>
+                    isRecipeDiscovered(
+                        recipe
+                    )
+            );
+
+
+        recipeCountElement.textContent =
+            discoveredRecipes.length;
 
     }
 
 
-    const discoveredRecipes =
-        grimoireRecipes.filter(
-            recipe =>
-                isRecipeDiscovered(
-                    recipe
-                )
+    const plantCountElement =
+        document.getElementById(
+            "discoveredPlantCount"
         );
 
 
-    countElement.textContent =
-        discoveredRecipes.length;
+    if (
+        plantCountElement
+    ) {
+
+        const discoveredPlants =
+            grimoirePlants.filter(
+                plant =>
+                    isPlantDiscovered(
+                        plant
+                    )
+            );
+
+
+        plantCountElement.textContent =
+            discoveredPlants.length;
+
+    }
 
 }
 
@@ -300,6 +553,8 @@ function renderDiscoveryCount() {
 function renderGrimoire() {
 
     updateResourceBar();
+
+    renderBotanicals();
 
     renderRecipes();
 
