@@ -1,6 +1,6 @@
 // ==========================================
 // MOSSWOOD APOTHECARY
-// Forage Data V4
+// Forage Data V5
 // Dynamic Discovery Rewards
 // ==========================================
 
@@ -26,8 +26,17 @@ const FORAGE_LOCATION_DATA = {
         icon:
             "🌲",
 
+        type:
+            "WOODLAND",
+
+        findLabel:
+            "COMMON FINDS",
+
         description:
             "A shadowed woodland surrounding the apothecary, rich with familiar herbs and hidden growth.",
+
+        activeText:
+            "Your familiar searches beneath roots, moss, and fallen branches.",
 
         duration:
             30 * 1000,
@@ -45,10 +54,7 @@ const FORAGE_LOCATION_DATA = {
             null,
 
         requirementHidden:
-            false,
-
-        rarityLabel:
-            "COMMON FINDS"
+            false
 
     },
 
@@ -68,8 +74,17 @@ const FORAGE_LOCATION_DATA = {
         icon:
             "🌫️",
 
+        type:
+            "MARSHLAND",
+
+        findLabel:
+            "UNCOMMON FINDS",
+
         description:
             "A pale marsh wrapped in drifting mist where strange fungi and uncommon botanicals thrive.",
+
+        activeText:
+            "Your familiar moves carefully through the reeds and drifting marsh mist.",
 
         duration:
             45 * 1000,
@@ -87,10 +102,7 @@ const FORAGE_LOCATION_DATA = {
             "Nightbell",
 
         requirementHidden:
-            false,
-
-        rarityLabel:
-            "UNCOMMON FINDS"
+            false
 
     },
 
@@ -110,8 +122,17 @@ const FORAGE_LOCATION_DATA = {
         icon:
             "🏚️",
 
+        type:
+            "RUINS",
+
+        findLabel:
+            "UNKNOWN FINDS",
+
         description:
             "Ancient stonework lies beyond the overgrowth. Whatever grows there has remained undisturbed for years.",
+
+        activeText:
+            "Your familiar slips between the ancient stones, searching the forgotten ruins.",
 
         duration:
             60 * 1000,
@@ -129,10 +150,7 @@ const FORAGE_LOCATION_DATA = {
             null,
 
         requirementHidden:
-            true,
-
-        rarityLabel:
-            "UNKNOWN FINDS"
+            true
 
     }
 
@@ -180,7 +198,7 @@ const FORAGE_REWARD_DATA = {
             type:
                 "ingredient",
 
-            plantId:
+            itemId:
                 "moonmint",
 
             minAmount:
@@ -214,7 +232,7 @@ const FORAGE_REWARD_DATA = {
             type:
                 "seed",
 
-            plantId:
+            itemId:
                 "moonmint",
 
             minAmount:
@@ -318,7 +336,7 @@ const FORAGE_REWARD_DATA = {
             type:
                 "ingredient",
 
-            plantId:
+            itemId:
                 "nightbell",
 
             minAmount:
@@ -352,7 +370,7 @@ const FORAGE_REWARD_DATA = {
             type:
                 "seed",
 
-            plantId:
+            itemId:
                 "nightbell",
 
             minAmount:
