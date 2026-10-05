@@ -4319,7 +4319,7 @@ nav {
 
 
 /* ==================================================
-   DARK EDGE VIGNETTE
+   DARK VIGNETTE
 ================================================== */
 
 .mosswood-vignette {
@@ -4342,7 +4342,7 @@ nav {
 
 
 /* ==================================================
-   TITLE SIGN
+   MOSSWOOD SIGN
 ================================================== */
 
 .mosswood-sign {
@@ -4350,13 +4350,17 @@ nav {
 
     z-index: 3;
 
-    width: min(72vw, 850px);
+    width: min(64vw, 760px);
+
     height: auto;
 
-    margin-top: -90px;
+    margin-top: -70px;
 
     filter:
-        drop-shadow(0 18px 28px rgba(0, 0, 0, 0.65));
+        drop-shadow(
+            0 18px 28px
+            rgba(0, 0, 0, 0.65)
+        );
 
     animation:
         mosswood-sign-enter 1.2s ease-out both;
@@ -4364,7 +4368,7 @@ nav {
 
 
 /* ==================================================
-   INTRO COPY
+   INTRO TEXT
 ================================================== */
 
 .mosswood-intro-copy {
@@ -4372,19 +4376,24 @@ nav {
 
     z-index: 4;
 
-    width: min(600px, 80vw);
+    width: min(520px, 70vw);
 
-    margin-top: -35px;
+    margin-top: -22px;
 
     text-align: center;
 
     color: #eee4cc;
 
     text-shadow:
-        0 2px 8px rgba(0, 0, 0, 0.9);
+        0 2px 8px
+        rgba(0, 0, 0, 0.95);
 
     animation:
-        mosswood-copy-enter 1.2s 0.25s ease-out both;
+        mosswood-copy-enter
+        1.2s
+        0.25s
+        ease-out
+        both;
 }
 
 
@@ -4396,41 +4405,49 @@ nav {
         "Times New Roman",
         serif;
 
-    font-size: clamp(
-        1rem,
-        1.7vw,
-        1.35rem
-    );
+    font-size:
+        clamp(
+            0.9rem,
+            1.35vw,
+            1.15rem
+        );
 
     font-style: italic;
 
-    line-height: 1.7;
+    line-height: 1.5;
 }
 
 
 .mosswood-intro-copy span {
     display: block;
 
-    margin-top: 12px;
+    max-width: 480px;
+
+    margin:
+        10px
+        auto
+        0;
 
     font-family:
         Arial,
         sans-serif;
 
-    font-size: 0.75rem;
+    font-size: 0.62rem;
 
-    letter-spacing: 0.18em;
+    letter-spacing: 0.16em;
+
+    line-height: 1.6;
 
     text-transform: uppercase;
 
     color: #d2c69d;
 
-    opacity: 0.9;
+    opacity: 0.78;
 }
 
 
 /* ==================================================
-   ENTER BUTTON
+   ENTER MOSSWOOD BUTTON
 ================================================== */
 
 .mosswood-enter {
@@ -4449,7 +4466,11 @@ nav {
         filter 0.25s ease;
 
     animation:
-        mosswood-button-enter 1.2s 0.45s ease-out both;
+        mosswood-button-enter
+        1.2s
+        0.45s
+        ease-out
+        both;
 }
 
 
@@ -4517,7 +4538,8 @@ nav {
     opacity: 0.65;
 
     text-shadow:
-        0 2px 5px rgba(0, 0, 0, 0.8);
+        0 2px 5px
+        rgba(0, 0, 0, 0.8);
 }
 
 
@@ -4529,6 +4551,7 @@ nav {
 
     from {
         opacity: 0;
+
         transform:
             translateY(-25px)
             scale(0.97);
@@ -4536,6 +4559,7 @@ nav {
 
     to {
         opacity: 1;
+
         transform:
             translateY(0)
             scale(1);
@@ -4548,12 +4572,14 @@ nav {
 
     from {
         opacity: 0;
+
         transform:
             translateY(15px);
     }
 
     to {
         opacity: 1;
+
         transform:
             translateY(0);
     }
@@ -4565,6 +4591,7 @@ nav {
 
     from {
         opacity: 0;
+
         transform:
             translateY(20px)
             scale(0.96);
@@ -4572,6 +4599,7 @@ nav {
 
     to {
         opacity: 1;
+
         transform:
             translateY(0)
             scale(1);
