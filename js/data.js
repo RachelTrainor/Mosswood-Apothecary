@@ -1,7 +1,7 @@
 // ==========================================
 // MOSSWOOD APOTHECARY
 // Central Game Data
-// V4
+// V5 - Ghostcap
 // ==========================================
 
 
@@ -98,6 +98,51 @@ const PLANT_DATA = {
         alwaysKnown:
             false
 
+    },
+
+
+    // --------------------------------------
+    // GHOSTCAP
+    // --------------------------------------
+
+    ghostcap: {
+
+        id:
+            "ghostcap",
+
+        name:
+            "Ghostcap",
+
+        icon:
+            "🍄",
+
+        seedIcon:
+            "🍄",
+
+        type:
+            "Marsh Fungus",
+
+        description:
+            "A pale, spectral fungus found in the mist-covered reaches of Mistfen Marsh.",
+
+        fieldNotes:
+            "Its faintly luminous cap seems unusually sensitive to moonlight and nearby movement.",
+
+        growTime:
+            90 * 1000,
+
+        dryTime:
+            30 * 1000,
+
+        seedReturnChance:
+            0.25,
+
+        startingSeeds:
+            0,
+
+        alwaysKnown:
+            false
+
     }
 
 };
@@ -121,14 +166,14 @@ const PLANT_DATA = {
 //     revealsPlant: "nightbell"
 // }
 //
-// Later another seed could be:
+// Another seed could be:
 //
 // {
 //     id: "mystery_seed_2",
 //     revealsPlant: "ghostcap"
 // }
 //
-// Both still appear to the player as
+// Both appear to the player as a
 // "Strange Seed" until planted and revealed.
 // ==========================================
 
