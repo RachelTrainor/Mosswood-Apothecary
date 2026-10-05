@@ -4,7 +4,7 @@
 // Dynamic Planting Materials
 // Discovery Seeds + Active Foraging
 // ==========================================
-
+const FORAGE_ACTIVE_CLICK_BOOST = 1000;
 
 // ==========================================
 // FORAGE SAVE SETUP / MIGRATION
