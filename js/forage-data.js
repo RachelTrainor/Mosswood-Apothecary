@@ -1,20 +1,12 @@
 // ==========================================
 // MOSSWOOD APOTHECARY
-// Foraging Data
-// V3 - Ghostcap Discovery
+// Forage Data V4
+// Dynamic Discovery Rewards
 // ==========================================
 
 
 // ==========================================
-// ACTIVE FORAGING SETTINGS
-// ==========================================
-
-const FORAGE_ACTIVE_CLICK_BOOST =
-    1000;
-
-
-// ==========================================
-// FORAGING LOCATIONS
+// FORAGE LOCATIONS
 // ==========================================
 
 const FORAGE_LOCATION_DATA = {
@@ -31,14 +23,11 @@ const FORAGE_LOCATION_DATA = {
         name:
             "Mosswood Forest",
 
-        type:
-            "FOREST",
-
         icon:
             "🌲",
 
         description:
-            "A shadowed woodland filled with moss, old trees, and plants that thrive far from the greenhouse.",
+            "A shadowed woodland surrounding the apothecary, rich with familiar herbs and hidden growth.",
 
         duration:
             30 * 1000,
@@ -52,11 +41,14 @@ const FORAGE_LOCATION_DATA = {
         discoveryRequirement:
             null,
 
-        findLabel:
-            "Common Finds",
+        discoveryRequirementName:
+            null,
 
-        activeText:
-            "Your familiar is searching the forest floor, roots, and forgotten paths."
+        requirementHidden:
+            false,
+
+        rarityLabel:
+            "COMMON FINDS"
 
     },
 
@@ -73,14 +65,11 @@ const FORAGE_LOCATION_DATA = {
         name:
             "Mistfen Marsh",
 
-        type:
-            "MARSH",
-
         icon:
             "🌫️",
 
         description:
-            "Pale lights drift through the reeds. Something unusual grows beneath the mist.",
+            "A pale marsh wrapped in drifting mist where strange fungi and uncommon botanicals thrive.",
 
         duration:
             45 * 1000,
@@ -97,11 +86,11 @@ const FORAGE_LOCATION_DATA = {
         discoveryRequirementName:
             "Nightbell",
 
-        findLabel:
-            "Uncommon Finds",
+        requirementHidden:
+            false,
 
-        activeText:
-            "Your familiar disappears into the reeds and pale marsh mist."
+        rarityLabel:
+            "UNCOMMON FINDS"
 
     },
 
@@ -118,14 +107,11 @@ const FORAGE_LOCATION_DATA = {
         name:
             "Hollowmere Ruins",
 
-        type:
-            "RUINS",
-
         icon:
-            "🕯️",
+            "🏚️",
 
         description:
-            "Crumbling stone lies hidden beneath vines and roots. Few paths still lead there.",
+            "Ancient stonework lies beyond the overgrowth. Whatever grows there has remained undisturbed for years.",
 
         duration:
             60 * 1000,
@@ -134,19 +120,19 @@ const FORAGE_LOCATION_DATA = {
             false,
 
         unlockCost:
-            null,
+            0,
 
         discoveryRequirement:
+            null,
+
+        discoveryRequirementName:
             null,
 
         requirementHidden:
             true,
 
-        findLabel:
-            "Unknown Finds",
-
-        activeText:
-            "Your familiar moves carefully among the forgotten stones."
+        rarityLabel:
+            "UNKNOWN FINDS"
 
     }
 
@@ -154,255 +140,335 @@ const FORAGE_LOCATION_DATA = {
 
 
 // ==========================================
-// MOSSWOOD FOREST REWARDS
+// FORAGE REWARD TABLES
 // ==========================================
 //
-// BEFORE NIGHTBELL DISCOVERY:
-//      Strange Seed
+// chance values for each location should
+// add up to 1.00.
 //
-// AFTER NIGHTBELL DISCOVERY:
-//      Nightbell Seed
-// ==========================================
-
-const FOREST_FORAGE_REWARDS = [
-
-    {
-        chance:
-            0.45,
-
-        type:
-            "ingredient",
-
-        itemId:
-            "moonmint",
-
-        minAmount:
-            1,
-
-        maxAmount:
-            2,
-
-        icon:
-            "🌿",
-
-        text:
-            "Your familiar returned carrying fresh Moonmint gathered beneath the forest canopy."
-    },
-
-
-    {
-        chance:
-            0.30,
-
-        type:
-            "seed",
-
-        itemId:
-            "moonmint",
-
-        minAmount:
-            1,
-
-        maxAmount:
-            2,
-
-        icon:
-            "🌱",
-
-        text:
-            "A few small Moonmint seeds were discovered tangled among the moss."
-    },
-
-
-    {
-        chance:
-            0.17,
-
-        type:
-            "discoverySeed",
-
-        plantId:
-            "nightbell",
-
-        minAmount:
-            1,
-
-        maxAmount:
-            1,
-
-        mysteryIcon:
-            "✦",
-
-        discoveredIcon:
-            "🪻",
-
-        mysteryTitle:
-            "Found a Strange Seed",
-
-        mysteryText:
-            "Your familiar returned with a dark, unfamiliar seed. Whatever it grows into remains a mystery.",
-
-        discoveredText:
-            "Your familiar returned with a Nightbell seed gathered from the forest floor."
-    },
-
-
-    {
-        chance:
-            0.08,
-
-        type:
-            "nothing",
-
-        icon:
-            "🐈‍⬛",
-
-        title:
-            "Nothing This Time",
-
-        text:
-            "Your familiar returned empty-pawed, though perhaps the forest will be more generous next time."
-    }
-
-];
-
-
-// ==========================================
-// MISTFEN MARSH REWARDS
-// ==========================================
+// discoverySeed:
 //
-// BEFORE GHOSTCAP DISCOVERY:
-//      Strange Seed
+// Before the plant is discovered:
+//     Gives a Strange Seed.
 //
-// AFTER GHOSTCAP DISCOVERY:
-//      Ghostcap Seed
+// After the plant is discovered:
+//     Gives the plant's identified
+//     planting material.
+//
+// The display name/icon for the identified
+// planting material comes from PLANT_DATA.
 // ==========================================
 
-const MARSH_FORAGE_REWARDS = [
+const FORAGE_REWARD_DATA = {
 
-    // --------------------------------------
-    // NIGHTBELL
-    // 40%
-// --------------------------------------
+    // ======================================
+    // MOSSWOOD FOREST
+    // ======================================
 
-    {
-        chance:
-            0.40,
+    forest: [
 
-        type:
-            "ingredient",
+        // ----------------------------------
+        // MOONMINT INGREDIENT
+        // 45%
+        // ----------------------------------
 
-        itemId:
-            "nightbell",
+        {
 
-        minAmount:
-            1,
+            chance:
+                0.45,
 
-        maxAmount:
-            2,
+            type:
+                "ingredient",
 
-        icon:
-            "🪻",
+            plantId:
+                "moonmint",
 
-        text:
-            "Your familiar returned with Nightbell gathered from beneath the mist-covered reeds."
-    },
+            minAmount:
+                1,
 
+            maxAmount:
+                2,
 
-    // --------------------------------------
-    // NIGHTBELL SEEDS
-    // 25%
-    // --------------------------------------
+            icon:
+                "🌿",
 
-    {
-        chance:
-            0.25,
+            title:
+                "Found Moonmint",
 
-        type:
-            "seed",
+            text:
+                "Your familiar returned with fresh Moonmint gathered beneath the trees."
 
-        itemId:
-            "nightbell",
-
-        minAmount:
-            1,
-
-        maxAmount:
-            2,
-
-        icon:
-            "🪻",
-
-        text:
-            "Your familiar discovered Nightbell seeds hidden among the damp marsh grasses."
-    },
+        },
 
 
-    // --------------------------------------
-    // GHOSTCAP DISCOVERY
-    // 25%
-    // --------------------------------------
+        // ----------------------------------
+        // MOONMINT SEED
+        // 30%
+        // ----------------------------------
 
-    {
-        chance:
-            0.25,
+        {
 
-        type:
-            "discoverySeed",
+            chance:
+                0.30,
 
-        plantId:
-            "ghostcap",
+            type:
+                "seed",
 
-        minAmount:
-            1,
+            plantId:
+                "moonmint",
 
-        maxAmount:
-            1,
+            minAmount:
+                1,
 
-        mysteryIcon:
-            "✦",
+            maxAmount:
+                2,
 
-        discoveredIcon:
-            "🍄",
+            icon:
+                "🌱",
 
-        mysteryTitle:
-            "Found a Strange Seed",
+            title:
+                "Found Moonmint Seeds",
 
-        mysteryText:
-            "Your familiar returned from the deepest part of the marsh carrying something unfamiliar. Its pale surface almost seems to glow through the mist.",
+            text:
+                "A few Moonmint seeds were tucked among the leaves and moss."
 
-        discoveredText:
-            "Your familiar returned with a Ghostcap specimen gathered from the misty marsh floor."
-    },
+        },
 
 
-    // --------------------------------------
-    // NOTHING
-    // 10%
-    // --------------------------------------
+        // ----------------------------------
+        // NIGHTBELL DISCOVERY
+        // 17%
+        // ----------------------------------
 
-    {
-        chance:
-            0.10,
+        {
 
-        type:
-            "nothing",
+            chance:
+                0.17,
 
-        icon:
-            "🐈‍⬛",
+            type:
+                "discoverySeed",
 
-        title:
-            "Lost in the Mist",
+            plantId:
+                "nightbell",
 
-        text:
-            "The marsh gave up no treasures this time. Your familiar returned damp, annoyed, and empty-pawed."
-    }
+            minAmount:
+                1,
 
-];
+            maxAmount:
+                1,
+
+            mysteryIcon:
+                "✦",
+
+            mysteryTitle:
+                "Found a Strange Seed",
+
+            mysteryText:
+                "Your familiar returned carrying an unfamiliar seed from deeper within the forest.",
+
+            discoveredText:
+                "Your familiar returned with a Nightbell seed gathered from the woodland undergrowth."
+
+        },
+
+
+        // ----------------------------------
+        // NOTHING
+        // 8%
+        // ----------------------------------
+
+        {
+
+            chance:
+                0.08,
+
+            type:
+                "nothing",
+
+            icon:
+                "🍂",
+
+            title:
+                "Nothing Useful",
+
+            text:
+                "Your familiar searched the forest but returned with only leaves and damp moss."
+
+        }
+
+    ],
+
+
+    // ======================================
+    // MISTFEN MARSH
+    // ======================================
+
+    marsh: [
+
+        // ----------------------------------
+        // NIGHTBELL INGREDIENT
+        // 40%
+        // ----------------------------------
+
+        {
+
+            chance:
+                0.40,
+
+            type:
+                "ingredient",
+
+            plantId:
+                "nightbell",
+
+            minAmount:
+                1,
+
+            maxAmount:
+                2,
+
+            icon:
+                "🪻",
+
+            title:
+                "Found Nightbell",
+
+            text:
+                "Your familiar returned with Nightbell gathered along the misty marsh edge."
+
+        },
+
+
+        // ----------------------------------
+        // NIGHTBELL SEED
+        // 25%
+        // ----------------------------------
+
+        {
+
+            chance:
+                0.25,
+
+            type:
+                "seed",
+
+            plantId:
+                "nightbell",
+
+            minAmount:
+                1,
+
+            maxAmount:
+                2,
+
+            icon:
+                "🪻",
+
+            title:
+                "Found Nightbell Seeds",
+
+            text:
+                "Several Nightbell seeds were gathered from plants growing near the water."
+
+        },
+
+
+        // ----------------------------------
+        // GHOSTCAP DISCOVERY
+        // 25%
+        // ----------------------------------
+
+        {
+
+            chance:
+                0.25,
+
+            type:
+                "discoverySeed",
+
+            plantId:
+                "ghostcap",
+
+            minAmount:
+                1,
+
+            maxAmount:
+                1,
+
+            mysteryIcon:
+                "✦",
+
+            mysteryTitle:
+                "Found Something Strange",
+
+            mysteryText:
+                "Your familiar returned from the deepest part of the marsh carrying something pale and unfamiliar. Whatever it may grow into remains a mystery.",
+
+            discoveredText:
+                "Your familiar returned with Ghostcap spores gathered from the misty marsh floor."
+
+        },
+
+
+        // ----------------------------------
+        // NOTHING
+        // 10%
+        // ----------------------------------
+
+        {
+
+            chance:
+                0.10,
+
+            type:
+                "nothing",
+
+            icon:
+                "🌫️",
+
+            title:
+                "Lost in the Mist",
+
+            text:
+                "The marsh mist grew too thick to search safely. Your familiar returned empty-pawed."
+
+        }
+
+    ],
+
+
+    // ======================================
+    // HOLLOWMERE RUINS
+    // ======================================
+
+    ruins: [
+
+        {
+
+            chance:
+                1.00,
+
+            type:
+                "nothing",
+
+            icon:
+                "🕯️",
+
+            title:
+                "The Ruins Remain Silent",
+
+            text:
+                "The way into Hollowmere remains hidden for now."
+
+        }
+
+    ]
+
+};
 
 
 // ==========================================
-// LOCATION HELPER
+// GET FORAGE LOCATION
 // ==========================================
 
 function getForageLocationData(
@@ -420,33 +486,18 @@ function getForageLocationData(
 
 
 // ==========================================
-// REWARD TABLE HELPER
+// GET REWARD TABLE
 // ==========================================
 
 function getForageRewardTable(
     locationId
 ) {
 
-    if (
-        locationId ===
-        "forest"
-    ) {
-
-        return FOREST_FORAGE_REWARDS;
-
-    }
-
-
-    if (
-        locationId ===
-        "marsh"
-    ) {
-
-        return MARSH_FORAGE_REWARDS;
-
-    }
-
-
-    return [];
+    return (
+        FORAGE_REWARD_DATA[
+            locationId
+        ] ||
+        []
+    );
 
 }
