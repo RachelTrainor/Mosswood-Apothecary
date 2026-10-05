@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Inventory | Mosswood Apothecary</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="game">
+
+    <!-- =====================================
+         SHARED SIDEBAR
+    ====================================== -->
+
+    <aside
+        class="sidebar"
+        id="sidebar">
+    </aside>
+
+
+    <!-- =====================================
+         MAIN CONTENT
+    ====================================== -->
+
+    <main class="content">
+
+        <header
+            class="topbar"
+            id="topbar">
+        </header>
+
+
+        <section class="screen">
+
+            <p class="eyebrow">
+                APOTHECARY STORES
+            </p>
+
+            <h2>
+                Inventory
+            </h2>
+
+            <p class="description">
+                Everything gathered, grown, brewed, and discovered
+                throughout Mosswood is stored here.
+            </p>
+
+
+            <!-- =================================
+                 INVENTORY SUMMARY
+            ================================== -->
+
+            <section class="inventory-summary">
+
+                <div>
+
+                    <span class="card-label">
+                        STORED GOODS
+                    </span>
+
+                    <h3>
+                        Apothecary Stores
+                    </h3>
+
+                    <p>
+                        Keep track of ingredients, seeds,
+                        and finished remedies.
+                    </p>
+
+                </div>
+
+
+                <div class="inventory-total">
+
+                    <span>
+                        TOTAL ITEMS
+                    </span>
+
+                    <strong id="inventoryTotal">
+                        0
+                    </strong>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================
+                 INGREDIENTS
+            ================================== -->
+
+            <section class="inventory-section">
+
+                <div class="inventory-section-heading">
+
+                    <div>
+
+                        <span class="card-label">
+                            HARVESTED
+                        </span>
+
+                        <h3>
+                            Ingredients
+                        </h3>
+
+                    </div>
+
+                    <p>
+                        Plants and materials ready for
+                        potion experiments.
+                    </p>
+
+                </div>
+
+
+                <div class="inventory-grid">
+
+                    <article class="inventory-card">
+
+                        <div class="inventory-icon">
+                            🌿
+                        </div>
+
+                        <div class="inventory-card-content">
+
+                            <span class="card-label">
+                                HERB
+                            </span>
+
+                            <h4>
+                                Moonmint
+                            </h4>
+
+                            <p>
+                                A cool-scented herb gathered
+                                from the greenhouse and forests
+                                surrounding Mosswood.
+                            </p>
+
+                        </div>
+
+                        <div class="inventory-quantity">
+
+                            <span>
+                                OWNED
+                            </span>
+
+                            <strong id="inventoryMoonmint">
+                                0
+                            </strong>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================
+                 SEEDS
+            ================================== -->
+
+            <section class="inventory-section">
+
+                <div class="inventory-section-heading">
+
+                    <div>
+
+                        <span class="card-label">
+                            CULTIVATION
+                        </span>
+
+                        <h3>
+                            Seeds
+                        </h3>
+
+                    </div>
+
+                    <p>
+                        Seeds collected from harvesting
+                        and expeditions.
+                    </p>
+
+                </div>
+
+
+                <div class="inventory-grid">
+
+                    <!-- MOONMINT SEEDS -->
+
+                    <article class="inventory-card">
+
+                        <div class="inventory-icon">
+                            🌱
+                        </div>
+
+                        <div class="inventory-card-content">
+
+                            <span class="card-label">
+                                KNOWN SEED
+                            </span>
+
+                            <h4>
+                                Moonmint Seeds
+                            </h4>
+
+                            <p>
+                                Familiar seeds ready to be
+                                planted in the greenhouse.
+                            </p>
+
+                        </div>
+
+                        <div class="inventory-quantity">
+
+                            <span>
+                                OWNED
+                            </span>
+
+                            <strong id="inventoryMoonmintSeeds">
+                                0
+                            </strong>
+
+                        </div>
+
+                    </article>
+
+
+                    <!-- STRANGE SEEDS -->
+
+                    <article
+                        class="inventory-card strange-seed-card"
+                        id="strangeSeedCard">
+
+                        <div class="inventory-icon">
+                            ✦
+                        </div>
+
+                        <div class="inventory-card-content">
+
+                            <span class="card-label">
+                                UNIDENTIFIED
+                            </span>
+
+                            <h4>
+                                Strange Seed
+                            </h4>
+
+                            <p>
+                                An unfamiliar seed gathered
+                                somewhere beyond the greenhouse.
+                                What might grow from it is unknown.
+                            </p>
+
+                        </div>
+
+                        <div class="inventory-quantity">
+
+                            <span>
+                                OWNED
+                            </span>
+
+                            <strong id="inventoryStrangeSeeds">
+                                0
+                            </strong>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================
+                 POTIONS
+            ================================== -->
+
+            <section class="inventory-section">
+
+                <div class="inventory-section-heading">
+
+                    <div>
+
+                        <span class="card-label">
+                            BREWED REMEDIES
+                        </span>
+
+                        <h3>
+                            Potions
+                        </h3>
+
+                    </div>
+
+                    <p>
+                        Finished remedies ready to be
+                        sold at the Apothecary.
+                    </p>
+
+                </div>
+
+
+                <div class="inventory-grid">
+
+                    <article class="inventory-card">
+
+                        <div class="inventory-icon">
+                            🧪
+                        </div>
+
+                        <div class="inventory-card-content">
+
+                            <span class="card-label">
+                                REMEDY
+                            </span>
+
+                            <h4>
+                                Potion of Calm
+                            </h4>
+
+                            <p>
+                                A soothing Moonmint remedy
+                                discovered through experimentation.
+                            </p>
+
+                        </div>
+
+                        <div class="inventory-quantity">
+
+                            <span>
+                                OWNED
+                            </span>
+
+                            <strong id="inventoryCalmPotions">
+                                0
+                            </strong>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- =========================================
+     JAVASCRIPT
+========================================== -->
+
+<script src="js/game.js"></script>
+<script src="js/navigation.js"></script>
+<script src="js/inventory.js"></script>
+
+</body>
+
+</html>
