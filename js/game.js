@@ -1,9 +1,85 @@
 // ==========================================
 // MOSSWOOD APOTHECARY
 // Shared Game Data + Save System
+// V2 - Central Data Integration
 // ==========================================
 
 const SAVE_KEY = "mosswoodSave";
+
+
+// ==========================================
+// BUILD DEFAULT INVENTORY
+// ==========================================
+
+function buildDefaultInventory() {
+
+    const inventory = {};
+
+    Object.values(PLANT_DATA).forEach(
+        plant => {
+
+            inventory[plant.id] = 0;
+
+        }
+    );
+
+    return inventory;
+
+}
+
+
+// ==========================================
+// BUILD DEFAULT SEEDS
+// ==========================================
+
+function buildDefaultSeeds() {
+
+    const seeds = {};
+
+    Object.values(PLANT_DATA).forEach(
+        plant => {
+
+            seeds[plant.id] =
+                plant.startingSeeds || 0;
+
+        }
+    );
+
+
+    Object.values(SPECIAL_SEED_DATA).forEach(
+        seed => {
+
+            seeds[seed.id] =
+                seed.startingAmount || 0;
+
+        }
+    );
+
+    return seeds;
+
+}
+
+
+// ==========================================
+// BUILD DEFAULT POTIONS
+// ==========================================
+
+function buildDefaultPotions() {
+
+    const potions = {};
+
+    Object.values(POTION_DATA).forEach(
+        potion => {
+
+            potions[potion.id] =
+                potion.startingAmount || 0;
+
+        }
+    );
+
+    return potions;
+
+}
 
 
 // ==========================================
@@ -12,62 +88,18 @@ const SAVE_KEY = "mosswoodSave";
 
 const defaultGame = {
 
-    // --------------------------------------
-    // CURRENCY
-    // --------------------------------------
-
     coins: 100,
 
+    inventory:
+        buildDefaultInventory(),
 
-    // --------------------------------------
-    // INGREDIENT INVENTORY
-    // --------------------------------------
+    seeds:
+        buildDefaultSeeds(),
 
-    inventory: {
-
-        moonmint: 0,
-
-        nightbell: 0
-
-    },
-
-
-    // --------------------------------------
-    // SEEDS
-    // --------------------------------------
-
-    seeds: {
-
-        moonmint: 3,
-
-        unknown: 0,
-
-        nightbell: 0
-
-    },
-
-
-    // --------------------------------------
-    // POTIONS
-    // --------------------------------------
-
-    potions: {
-
-        calm: 0
-
-    },
-
-
-    // --------------------------------------
-    // DISCOVERIES
-    // --------------------------------------
+    potions:
+        buildDefaultPotions(),
 
     discoveries: [],
-
-
-    // --------------------------------------
-    // GREENHOUSE
-    // --------------------------------------
 
     greenhouse: {
 
@@ -82,36 +114,20 @@ const defaultGame = {
 
     },
 
-
-    // --------------------------------------
-    // FORAGING
-    // --------------------------------------
-
     forage: {
 
         active: false,
-
         location: null,
-
         startedAt: null,
-
         finishesAt: null,
-
         lastResult: null
 
     },
 
-
-    // --------------------------------------
-    // UPGRADES
-    // --------------------------------------
-
     upgrades: {
 
         expansion: 0,
-
         irrigation: 0,
-
         growth: 0
 
     }
@@ -156,7 +172,6 @@ function loadGame() {
         const oldGame =
             JSON.parse(saved);
 
-
         const newGame =
             getDefaultGame();
 
@@ -166,8 +181,7 @@ function loadGame() {
         // ----------------------------------
 
         if (
-            typeof oldGame.coins
-            === "number"
+            typeof oldGame.coins === "number"
         ) {
 
             newGame.coins =
@@ -181,13 +195,13 @@ function loadGame() {
         // ----------------------------------
 
         if (
-            oldGame.inventory
+            oldGame.inventory &&
+            typeof oldGame.inventory === "object"
         ) {
 
             newGame.inventory = {
 
                 ...newGame.inventory,
-
                 ...oldGame.inventory
 
             };
@@ -200,13 +214,13 @@ function loadGame() {
         // ----------------------------------
 
         if (
-            oldGame.seeds
+            oldGame.seeds &&
+            typeof oldGame.seeds === "object"
         ) {
 
             newGame.seeds = {
 
                 ...newGame.seeds,
-
                 ...oldGame.seeds
 
             };
@@ -220,14 +234,12 @@ function loadGame() {
 
         if (
             oldGame.potions &&
-            typeof oldGame.potions
-            === "object"
+            typeof oldGame.potions === "object"
         ) {
 
             newGame.potions = {
 
                 ...newGame.potions,
-
                 ...oldGame.potions
 
             };
@@ -255,7 +267,7 @@ function loadGame() {
         // GREENHOUSE
         // ----------------------------------
 
-        // Support very old saves that stored
+        // Support older saves that stored
         // plots directly on the game object.
 
         if (
@@ -271,13 +283,13 @@ function loadGame() {
 
 
         if (
-            oldGame.greenhouse
+            oldGame.greenhouse &&
+            typeof oldGame.greenhouse === "object"
         ) {
 
             newGame.greenhouse = {
 
                 ...newGame.greenhouse,
-
                 ...oldGame.greenhouse
 
             };
@@ -302,13 +314,13 @@ function loadGame() {
         // ----------------------------------
 
         if (
-            oldGame.forage
+            oldGame.forage &&
+            typeof oldGame.forage === "object"
         ) {
 
             newGame.forage = {
 
                 ...newGame.forage,
-
                 ...oldGame.forage
 
             };
@@ -321,13 +333,13 @@ function loadGame() {
         // ----------------------------------
 
         if (
-            oldGame.upgrades
+            oldGame.upgrades &&
+            typeof oldGame.upgrades === "object"
         ) {
 
             newGame.upgrades = {
 
                 ...newGame.upgrades,
-
                 ...oldGame.upgrades
 
             };
@@ -336,11 +348,8 @@ function loadGame() {
 
 
         // ----------------------------------
-        // OLD UPGRADE MIGRATION
+        // UPGRADE SAFETY
         // ----------------------------------
-
-        // Some older saves used different
-        // upgrade property names.
 
         if (
             typeof newGame.upgrades.expansion
@@ -372,6 +381,90 @@ function loadGame() {
         }
 
 
+        // ----------------------------------
+        // ENSURE ALL PLANTS EXIST
+        // ----------------------------------
+
+        Object.values(PLANT_DATA).forEach(
+            plant => {
+
+                if (
+                    typeof newGame.inventory[
+                        plant.id
+                    ] !== "number"
+                ) {
+
+                    newGame.inventory[
+                        plant.id
+                    ] = 0;
+
+                }
+
+
+                if (
+                    typeof newGame.seeds[
+                        plant.id
+                    ] !== "number"
+                ) {
+
+                    newGame.seeds[
+                        plant.id
+                    ] = 0;
+
+                }
+
+            }
+        );
+
+
+        // ----------------------------------
+        // ENSURE SPECIAL SEEDS EXIST
+        // ----------------------------------
+
+        Object.values(
+            SPECIAL_SEED_DATA
+        ).forEach(
+            seed => {
+
+                if (
+                    typeof newGame.seeds[
+                        seed.id
+                    ] !== "number"
+                ) {
+
+                    newGame.seeds[
+                        seed.id
+                    ] = 0;
+
+                }
+
+            }
+        );
+
+
+        // ----------------------------------
+        // ENSURE ALL POTIONS EXIST
+        // ----------------------------------
+
+        Object.values(POTION_DATA).forEach(
+            potion => {
+
+                if (
+                    typeof newGame.potions[
+                        potion.id
+                    ] !== "number"
+                ) {
+
+                    newGame.potions[
+                        potion.id
+                    ] = 0;
+
+                }
+
+            }
+        );
+
+
         return newGame;
 
     }
@@ -382,7 +475,6 @@ function loadGame() {
             "Mosswood save could not be loaded:",
             error
         );
-
 
         return getDefaultGame();
 
@@ -426,16 +518,12 @@ function getTotalPotions() {
         (total, amount) => {
 
             if (
-                typeof amount
-                === "number"
+                typeof amount === "number"
             ) {
 
-                return (
-                    total + amount
-                );
+                return total + amount;
 
             }
-
 
             return total;
 
@@ -461,16 +549,12 @@ function getTotalIngredients() {
         (total, amount) => {
 
             if (
-                typeof amount
-                === "number"
+                typeof amount === "number"
             ) {
 
-                return (
-                    total + amount
-                );
+                return total + amount;
 
             }
-
 
             return total;
 
@@ -494,12 +578,10 @@ function updateResourceBar() {
             "coins"
         );
 
-
     const plantsElement =
         document.getElementById(
             "plants"
         );
-
 
     const potionsElement =
         document.getElementById(
@@ -507,9 +589,7 @@ function updateResourceBar() {
         );
 
 
-    if (
-        coinsElement
-    ) {
+    if (coinsElement) {
 
         coinsElement.textContent =
             game.coins;
@@ -517,9 +597,7 @@ function updateResourceBar() {
     }
 
 
-    if (
-        plantsElement
-    ) {
+    if (plantsElement) {
 
         plantsElement.textContent =
             getTotalIngredients();
@@ -527,9 +605,7 @@ function updateResourceBar() {
     }
 
 
-    if (
-        potionsElement
-    ) {
+    if (potionsElement) {
 
         potionsElement.textContent =
             getTotalPotions();
@@ -579,7 +655,6 @@ function addIngredient(
 
 
     saveGame();
-
     updateResourceBar();
 
 }
@@ -611,9 +686,7 @@ function removeIngredient(
 
 
     saveGame();
-
     updateResourceBar();
-
 
     return true;
 
@@ -664,6 +737,38 @@ function addSeeds(
 }
 
 
+function removeSeeds(
+    seed,
+    amount = 1
+) {
+
+    const current =
+        getSeedAmount(
+            seed
+        );
+
+
+    if (
+        current < amount
+    ) {
+
+        return false;
+
+    }
+
+
+    game.seeds[
+        seed
+    ] -= amount;
+
+
+    saveGame();
+
+    return true;
+
+}
+
+
 // ==========================================
 // POTION HELPERS
 // ==========================================
@@ -704,8 +809,40 @@ function addPotion(
 
 
     saveGame();
-
     updateResourceBar();
+
+}
+
+
+function removePotion(
+    potion,
+    amount = 1
+) {
+
+    const current =
+        getPotionAmount(
+            potion
+        );
+
+
+    if (
+        current < amount
+    ) {
+
+        return false;
+
+    }
+
+
+    game.potions[
+        potion
+    ] -= amount;
+
+
+    saveGame();
+    updateResourceBar();
+
+    return true;
 
 }
 
@@ -747,8 +884,59 @@ function addDiscovery(
 
     saveGame();
 
-
     return true;
+
+}
+
+
+// ==========================================
+// PLANT DISCOVERY HELPER
+// ==========================================
+
+function isPlantKnown(
+    plantId
+) {
+
+    const plant =
+        getPlantData(
+            plantId
+        );
+
+
+    if (!plant) {
+
+        return false;
+
+    }
+
+
+    if (
+        plant.alwaysKnown
+    ) {
+
+        return true;
+
+    }
+
+
+    return hasDiscovered(
+        plant.id
+    );
+
+}
+
+
+// ==========================================
+// RECIPE DISCOVERY HELPER
+// ==========================================
+
+function isRecipeKnown(
+    recipeId
+) {
+
+    return hasDiscovered(
+        recipeId
+    );
 
 }
 
@@ -782,7 +970,6 @@ function resetMosswoodSave() {
 
 
     saveGame();
-
 
     window.location.reload();
 
