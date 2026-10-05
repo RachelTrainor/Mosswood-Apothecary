@@ -116,12 +116,14 @@ function createNavigation() {
 
             <!-- INVENTORY -->
 
-            <span
-                class="nav-button nav-disabled">
+            <a
+    class="nav-button nav-link
+    ${currentPage === "inventory.html" ? "active" : ""}"
+    href="inventory.html">
 
-                🎒 Inventory
+    🎒 Inventory
 
-            </span>
+</a>
 
         </nav>
 
