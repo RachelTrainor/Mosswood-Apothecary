@@ -1,1 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Grimoire | Mosswood Apothecary</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="game">
+
+    <!-- =====================================
+         SHARED SIDEBAR
+    ====================================== -->
+
+    <aside
+        class="sidebar"
+        id="sidebar">
+    </aside>
+
+
+    <!-- =====================================
+         MAIN CONTENT
+    ====================================== -->
+
+    <main class="content">
+
+        <!-- =================================
+             SHARED RESOURCE BAR
+        ================================== -->
+
+        <header
+            class="topbar"
+            id="topbar">
+        </header>
+
+
+        <!-- =================================
+             GRIMOIRE
+        ================================== -->
+
+        <section class="screen">
+
+            <p class="eyebrow">
+                MOSSWOOD ARCHIVES
+            </p>
+
+            <h2>
+                Grimoire
+            </h2>
+
+            <p class="description">
+                A record of your discoveries, experiments,
+                and the strange properties hidden within
+                the plants of Mosswood.
+            </p>
+
+
+            <!-- =============================
+                 DISCOVERY SUMMARY
+            ============================== -->
+
+            <section class="grimoire-summary">
+
+                <div>
+
+                    <span class="card-label">
+                        RESEARCH JOURNAL
+                    </span>
+
+                    <h3>
+                        Potion Discoveries
+                    </h3>
+
+                    <p>
+                        Successful experiments are recorded
+                        here automatically.
+                    </p>
+
+                </div>
+
+                <div class="grimoire-count">
+
+                    <span id="discoveredRecipeCount">
+                        0
+                    </span>
+
+                    <small>
+                        DISCOVERED
+                    </small>
+
+                </div>
+
+            </section>
+
+
+            <!-- =============================
+                 RECIPE COLLECTION
+            ============================== -->
+
+            <section class="grimoire-section">
+
+                <div class="grimoire-section-heading">
+
+                    <div>
+
+                        <span class="card-label">
+                            POTION RECIPES
+                        </span>
+
+                        <h3>
+                            Known Formulas
+                        </h3>
+
+                    </div>
+
+                    <p>
+                        Experiment in the Potion Room to
+                        uncover new formulas.
+                    </p>
+
+                </div>
+
+
+                <div
+                    class="recipe-grid"
+                    id="recipeGrid">
+                </div>
+
+            </section>
+
+
+            <!-- =============================
+                 INGREDIENT NOTES
+            ============================== -->
+
+            <section class="grimoire-section">
+
+                <div class="grimoire-section-heading">
+
+                    <div>
+
+                        <span class="card-label">
+                            BOTANICAL NOTES
+                        </span>
+
+                        <h3>
+                            Known Ingredients
+                        </h3>
+
+                    </div>
+
+                </div>
+
+
+                <div class="botanical-grid">
+
+                    <article class="botanical-card">
+
+                        <div class="botanical-icon">
+                            🌿
+                        </div>
+
+                        <div>
+
+                            <span class="card-label">
+                                DISCOVERED PLANT
+                            </span>
+
+                            <h4>
+                                Moonmint
+                            </h4>
+
+                            <p>
+                                A cool, fragrant herb that
+                                thrives beneath the glass of
+                                the Mosswood greenhouse.
+                            </p>
+
+                            <div class="trait-list">
+
+                                <span class="trait">
+                                    Calming
+                                </span>
+
+                                <span class="trait unknown-trait">
+                                    ???
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- =========================================
+     JAVASCRIPT
+========================================== -->
+
+<script src="js/game.js"></script>
+<script src="js/navigation.js"></script>
+<script src="js/grimoire.js"></script>
+
+</body>
+
+</html>
