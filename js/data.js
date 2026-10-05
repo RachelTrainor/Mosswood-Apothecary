@@ -1,7 +1,7 @@
 // ==========================================
 // MOSSWOOD APOTHECARY
 // Central Game Data
-// V5 - Ghostcap
+// V6 - Dynamic Planting Materials
 // ==========================================
 
 
@@ -28,6 +28,23 @@ const PLANT_DATA = {
 
         seedIcon:
             "🌱",
+
+        plantingItem: {
+            singular:
+                "Moonmint Seed",
+
+            plural:
+                "Moonmint Seeds",
+
+            genericSingular:
+                "seed",
+
+            genericPlural:
+                "seeds",
+
+            icon:
+                "🌱"
+        },
 
         type:
             "Herb",
@@ -74,6 +91,23 @@ const PLANT_DATA = {
         seedIcon:
             "🪻",
 
+        plantingItem: {
+            singular:
+                "Nightbell Seed",
+
+            plural:
+                "Nightbell Seeds",
+
+            genericSingular:
+                "seed",
+
+            genericPlural:
+                "seeds",
+
+            icon:
+                "🪻"
+        },
+
         type:
             "Woodland Flower",
 
@@ -117,7 +151,24 @@ const PLANT_DATA = {
             "🍄",
 
         seedIcon:
-            "🍄",
+            "✨",
+
+        plantingItem: {
+            singular:
+                "Ghostcap Spore",
+
+            plural:
+                "Ghostcap Spores",
+
+            genericSingular:
+                "spore",
+
+            genericPlural:
+                "spores",
+
+            icon:
+                "✨"
+        },
 
         type:
             "Marsh Fungus",
@@ -152,29 +203,12 @@ const PLANT_DATA = {
 // MYSTERY SEED SETTINGS
 // ==========================================
 //
-// Mystery seeds are intentionally NOT tied
-// to one specific plant here.
+// Mystery planting materials remain stored
+// internally as mysterySeeds for save-system
+// compatibility.
 //
-// The actual plant hidden inside a mystery
-// seed is stored with that individual seed
-// inside the player's save.
-//
-// Example:
-//
-// {
-//     id: "mystery_seed_1",
-//     revealsPlant: "nightbell"
-// }
-//
-// Another seed could be:
-//
-// {
-//     id: "mystery_seed_2",
-//     revealsPlant: "ghostcap"
-// }
-//
-// Both appear to the player as a
-// "Strange Seed" until planted and revealed.
+// The player sees a generic Strange Seed
+// until the hidden botanical is revealed.
 // ==========================================
 
 const SPECIAL_SEED_DATA = {
@@ -766,6 +800,114 @@ function getPlantIcon(
 
 
     return plant.icon;
+
+}
+
+
+// ==========================================
+// PLANTING MATERIAL HELPERS
+// ==========================================
+
+function getPlantingItemName(
+    plantId,
+    amount = 1
+) {
+
+    const plant =
+        getPlantData(
+            plantId
+        );
+
+
+    if (!plant) {
+
+        return amount === 1
+            ? "Unknown Seed"
+            : "Unknown Seeds";
+
+    }
+
+
+    if (
+        plant.plantingItem
+    ) {
+
+        return amount === 1
+            ? plant.plantingItem.singular
+            : plant.plantingItem.plural;
+
+    }
+
+
+    return amount === 1
+        ? `${plant.name} Seed`
+        : `${plant.name} Seeds`;
+
+}
+
+
+function getPlantingItemGenericName(
+    plantId,
+    amount = 1
+) {
+
+    const plant =
+        getPlantData(
+            plantId
+        );
+
+
+    if (
+        plant &&
+        plant.plantingItem
+    ) {
+
+        return amount === 1
+            ? plant.plantingItem.genericSingular
+            : plant.plantingItem.genericPlural;
+
+    }
+
+
+    return amount === 1
+        ? "seed"
+        : "seeds";
+
+}
+
+
+function getPlantingItemIcon(
+    plantId
+) {
+
+    const plant =
+        getPlantData(
+            plantId
+        );
+
+
+    if (!plant) {
+
+        return "🌱";
+
+    }
+
+
+    if (
+        plant.plantingItem &&
+        plant.plantingItem.icon
+    ) {
+
+        return plant.plantingItem.icon;
+
+    }
+
+
+    return (
+        plant.seedIcon ||
+        plant.icon ||
+        "🌱"
+    );
 
 }
 
