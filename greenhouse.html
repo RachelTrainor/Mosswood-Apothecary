@@ -86,17 +86,6 @@
 
                 </div>
 
-
-                <div class="seed-counter">
-
-                    Moonmint Seeds
-
-                    <strong id="moonmintSeeds">
-                        0
-                    </strong>
-
-                </div>
-
             </div>
 
 
@@ -109,64 +98,6 @@
                 class="plots"
                 id="plots">
             </div>
-
-
-            <!-- =============================
-                 HARVEST STORAGE
-            ============================== -->
-
-            <section class="inventory-panel">
-
-                <div class="inventory-title">
-
-                    <div>
-
-                        <span class="card-label">
-                            HARVEST STORAGE
-                        </span>
-
-                        <h3>
-                            Ingredients
-                        </h3>
-
-                    </div>
-
-                </div>
-
-
-                <!-- MOONMINT -->
-
-                <div class="ingredient-card">
-
-                    <div class="ingredient-icon">
-                        🌿
-                    </div>
-
-
-                    <div>
-
-                        <strong>
-                            Moonmint
-                        </strong>
-
-                        <p>
-                            A cool, fragrant herb with calming properties.
-                        </p>
-
-                    </div>
-
-
-                    <span
-                        class="ingredient-count"
-                        id="moonmintInventory">
-
-                        0
-
-                    </span>
-
-                </div>
-
-            </section>
 
 
             <!-- =============================
@@ -191,15 +122,20 @@
 <!-- =========================================
      JAVASCRIPT
 
-     1. game.js
+     data.js
+        Contains plant, potion, recipe,
+        and other shared game data.
+
+     game.js
         Loads shared save data.
 
-     2. navigation.js
+     navigation.js
         Creates sidebar and resource bar.
 
-     3. greenhouse.js
+     greenhouse.js
         Controls planting, watering,
-        growing, and harvesting.
+        growing, harvesting, and
+        mystery plant discovery.
 ========================================== -->
 
 <script src="js/data.js"></script>
