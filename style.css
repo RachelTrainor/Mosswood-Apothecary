@@ -4280,6 +4280,10 @@ nav {
 }
 
 
+/* ==================================================
+   MAIN ENTRANCE
+================================================== */
+
 .mosswood-entrance {
     position: relative;
 
@@ -4330,9 +4334,9 @@ nav {
     background:
         radial-gradient(
             ellipse at center,
-            transparent 35%,
-            rgba(4, 7, 4, 0.18) 65%,
-            rgba(3, 5, 3, 0.72) 100%
+            transparent 38%,
+            rgba(4, 7, 4, 0.12) 65%,
+            rgba(3, 5, 3, 0.58) 100%
         );
 
     pointer-events: none;
@@ -4351,7 +4355,6 @@ nav {
     z-index: 3;
 
     width: min(64vw, 760px);
-
     height: auto;
 
     margin-top: -70px;
@@ -4363,7 +4366,10 @@ nav {
         );
 
     animation:
-        mosswood-sign-enter 1.2s ease-out both;
+        mosswood-sign-enter
+        1.2s
+        ease-out
+        both;
 }
 
 
@@ -4376,17 +4382,16 @@ nav {
 
     z-index: 4;
 
-    width: min(520px, 70vw);
+    width: min(470px, 62vw);
 
-    margin-top: -22px;
+    margin-top: -18px;
 
     text-align: center;
 
-    color: #eee4cc;
+    color: #d6c9a8;
 
     text-shadow:
-        0 2px 8px
-        rgba(0, 0, 0, 0.95);
+        0 2px 5px rgba(0, 0, 0, 0.95);
 
     animation:
         mosswood-copy-enter
@@ -4396,6 +4401,8 @@ nav {
         both;
 }
 
+
+/* Main story line */
 
 .mosswood-intro-copy p {
     margin: 0;
@@ -4407,42 +4414,59 @@ nav {
 
     font-size:
         clamp(
-            0.9rem,
-            1.35vw,
-            1.15rem
+            0.72rem,
+            1vw,
+            0.92rem
         );
 
     font-style: italic;
+    font-weight: normal;
 
-    line-height: 1.5;
+    line-height: 1.45;
+
+    color: #e0d4b8;
+
+    opacity: 0.88;
+
+    letter-spacing: 0.015em;
 }
 
+
+/* Grow / Forage / Brew line */
 
 .mosswood-intro-copy span {
     display: block;
 
-    max-width: 480px;
+    max-width: 440px;
 
     margin:
-        10px
+        9px
         auto
         0;
 
     font-family:
-        Arial,
-        sans-serif;
+        Georgia,
+        "Times New Roman",
+        serif;
 
-    font-size: 0.62rem;
+    font-size:
+        clamp(
+            0.48rem,
+            0.6vw,
+            0.58rem
+        );
+
+    font-weight: normal;
 
     letter-spacing: 0.16em;
 
-    line-height: 1.6;
+    line-height: 1.65;
 
     text-transform: uppercase;
 
-    color: #d2c69d;
+    color: #b9ad8b;
 
-    opacity: 0.78;
+    opacity: 0.72;
 }
 
 
@@ -4459,7 +4483,7 @@ nav {
 
     width: min(360px, 52vw);
 
-    margin-top: 25px;
+    margin-top: 24px;
 
     transition:
         transform 0.25s ease,
@@ -4488,6 +4512,8 @@ nav {
 }
 
 
+/* Button hover */
+
 .mosswood-enter:hover {
     transform:
         translateY(-4px)
@@ -4501,6 +4527,8 @@ nav {
         );
 }
 
+
+/* Button click */
 
 .mosswood-enter:active {
     transform:
@@ -4524,27 +4552,28 @@ nav {
         0;
 
     font-family:
-        Arial,
-        sans-serif;
+        Georgia,
+        "Times New Roman",
+        serif;
 
-    font-size: 0.65rem;
+    font-size: 0.52rem;
 
-    letter-spacing: 0.16em;
+    letter-spacing: 0.14em;
 
     text-transform: uppercase;
 
-    color: #d1c59b;
+    color: #a99e80;
 
-    opacity: 0.65;
+    opacity: 0.6;
 
     text-shadow:
         0 2px 5px
-        rgba(0, 0, 0, 0.8);
+        rgba(0, 0, 0, 0.9);
 }
 
 
 /* ==================================================
-   ANIMATIONS
+   ENTRANCE ANIMATIONS
 ================================================== */
 
 @keyframes mosswood-sign-enter {
@@ -4574,7 +4603,7 @@ nav {
         opacity: 0;
 
         transform:
-            translateY(15px);
+            translateY(12px);
     }
 
     to {
@@ -4633,33 +4662,41 @@ nav {
 
 
     .mosswood-intro-copy {
-        width: 82vw;
+        width: 76vw;
 
-        margin-top: -20px;
+        margin-top: -14px;
     }
 
 
     .mosswood-intro-copy p {
-        font-size: 0.95rem;
+        font-size: 0.78rem;
+
+        line-height: 1.45;
     }
 
 
     .mosswood-intro-copy span {
-        font-size: 0.6rem;
+        max-width: 320px;
 
-        line-height: 1.7;
+        font-size: 0.48rem;
+
+        letter-spacing: 0.12em;
+
+        line-height: 1.6;
     }
 
 
     .mosswood-enter {
         width: 65vw;
 
-        margin-top: 18px;
+        margin-top: 20px;
     }
 
 
     .mosswood-save-note {
-        font-size: 0.55rem;
+        font-size: 0.47rem;
+
+        letter-spacing: 0.11em;
     }
 
 }
