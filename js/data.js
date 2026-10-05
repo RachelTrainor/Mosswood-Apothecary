@@ -1,7 +1,7 @@
 // ==========================================
 // MOSSWOOD APOTHECARY
 // Central Game Data
-// V3 - Expanded Potion Recipes
+// V4
 // ==========================================
 
 
@@ -17,15 +17,20 @@ const PLANT_DATA = {
 
     moonmint: {
 
-        id: "moonmint",
+        id:
+            "moonmint",
 
-        name: "Moonmint",
+        name:
+            "Moonmint",
 
-        icon: "🌿",
+        icon:
+            "🌿",
 
-        seedIcon: "🌱",
+        seedIcon:
+            "🌱",
 
-        type: "Herb",
+        type:
+            "Herb",
 
         description:
             "A cool-scented herb commonly cultivated in the Mosswood greenhouse.",
@@ -57,13 +62,17 @@ const PLANT_DATA = {
 
     nightbell: {
 
-        id: "nightbell",
+        id:
+            "nightbell",
 
-        name: "Nightbell",
+        name:
+            "Nightbell",
 
-        icon: "🪻",
+        icon:
+            "🪻",
 
-        seedIcon: "🪻",
+        seedIcon:
+            "🪻",
 
         type:
             "Woodland Flower",
@@ -102,8 +111,8 @@ const PLANT_DATA = {
 // to one specific plant here.
 //
 // The actual plant hidden inside a mystery
-// seed will be stored with that individual
-// seed in the player's save.
+// seed is stored with that individual seed
+// inside the player's save.
 //
 // Example:
 //
@@ -655,56 +664,6 @@ const RECIPE_DATA = {
 
 
 // ==========================================
-// FORAGING LOCATIONS
-// ==========================================
-
-const FORAGE_LOCATION_DATA = {
-
-    forest: {
-
-        id:
-            "forest",
-
-        name:
-            "Mosswood Forest",
-
-        unlocked:
-            true
-
-    },
-
-
-    marsh: {
-
-        id:
-            "marsh",
-
-        name:
-            "Mistfen Marsh",
-
-        unlocked:
-            false
-
-    },
-
-
-    ruins: {
-
-        id:
-            "ruins",
-
-        name:
-            "Hollowmere Ruins",
-
-        unlocked:
-            false
-
-    }
-
-};
-
-
-// ==========================================
 // PLANT HELPERS
 // ==========================================
 
@@ -713,7 +672,9 @@ function getPlantData(
 ) {
 
     return (
-        PLANT_DATA[plantId] ||
+        PLANT_DATA[
+            plantId
+        ] ||
         null
     );
 
@@ -729,11 +690,13 @@ function getPlantName(
             plantId
         );
 
+
     if (!plant) {
 
         return "Unknown Plant";
 
     }
+
 
     return plant.name;
 
@@ -749,11 +712,13 @@ function getPlantIcon(
             plantId
         );
 
+
     if (!plant) {
 
         return "❔";
 
     }
+
 
     return plant.icon;
 
@@ -769,7 +734,9 @@ function getPotionData(
 ) {
 
     return (
-        POTION_DATA[potionId] ||
+        POTION_DATA[
+            potionId
+        ] ||
         null
     );
 
@@ -785,7 +752,9 @@ function getRecipeData(
 ) {
 
     return (
-        RECIPE_DATA[recipeId] ||
+        RECIPE_DATA[
+            recipeId
+        ] ||
         null
     );
 
@@ -801,24 +770,8 @@ function getSpecialSeedData(
 ) {
 
     return (
-        SPECIAL_SEED_DATA[seedId] ||
-        null
-    );
-
-}
-
-
-// ==========================================
-// FORAGING LOCATION HELPERS
-// ==========================================
-
-function getForageLocationData(
-    locationId
-) {
-
-    return (
-        FORAGE_LOCATION_DATA[
-            locationId
+        SPECIAL_SEED_DATA[
+            seedId
         ] ||
         null
     );
