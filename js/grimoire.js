@@ -1,96 +1,8 @@
 // ==========================================
 // MOSSWOOD APOTHECARY
-// Grimoire V2
+// Grimoire V3
+// Dynamic Discovery System
 // ==========================================
-
-
-// ==========================================
-// BOTANICAL INFORMATION
-// ==========================================
-
-const grimoirePlants = [
-
-    {
-        id: "moonmint",
-        name: "Moonmint",
-        icon: "🌿",
-        type: "Herb",
-        description:
-            "A cool-scented herb commonly cultivated in the Mosswood greenhouse.",
-        notes:
-            "Known for its calming properties and pale, fragrant leaves.",
-        alwaysKnown: true
-    },
-
-    {
-        id: "nightbell",
-        name: "Nightbell",
-        icon: "🪻",
-        type: "Woodland Flower",
-        description:
-            "A dusky woodland flower first identified after cultivating a mysterious Strange Seed.",
-        notes:
-            "Its deeper alchemical properties remain uncertain. Experimentation may reveal more.",
-        alwaysKnown: false
-    }
-
-];
-
-
-// ==========================================
-// RECIPE INFORMATION
-// ==========================================
-
-const grimoireRecipes = [
-
-    {
-        id: "potionOfCalm",
-        name: "Potion of Calm",
-        icon: "⚗",
-        ingredients: [
-            "Moonmint",
-            "Moonmint"
-        ],
-        description:
-            "A pale green draught carrying the cool scent of Moonmint.",
-        effect:
-            "Calms the mind and settles restless thoughts."
-    },
-
-    {
-        id: "unknownRecipeTwo",
-        name: "???",
-        icon: "?",
-        ingredients: [],
-        description:
-            "This formula has not yet been discovered.",
-        effect:
-            "Unknown"
-    },
-
-    {
-        id: "unknownRecipeThree",
-        name: "???",
-        icon: "?",
-        ingredients: [],
-        description:
-            "The pages here remain strangely blank.",
-        effect:
-            "Unknown"
-    },
-
-    {
-        id: "unknownRecipeFour",
-        name: "???",
-        icon: "?",
-        ingredients: [],
-        description:
-            "Perhaps another combination will reveal its secrets.",
-        effect:
-            "Unknown"
-    }
-
-];
 
 
 // ==========================================
@@ -152,7 +64,11 @@ function createBotanicalEntry(
             <div class="botanical-content">
 
                 <span class="card-label">
-                    ${plant.type.toUpperCase()}
+                    ${
+                        plant.type
+                            ? plant.type.toUpperCase()
+                            : "BOTANICAL"
+                    }
                 </span>
 
 
@@ -173,7 +89,10 @@ function createBotanicalEntry(
                     </span>
 
                     <p>
-                        ${plant.notes}
+                        ${
+                            plant.fieldNotes ||
+                            "Further study may reveal more about this plant."
+                        }
                     </p>
 
                 </div>
@@ -265,7 +184,9 @@ function renderBotanicals() {
         "";
 
 
-    grimoirePlants.forEach(
+    Object.values(
+        PLANT_DATA
+    ).forEach(
         plant => {
 
             if (
@@ -295,6 +216,44 @@ function renderBotanicals() {
 
 
 // ==========================================
+// INGREDIENT DISPLAY
+// ==========================================
+
+function createIngredientDisplay(
+    ingredientId
+) {
+
+    const plant =
+        getPlantData(
+            ingredientId
+        );
+
+
+    if (!plant) {
+
+        return `
+
+            <span class="recipe-ingredient">
+                ? Unknown Ingredient
+            </span>
+
+        `;
+
+    }
+
+
+    return `
+
+        <span class="recipe-ingredient">
+            ${plant.icon} ${plant.name}
+        </span>
+
+    `;
+
+}
+
+
+// ==========================================
 // CREATE DISCOVERED RECIPE
 // ==========================================
 
@@ -302,16 +261,26 @@ function createDiscoveredRecipe(
     recipe
 ) {
 
+    const potion =
+        getPotionData(
+            recipe.potionId
+        );
+
+
+    if (!potion) {
+
+        return "";
+
+    }
+
+
     const ingredients =
         recipe.ingredients
             .map(
-                ingredient => `
-
-                    <span class="recipe-ingredient">
-                        🌿 ${ingredient}
-                    </span>
-
-                `
+                ingredient =>
+                    createIngredientDisplay(
+                        ingredient
+                    )
             )
             .join("");
 
@@ -323,7 +292,7 @@ function createDiscoveredRecipe(
             <div class="recipe-card-top">
 
                 <div class="recipe-icon">
-                    ${recipe.icon}
+                    ${potion.icon}
                 </div>
 
 
@@ -334,7 +303,7 @@ function createDiscoveredRecipe(
                     </span>
 
                     <h4>
-                        ${recipe.name}
+                        ${potion.name}
                     </h4>
 
                 </div>
@@ -343,7 +312,7 @@ function createDiscoveredRecipe(
 
 
             <p class="recipe-description">
-                ${recipe.description}
+                ${potion.description}
             </p>
 
 
@@ -370,7 +339,7 @@ function createDiscoveredRecipe(
                 </span>
 
                 <p>
-                    ${recipe.effect}
+                    ${potion.effect}
                 </p>
 
             </div>
@@ -386,7 +355,50 @@ function createDiscoveredRecipe(
 // CREATE UNKNOWN RECIPE
 // ==========================================
 
-function createUnknownRecipe() {
+function createUnknownRecipe(
+    recipe
+) {
+
+    const ingredientCount =
+        recipe.ingredients.length;
+
+
+    let mysteryIngredients =
+        "";
+
+
+    for (
+        let i = 0;
+        i < ingredientCount;
+        i++
+    ) {
+
+        mysteryIngredients += `
+
+            <span>
+                ???
+            </span>
+
+        `;
+
+
+        if (
+            i <
+            ingredientCount - 1
+        ) {
+
+            mysteryIngredients += `
+
+                <span>
+                    +
+                </span>
+
+            `;
+
+        }
+
+    }
+
 
     return `
 
@@ -415,17 +427,7 @@ function createUnknownRecipe() {
 
             <div class="mystery-recipe">
 
-                <span>
-                    ???
-                </span>
-
-                <span>
-                    +
-                </span>
-
-                <span>
-                    ???
-                </span>
+                ${mysteryIngredients}
 
             </div>
 
@@ -459,7 +461,9 @@ function renderRecipes() {
         "";
 
 
-    grimoireRecipes.forEach(
+    Object.values(
+        RECIPE_DATA
+    ).forEach(
         recipe => {
 
             if (
@@ -478,7 +482,9 @@ function renderRecipes() {
             else {
 
                 recipeGrid.innerHTML +=
-                    createUnknownRecipe();
+                    createUnknownRecipe(
+                        recipe
+                    );
 
             }
 
@@ -494,6 +500,10 @@ function renderRecipes() {
 
 function renderDiscoveryCount() {
 
+    // --------------------------------------
+    // RECIPES
+    // --------------------------------------
+
     const recipeCountElement =
         document.getElementById(
             "discoveredRecipeCount"
@@ -505,7 +515,9 @@ function renderDiscoveryCount() {
     ) {
 
         const discoveredRecipes =
-            grimoireRecipes.filter(
+            Object.values(
+                RECIPE_DATA
+            ).filter(
                 recipe =>
                     isRecipeDiscovered(
                         recipe
@@ -519,6 +531,10 @@ function renderDiscoveryCount() {
     }
 
 
+    // --------------------------------------
+    // PLANTS
+    // --------------------------------------
+
     const plantCountElement =
         document.getElementById(
             "discoveredPlantCount"
@@ -530,7 +546,9 @@ function renderDiscoveryCount() {
     ) {
 
         const discoveredPlants =
-            grimoirePlants.filter(
+            Object.values(
+                PLANT_DATA
+            ).filter(
                 plant =>
                     isPlantDiscovered(
                         plant
