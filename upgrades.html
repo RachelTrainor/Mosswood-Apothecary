@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Upgrades | Mosswood Apothecary</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="game">
+
+    <!-- =====================================
+         SHARED SIDEBAR
+    ====================================== -->
+
+    <aside
+        class="sidebar"
+        id="sidebar">
+    </aside>
+
+
+    <!-- =====================================
+         MAIN CONTENT
+    ====================================== -->
+
+    <main class="content">
+
+        <header
+            class="topbar"
+            id="topbar">
+        </header>
+
+
+        <!-- =================================
+             UPGRADES
+        ================================== -->
+
+        <section class="screen">
+
+            <p class="eyebrow">
+                MOSSWOOD GROUNDS
+            </p>
+
+            <h2>
+                Upgrades
+            </h2>
+
+            <p class="description">
+                Invest the coins earned from your apothecary
+                into the greenhouse and improve the way your
+                plants are grown and cared for.
+            </p>
+
+
+            <!-- =============================
+                 SUMMARY
+            ============================== -->
+
+            <section class="upgrade-summary">
+
+                <div>
+
+                    <span class="card-label">
+                        GREENHOUSE IMPROVEMENTS
+                    </span>
+
+                    <h3>
+                        Restore the Grounds
+                    </h3>
+
+                    <p>
+                        Each improvement permanently strengthens
+                        your greenhouse and makes growing plants easier.
+                    </p>
+
+                </div>
+
+                <div class="upgrade-wallet">
+
+                    <span>
+                        AVAILABLE COINS
+                    </span>
+
+                    <strong>
+                        🪙
+                        <span id="upgradeCoins">
+                            0
+                        </span>
+                    </strong>
+
+                </div>
+
+            </section>
+
+
+            <!-- =============================
+                 UPGRADE CARDS
+            ============================== -->
+
+            <section class="upgrade-section">
+
+                <div class="upgrade-section-heading">
+
+                    <div>
+
+                        <span class="card-label">
+                            IMPROVEMENTS
+                        </span>
+
+                        <h3>
+                            Greenhouse Upgrades
+                        </h3>
+
+                    </div>
+
+                    <p>
+                        Upgrade costs increase as the greenhouse
+                        becomes more advanced.
+                    </p>
+
+                </div>
+
+
+                <div class="upgrade-grid">
+
+
+                    <!-- =====================
+                         EXPANSION
+                    ====================== -->
+
+                    <article class="upgrade-card">
+
+                        <div class="upgrade-icon">
+                            🌿
+                        </div>
+
+                        <span class="card-label">
+                            GREENHOUSE
+                        </span>
+
+                        <h4>
+                            Greenhouse Expansion
+                        </h4>
+
+                        <p>
+                            Restore additional growing space
+                            and increase the number of plants
+                            you can grow at once.
+                        </p>
+
+
+                        <div class="upgrade-level">
+
+                            <span>
+                                CURRENT LEVEL
+                            </span>
+
+                            <strong id="expansionLevel">
+                                0
+                            </strong>
+
+                        </div>
+
+
+                        <div class="upgrade-benefit">
+
+                            <span>
+                                NEXT IMPROVEMENT
+                            </span>
+
+                            <p id="expansionBenefit">
+                                Unlock additional growing space.
+                            </p>
+
+                        </div>
+
+
+                        <button
+                            class="upgrade-button"
+                            id="buyExpansion">
+
+                            Upgrade · 🪙
+                            <span id="expansionCost">
+                                50
+                            </span>
+
+                        </button>
+
+                    </article>
+
+
+                    <!-- =====================
+                         IRRIGATION
+                    ====================== -->
+
+                    <article class="upgrade-card">
+
+                        <div class="upgrade-icon">
+                            💧
+                        </div>
+
+                        <span class="card-label">
+                            WATERING
+                        </span>
+
+                        <h4>
+                            Irrigation
+                        </h4>
+
+                        <p>
+                            Improve the greenhouse watering
+                            system so plants remain hydrated
+                            for longer periods of time.
+                        </p>
+
+
+                        <div class="upgrade-level">
+
+                            <span>
+                                CURRENT LEVEL
+                            </span>
+
+                            <strong id="irrigationLevel">
+                                0
+                            </strong>
+
+                        </div>
+
+
+                        <div class="upgrade-benefit">
+
+                            <span>
+                                NEXT IMPROVEMENT
+                            </span>
+
+                            <p id="irrigationBenefit">
+                                Plants stay watered longer.
+                            </p>
+
+                        </div>
+
+
+                        <button
+                            class="upgrade-button"
+                            id="buyIrrigation">
+
+                            Upgrade · 🪙
+                            <span id="irrigationCost">
+                                40
+                            </span>
+
+                        </button>
+
+                    </article>
+
+
+                    <!-- =====================
+                         GROWTH
+                    ====================== -->
+
+                    <article class="upgrade-card">
+
+                        <div class="upgrade-icon">
+                            ⏳
+                        </div>
+
+                        <span class="card-label">
+                            CULTIVATION
+                        </span>
+
+                        <h4>
+                            Growing Conditions
+                        </h4>
+
+                        <p>
+                            Improve the soil, glass, and growing
+                            environment to help plants mature
+                            more quickly.
+                        </p>
+
+
+                        <div class="upgrade-level">
+
+                            <span>
+                                CURRENT LEVEL
+                            </span>
+
+                            <strong id="growthLevel">
+                                0
+                            </strong>
+
+                        </div>
+
+
+                        <div class="upgrade-benefit">
+
+                            <span>
+                                NEXT IMPROVEMENT
+                            </span>
+
+                            <p id="growthBenefit">
+                                Reduce plant growth time.
+                            </p>
+
+                        </div>
+
+
+                        <button
+                            class="upgrade-button"
+                            id="buyGrowth">
+
+                            Upgrade · 🪙
+                            <span id="growthCost">
+                                35
+                            </span>
+
+                        </button>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+
+            <!-- =============================
+                 UPGRADE JOURNAL
+            ============================== -->
+
+            <section
+                class="upgrade-result"
+                id="upgradeResult">
+
+                <span class="upgrade-result-icon">
+                    ⚒
+                </span>
+
+                <div>
+
+                    <span class="card-label">
+                        RESTORATION JOURNAL
+                    </span>
+
+                    <h3>
+                        The greenhouse awaits improvement.
+                    </h3>
+
+                    <p>
+                        Purchase an upgrade and its progress
+                        will be recorded here.
+                    </p>
+
+                </div>
+
+            </section>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- =========================================
+     JAVASCRIPT
+========================================== -->
+
+<script src="js/game.js"></script>
+<script src="js/navigation.js"></script>
+<script src="js/upgrades.js"></script>
+
+</body>
+
+</html>
