@@ -78,14 +78,14 @@ function createNavigation() {
             </span>
 
 
-            <!-- FORAGE -->
+            <a
+    class="nav-button nav-link
+    ${currentPage === "forage.html" ? "active" : ""}"
+    href="forage.html">
 
-            <span
-                class="nav-button nav-disabled">
+    🌲 Forage
 
-                🌲 Forage
-
-            </span>
+</a>
 
 
             <!-- GRIMOIRE -->
