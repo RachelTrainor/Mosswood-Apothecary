@@ -1,7 +1,7 @@
 // ==========================================
 // MOSSWOOD APOTHECARY
 // Central Game Data
-// V2 - Expandable Content System
+// V3 - Expanded Potion Recipes
 // ==========================================
 
 
@@ -153,6 +153,85 @@ const SPECIAL_SEED_DATA = {
 
 const POTION_DATA = {
 
+    // --------------------------------------
+    // MOONMINT INFUSION
+    // 1 Moonmint
+    // --------------------------------------
+
+    moonmintInfusion: {
+
+        id:
+            "moonmintInfusion",
+
+        discoveryId:
+            "moonmintInfusionRecipe",
+
+        name:
+            "Moonmint Infusion",
+
+        icon:
+            "⚗",
+
+        inventoryIcon:
+            "🧪",
+
+        description:
+            "A simple herbal infusion carrying the cool scent of fresh Moonmint.",
+
+        effect:
+            "Gently eases tension and quiets a restless mind.",
+
+        sellPrice:
+            6,
+
+        startingAmount:
+            0
+
+    },
+
+
+    // --------------------------------------
+    // NIGHTBELL DRAUGHT
+    // 1 Nightbell
+    // --------------------------------------
+
+    nightbellDraught: {
+
+        id:
+            "nightbellDraught",
+
+        discoveryId:
+            "nightbellDraughtRecipe",
+
+        name:
+            "Nightbell Draught",
+
+        icon:
+            "⚗",
+
+        inventoryIcon:
+            "🧪",
+
+        description:
+            "A dusky violet draught with a faint floral fragrance.",
+
+        effect:
+            "Brings a gentle drowsiness and a lingering sense of calm.",
+
+        sellPrice:
+            9,
+
+        startingAmount:
+            0
+
+    },
+
+
+    // --------------------------------------
+    // POTION OF CALM
+    // 2 Moonmint
+    // --------------------------------------
+
     calm: {
 
         id:
@@ -182,6 +261,228 @@ const POTION_DATA = {
         startingAmount:
             0
 
+    },
+
+
+    // --------------------------------------
+    // DREAMVEIL TONIC
+    // 1 Moonmint + 1 Nightbell
+    // --------------------------------------
+
+    dreamveil: {
+
+        id:
+            "dreamveil",
+
+        discoveryId:
+            "dreamveilTonicRecipe",
+
+        name:
+            "Dreamveil Tonic",
+
+        icon:
+            "⚗",
+
+        inventoryIcon:
+            "🧪",
+
+        description:
+            "A soft violet tonic that shimmers faintly when held to the light.",
+
+        effect:
+            "Encourages restful sleep and unusually vivid dreams.",
+
+        sellPrice:
+            20,
+
+        startingAmount:
+            0
+
+    },
+
+
+    // --------------------------------------
+    // LUNAR ELIXIR
+    // 2 Nightbell
+    // --------------------------------------
+
+    lunarElixir: {
+
+        id:
+            "lunarElixir",
+
+        discoveryId:
+            "lunarElixirRecipe",
+
+        name:
+            "Lunar Elixir",
+
+        icon:
+            "⚗",
+
+        inventoryIcon:
+            "🧪",
+
+        description:
+            "A deep violet elixir with a silvery sheen drifting across its surface.",
+
+        effect:
+            "Sharpens awareness beneath moonlight and quiets the senses.",
+
+        sellPrice:
+            24,
+
+        startingAmount:
+            0
+
+    },
+
+
+    // --------------------------------------
+    // SERENITY ELIXIR
+    // 3 Moonmint
+    // --------------------------------------
+
+    serenityElixir: {
+
+        id:
+            "serenityElixir",
+
+        discoveryId:
+            "serenityElixirRecipe",
+
+        name:
+            "Serenity Elixir",
+
+        icon:
+            "⚗",
+
+        inventoryIcon:
+            "🧪",
+
+        description:
+            "A concentrated emerald elixir with an intensely cool herbal aroma.",
+
+        effect:
+            "Produces a deep and lasting sense of tranquility.",
+
+        sellPrice:
+            28,
+
+        startingAmount:
+            0
+
+    },
+
+
+    // --------------------------------------
+    // TRANQUIL DREAM TONIC
+    // 2 Moonmint + 1 Nightbell
+    // --------------------------------------
+
+    tranquilDream: {
+
+        id:
+            "tranquilDream",
+
+        discoveryId:
+            "tranquilDreamTonicRecipe",
+
+        name:
+            "Tranquil Dream Tonic",
+
+        icon:
+            "⚗",
+
+        inventoryIcon:
+            "🧪",
+
+        description:
+            "A muted lavender tonic with a soothing herbal fragrance.",
+
+        effect:
+            "Brings deep relaxation followed by peaceful, gentle dreams.",
+
+        sellPrice:
+            32,
+
+        startingAmount:
+            0
+
+    },
+
+
+    // --------------------------------------
+    // MOONVEIL POTION
+    // 1 Moonmint + 2 Nightbell
+    // --------------------------------------
+
+    moonveil: {
+
+        id:
+            "moonveil",
+
+        discoveryId:
+            "moonveilPotionRecipe",
+
+        name:
+            "Moonveil Potion",
+
+        icon:
+            "⚗",
+
+        inventoryIcon:
+            "🧪",
+
+        description:
+            "A dark violet potion filled with tiny silver flecks that drift like stars.",
+
+        effect:
+            "Deepens dreams and heightens awareness of strange nocturnal visions.",
+
+        sellPrice:
+            36,
+
+        startingAmount:
+            0
+
+    },
+
+
+    // --------------------------------------
+    // MIDNIGHT ESSENCE
+    // 3 Nightbell
+    // --------------------------------------
+
+    midnightEssence: {
+
+        id:
+            "midnightEssence",
+
+        discoveryId:
+            "midnightEssenceRecipe",
+
+        name:
+            "Midnight Essence",
+
+        icon:
+            "⚗",
+
+        inventoryIcon:
+            "🧪",
+
+        description:
+            "An almost black essence that catches the light with a faint violet glow.",
+
+        effect:
+            "Induces an unusually deep dream state filled with vivid and mysterious visions.",
+
+        sellPrice:
+            42,
+
+        startingAmount:
+            0
+
     }
 
 };
@@ -192,6 +493,44 @@ const POTION_DATA = {
 // ==========================================
 
 const RECIPE_DATA = {
+
+    // --------------------------------------
+    // ONE INGREDIENT
+    // --------------------------------------
+
+    moonmintInfusionRecipe: {
+
+        id:
+            "moonmintInfusionRecipe",
+
+        potionId:
+            "moonmintInfusion",
+
+        ingredients: [
+            "moonmint"
+        ]
+
+    },
+
+
+    nightbellDraughtRecipe: {
+
+        id:
+            "nightbellDraughtRecipe",
+
+        potionId:
+            "nightbellDraught",
+
+        ingredients: [
+            "nightbell"
+        ]
+
+    },
+
+
+    // --------------------------------------
+    // TWO INGREDIENTS
+    // --------------------------------------
 
     potionOfCalm: {
 
@@ -204,6 +543,110 @@ const RECIPE_DATA = {
         ingredients: [
             "moonmint",
             "moonmint"
+        ]
+
+    },
+
+
+    dreamveilTonicRecipe: {
+
+        id:
+            "dreamveilTonicRecipe",
+
+        potionId:
+            "dreamveil",
+
+        ingredients: [
+            "moonmint",
+            "nightbell"
+        ]
+
+    },
+
+
+    lunarElixirRecipe: {
+
+        id:
+            "lunarElixirRecipe",
+
+        potionId:
+            "lunarElixir",
+
+        ingredients: [
+            "nightbell",
+            "nightbell"
+        ]
+
+    },
+
+
+    // --------------------------------------
+    // THREE INGREDIENTS
+    // --------------------------------------
+
+    serenityElixirRecipe: {
+
+        id:
+            "serenityElixirRecipe",
+
+        potionId:
+            "serenityElixir",
+
+        ingredients: [
+            "moonmint",
+            "moonmint",
+            "moonmint"
+        ]
+
+    },
+
+
+    tranquilDreamTonicRecipe: {
+
+        id:
+            "tranquilDreamTonicRecipe",
+
+        potionId:
+            "tranquilDream",
+
+        ingredients: [
+            "moonmint",
+            "moonmint",
+            "nightbell"
+        ]
+
+    },
+
+
+    moonveilPotionRecipe: {
+
+        id:
+            "moonveilPotionRecipe",
+
+        potionId:
+            "moonveil",
+
+        ingredients: [
+            "moonmint",
+            "nightbell",
+            "nightbell"
+        ]
+
+    },
+
+
+    midnightEssenceRecipe: {
+
+        id:
+            "midnightEssenceRecipe",
+
+        potionId:
+            "midnightEssence",
+
+        ingredients: [
+            "nightbell",
+            "nightbell",
+            "nightbell"
         ]
 
     }
