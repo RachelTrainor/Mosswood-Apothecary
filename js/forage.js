@@ -1,405 +1,725 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Forage | Mosswood Apothecary</title>
-
-    <link rel="stylesheet" href="style.css">
-</head>
-
-<body>
-
-<div class="game">
-
-    <!-- =====================================
-         SHARED SIDEBAR
-    ====================================== -->
-
-    <aside
-        class="sidebar"
-        id="sidebar">
-    </aside>
+// ==========================================
+// MOSSWOOD APOTHECARY
+// Foraging V1
+// ==========================================
 
 
-    <!-- =====================================
-         MAIN CONTENT
-    ====================================== -->
+// ==========================================
+// FORAGING SETTINGS
+// ==========================================
 
-    <main class="content">
-
-        <!-- =================================
-             SHARED RESOURCE BAR
-        ================================== -->
-
-        <header
-            class="topbar"
-            id="topbar">
-        </header>
+const FOREST_FORAGE_TIME =
+    30 * 1000;
 
 
-        <!-- =================================
-             FORAGE SCREEN
-        ================================== -->
+// ==========================================
+// FORAGE SAVE MIGRATION
+// ==========================================
 
-        <section class="screen">
+// Older Mosswood saves may not contain
+// the forage section yet.
+//
+// This adds it without resetting any of
+// the player's existing progress.
 
-            <p class="eyebrow">
-                BEYOND THE GREENHOUSE
+if (!game.forage) {
+
+    game.forage = {
+        active: false,
+        location: null,
+        startedAt: null,
+        finishesAt: null,
+        lastResult: null
+    };
+
+    saveGame();
+}
+
+
+// Add lastResult to older forage saves.
+
+if (
+    game.forage.lastResult === undefined
+) {
+
+    game.forage.lastResult = null;
+
+    saveGame();
+}
+
+
+// ==========================================
+// START FOREST FORAGE
+// ==========================================
+
+function startForestForage() {
+
+    // Do not allow another forage while
+    // the familiar is already away.
+
+    if (game.forage.active) {
+        return;
+    }
+
+
+    const now =
+        Date.now();
+
+
+    game.forage.active =
+        true;
+
+
+    game.forage.location =
+        "Mosswood Forest";
+
+
+    game.forage.startedAt =
+        now;
+
+
+    game.forage.finishesAt =
+        now + FOREST_FORAGE_TIME;
+
+
+    saveGame();
+
+    renderForage();
+
+}
+
+
+// ==========================================
+// COMPLETE FORAGE
+// ==========================================
+
+function completeForage() {
+
+    if (!game.forage.active) {
+        return;
+    }
+
+
+    if (
+        Date.now() <
+        game.forage.finishesAt
+    ) {
+        return;
+    }
+
+
+    // ======================================
+    // RANDOM LOOT ROLL
+    // ======================================
+
+    const roll =
+        Math.random();
+
+
+    let resultTitle =
+        "";
+
+
+    let resultText =
+        "";
+
+
+    let resultIcon =
+        "🌿";
+
+
+    // ======================================
+    // 45% - MOONMINT
+    // ======================================
+
+    if (roll < 0.45) {
+
+        const amount =
+            Math.floor(
+                Math.random() * 2
+            ) + 1;
+
+
+        addIngredient(
+            "moonmint",
+            amount
+        );
+
+
+        resultTitle =
+            `Found ${amount} Moonmint`;
+
+
+        resultText =
+            "Your familiar returned carrying fresh Moonmint gathered beneath the forest canopy.";
+
+
+        resultIcon =
+            "🌿";
+
+    }
+
+
+    // ======================================
+    // 30% - MOONMINT SEEDS
+    // ======================================
+
+    else if (roll < 0.75) {
+
+        const amount =
+            Math.floor(
+                Math.random() * 2
+            ) + 1;
+
+
+        addSeeds(
+            "moonmint",
+            amount
+        );
+
+
+        resultTitle =
+            `Found ${amount} Moonmint Seed${amount === 1 ? "" : "s"}`;
+
+
+        resultText =
+            "A few small seeds were discovered tangled among the moss.";
+
+
+        resultIcon =
+            "🌱";
+
+    }
+
+
+    // ======================================
+    // 17% - STRANGE SEED
+    // ======================================
+
+    else if (roll < 0.92) {
+
+        // Make sure the save has somewhere
+        // to store unidentified seeds.
+
+        if (
+            typeof game.seeds.unknown
+            !== "number"
+        ) {
+
+            game.seeds.unknown =
+                0;
+
+        }
+
+
+        game.seeds.unknown++;
+
+
+        resultTitle =
+            "Found a Strange Seed";
+
+
+        resultText =
+            "Your familiar returned with a dark, unfamiliar seed. Whatever it grows into remains a mystery.";
+
+
+        resultIcon =
+            "✦";
+
+    }
+
+
+    // ======================================
+    // 8% - NOTHING
+    // ======================================
+
+    else {
+
+        resultTitle =
+            "Nothing This Time";
+
+
+        resultText =
+            "Your familiar returned empty-pawed, though perhaps the forest will be more generous next time.";
+
+
+        resultIcon =
+            "🐈‍⬛";
+
+    }
+
+
+    // ======================================
+    // SAVE LAST RESULT
+    // ======================================
+
+    game.forage.lastResult = {
+
+        title:
+            resultTitle,
+
+        text:
+            resultText,
+
+        icon:
+            resultIcon,
+
+        foundAt:
+            Date.now()
+
+    };
+
+
+    // ======================================
+    // CLEAR EXPEDITION
+    // ======================================
+
+    game.forage.active =
+        false;
+
+
+    game.forage.location =
+        null;
+
+
+    game.forage.startedAt =
+        null;
+
+
+    game.forage.finishesAt =
+        null;
+
+
+    saveGame();
+
+    updateResourceBar();
+
+    renderForage();
+
+}
+
+
+// ==========================================
+// FORMAT COUNTDOWN
+// ==========================================
+
+function formatForageTime(
+    milliseconds
+) {
+
+    const totalSeconds =
+        Math.max(
+            0,
+            Math.ceil(
+                milliseconds / 1000
+            )
+        );
+
+
+    const minutes =
+        Math.floor(
+            totalSeconds / 60
+        );
+
+
+    const seconds =
+        totalSeconds % 60;
+
+
+    return (
+        String(minutes)
+            .padStart(2, "0")
+        +
+        ":"
+        +
+        String(seconds)
+            .padStart(2, "0")
+    );
+
+}
+
+
+// ==========================================
+// RENDER FAMILIAR
+// ==========================================
+
+function renderFamiliar() {
+
+    const status =
+        document.getElementById(
+            "familiarStatus"
+        );
+
+
+    const state =
+        document.getElementById(
+            "familiarState"
+        );
+
+
+    if (game.forage.active) {
+
+        if (status) {
+
+            status.textContent =
+                `Your familiar is exploring ${game.forage.location}.`;
+
+        }
+
+
+        if (state) {
+
+            state.textContent =
+                "FORAGING";
+
+        }
+
+    }
+
+    else {
+
+        if (status) {
+
+            status.textContent =
+                "Your familiar waits patiently for somewhere to explore.";
+
+        }
+
+
+        if (state) {
+
+            state.textContent =
+                "READY";
+
+        }
+
+    }
+
+}
+
+
+// ==========================================
+// RENDER FOREST BUTTON
+// ==========================================
+
+function renderForageButton() {
+
+    const button =
+        document.getElementById(
+            "forestForageButton"
+        );
+
+
+    if (!button) {
+        return;
+    }
+
+
+    if (game.forage.active) {
+
+        button.disabled =
+            true;
+
+
+        button.textContent =
+            "Familiar Away";
+
+    }
+
+    else {
+
+        button.disabled =
+            false;
+
+
+        button.textContent =
+            "Send Familiar";
+
+    }
+
+}
+
+
+// ==========================================
+// RENDER EXPEDITION PROGRESS
+// ==========================================
+
+function renderForageProgress() {
+
+    const title =
+        document.getElementById(
+            "forageProgressTitle"
+        );
+
+
+    const text =
+        document.getElementById(
+            "forageProgressText"
+        );
+
+
+    const timer =
+        document.getElementById(
+            "forageTimer"
+        );
+
+
+    const progressBar =
+        document.getElementById(
+            "forageProgressBar"
+        );
+
+
+    // ======================================
+    // NO ACTIVE EXPEDITION
+    // ======================================
+
+    if (!game.forage.active) {
+
+        if (title) {
+
+            title.textContent =
+                "No Active Forage";
+
+        }
+
+
+        if (text) {
+
+            text.textContent =
+                "Send your familiar somewhere to begin searching.";
+
+        }
+
+
+        if (timer) {
+
+            timer.textContent =
+                "--:--";
+
+        }
+
+
+        if (progressBar) {
+
+            progressBar.style.width =
+                "0%";
+
+        }
+
+
+        return;
+
+    }
+
+
+    // ======================================
+    // ACTIVE EXPEDITION
+    // ======================================
+
+    const now =
+        Date.now();
+
+
+    const totalTime =
+        game.forage.finishesAt -
+        game.forage.startedAt;
+
+
+    const elapsed =
+        now -
+        game.forage.startedAt;
+
+
+    const remaining =
+        game.forage.finishesAt -
+        now;
+
+
+    const progress =
+        Math.min(
+            100,
+            Math.max(
+                0,
+                (elapsed / totalTime) * 100
+            )
+        );
+
+
+    if (title) {
+
+        title.textContent =
+            game.forage.location;
+
+    }
+
+
+    if (text) {
+
+        text.textContent =
+            "Your familiar is searching the forest floor, roots, and forgotten paths.";
+
+    }
+
+
+    if (timer) {
+
+        timer.textContent =
+            formatForageTime(
+                remaining
+            );
+
+    }
+
+
+    if (progressBar) {
+
+        progressBar.style.width =
+            `${progress}%`;
+
+    }
+
+}
+
+
+// ==========================================
+// RENDER LAST DISCOVERY
+// ==========================================
+
+function renderForageResult() {
+
+    const result =
+        document.getElementById(
+            "forageResult"
+        );
+
+
+    if (!result) {
+        return;
+    }
+
+
+    if (!game.forage.lastResult) {
+        return;
+    }
+
+
+    const lastResult =
+        game.forage.lastResult;
+
+
+    result.innerHTML = `
+
+        <span class="forage-result-icon">
+
+            ${lastResult.icon}
+
+        </span>
+
+
+        <div>
+
+            <span class="card-label">
+                FORAGING JOURNAL
+            </span>
+
+
+            <h3>
+                ${lastResult.title}
+            </h3>
+
+
+            <p>
+                ${lastResult.text}
             </p>
 
-            <h2>
-                Forage
-            </h2>
+        </div>
 
-            <p class="description">
-                Send your familiar into the wilds surrounding Mosswood.
-                Strange plants, forgotten seeds, and other discoveries
-                may be waiting beyond the garden walls.
-            </p>
+    `;
 
+}
 
-            <!-- =============================
-                 FAMILIAR
-            ============================== -->
 
-            <section class="forage-familiar">
+// ==========================================
+// RENDER FORAGE PAGE
+// ==========================================
 
-                <div class="familiar-icon">
-                    🐈‍⬛
-                </div>
+function renderForage() {
 
-                <div class="familiar-info">
+    updateResourceBar();
 
-                    <span class="card-label">
-                        YOUR FAMILIAR
-                    </span>
+    renderFamiliar();
 
-                    <h3>
-                        Mosswood Familiar
-                    </h3>
+    renderForageButton();
 
-                    <p id="familiarStatus">
-                        Your familiar waits patiently for somewhere to explore.
-                    </p>
+    renderForageProgress();
 
-                </div>
+    renderForageResult();
 
-                <div
-                    class="familiar-state"
-                    id="familiarState">
+}
 
-                    READY
 
-                </div>
+// ==========================================
+// UPDATE FORAGE
+// ==========================================
 
-            </section>
+function updateForage() {
 
+    // If the timer has finished,
+    // complete the expedition.
 
-            <!-- =============================
-                 FORAGING LOCATIONS
-            ============================== -->
+    if (
+        game.forage.active &&
+        Date.now() >=
+        game.forage.finishesAt
+    ) {
 
-            <section class="forage-section">
+        completeForage();
 
-                <div class="forage-section-heading">
+        return;
 
-                    <div>
+    }
 
-                        <span class="card-label">
-                            FORAGING LOCATIONS
-                        </span>
 
-                        <h3>
-                            Choose a Destination
-                        </h3>
+    renderForage();
 
-                    </div>
+}
 
-                    <p>
-                        Different areas of Mosswood contain
-                        different plants and discoveries.
-                    </p>
 
-                </div>
+// ==========================================
+// BUTTON EVENT
+// ==========================================
 
+const forestForageButton =
+    document.getElementById(
+        "forestForageButton"
+    );
 
-                <div class="forage-location-grid">
 
+if (forestForageButton) {
 
-                    <!-- =====================
-                         MOSSWOOD FOREST
-                    ====================== -->
+    forestForageButton.addEventListener(
+        "click",
+        startForestForage
+    );
 
-                    <article class="forage-location available">
+}
 
-                        <div class="location-art">
 
-                            <span class="location-symbol">
-                                🌲
-                            </span>
+// ==========================================
+// START FORAGE PAGE
+// ==========================================
 
-                            <span class="location-status">
-                                AVAILABLE
-                            </span>
+updateForage();
 
-                        </div>
 
+// ==========================================
+// TIMER
+// ==========================================
 
-                        <div class="location-content">
+// Refresh the countdown once every second.
 
-                            <span class="card-label">
-                                FOREST
-                            </span>
-
-                            <h4>
-                                Mosswood Forest
-                            </h4>
-
-                            <p>
-                                A shadowed woodland filled with moss,
-                                old trees, and plants that thrive far
-                                from the greenhouse.
-                            </p>
-
-
-                            <div class="location-details">
-
-                                <span>
-                                    ⏱ 30 seconds
-                                </span>
-
-                                <span>
-                                    ✦ Common Finds
-                                </span>
-
-                            </div>
-
-
-                            <button
-                                class="forage-button"
-                                id="forestForageButton">
-
-                                Send Familiar
-
-                            </button>
-
-                        </div>
-
-                    </article>
-
-
-                    <!-- =====================
-                         LOCKED MARSH
-                    ====================== -->
-
-                    <article class="forage-location locked">
-
-                        <div class="location-art">
-
-                            <span class="location-symbol">
-                                🌫️
-                            </span>
-
-                            <span class="location-status">
-                                LOCKED
-                            </span>
-
-                        </div>
-
-
-                        <div class="location-content">
-
-                            <span class="card-label">
-                                UNKNOWN REGION
-                            </span>
-
-                            <h4>
-                                Mistfen Marsh
-                            </h4>
-
-                            <p>
-                                Pale lights drift through the reeds.
-                                Something unusual grows beneath the mist.
-                            </p>
-
-
-                            <div class="location-details">
-
-                                <span>
-                                    🔒 Discover more of Mosswood
-                                </span>
-
-                            </div>
-
-
-                            <button
-                                class="forage-button"
-                                disabled>
-
-                                Locked
-
-                            </button>
-
-                        </div>
-
-                    </article>
-
-
-                    <!-- =====================
-                         LOCKED RUINS
-                    ====================== -->
-
-                    <article class="forage-location locked">
-
-                        <div class="location-art">
-
-                            <span class="location-symbol">
-                                🕯️
-                            </span>
-
-                            <span class="location-status">
-                                LOCKED
-                            </span>
-
-                        </div>
-
-
-                        <div class="location-content">
-
-                            <span class="card-label">
-                                UNKNOWN REGION
-                            </span>
-
-                            <h4>
-                                Hollowmere Ruins
-                            </h4>
-
-                            <p>
-                                Crumbling stone lies hidden beneath
-                                vines and roots. Few paths still lead there.
-                            </p>
-
-
-                            <div class="location-details">
-
-                                <span>
-                                    🔒 Requirement Unknown
-                                </span>
-
-                            </div>
-
-
-                            <button
-                                class="forage-button"
-                                disabled>
-
-                                Locked
-
-                            </button>
-
-                        </div>
-
-                    </article>
-
-                </div>
-
-            </section>
-
-
-            <!-- =============================
-                 ACTIVE FORAGE
-            ============================== -->
-
-            <section
-                class="forage-progress-panel"
-                id="forageProgressPanel">
-
-                <div>
-
-                    <span class="card-label">
-                        CURRENT EXPEDITION
-                    </span>
-
-                    <h3 id="forageProgressTitle">
-                        No Active Forage
-                    </h3>
-
-                    <p id="forageProgressText">
-                        Send your familiar somewhere to begin searching.
-                    </p>
-
-                </div>
-
-
-                <div class="forage-timer">
-
-                    <span id="forageTimer">
-                        --:--
-                    </span>
-
-                </div>
-
-
-                <div class="forage-progress-track">
-
-                    <div
-                        class="forage-progress-bar"
-                        id="forageProgressBar">
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- =============================
-                 LAST DISCOVERY
-            ============================== -->
-
-            <section
-                class="forage-result"
-                id="forageResult">
-
-                <span class="forage-result-icon">
-                    ☾
-                </span>
-
-                <div>
-
-                    <span class="card-label">
-                        FORAGING JOURNAL
-                    </span>
-
-                    <h3>
-                        Nothing discovered yet.
-                    </h3>
-
-                    <p>
-                        Your familiar's discoveries will appear here.
-                    </p>
-
-                </div>
-
-            </section>
-
-        </section>
-
-    </main>
-
-</div>
-
-
-<!-- =========================================
-     JAVASCRIPT
-========================================== -->
-
-<script src="js/game.js"></script>
-<script src="js/navigation.js"></script>
-<script src="js/forage.js"></script>
-
-</body>
-
-</html>
+setInterval(
+    updateForage,
+    1000
+);
