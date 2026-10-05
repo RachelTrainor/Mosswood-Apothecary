@@ -867,7 +867,7 @@ function harvestPlant(
         // plant are known as Nightbell Seeds.
 
         if (
-            Math.random() < 0.35
+            Math.random() < 0.25
         ) {
 
             game.seeds.nightbell++;
@@ -890,7 +890,7 @@ function harvestPlant(
 
 
         if (
-            Math.random() < 0.35
+            Math.random() < 0.25
         ) {
 
             game.seeds.nightbell++;
