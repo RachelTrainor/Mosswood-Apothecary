@@ -72,7 +72,7 @@ const PLANT_DATA = {
 
         dryTime: 25 * 1000,
 
-        seedReturnChance: 0.35,
+        seedReturnChance: 0.25,
 
         startingSeeds: 0,
 
