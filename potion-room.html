@@ -144,46 +144,16 @@
                     </h3>
 
 
-                    <!-- MOONMINT -->
+                    <!--
+                        Ingredient cards are now
+                        generated automatically
+                        by potions.js using
+                        PLANT_DATA from data.js.
+                    -->
 
-                    <div class="potion-ingredient">
-
-                        <div class="ingredient-icon">
-                            🌿
-                        </div>
-
-
-                        <div class="potion-ingredient-details">
-
-                            <strong>
-                                Moonmint
-                            </strong>
-
-
-                            <p>
-                                A cool, fragrant herb harvested
-                                from the greenhouse.
-                            </p>
-
-
-                            <span>
-                                Available:
-                                <b id="moonmintAvailable">
-                                    0
-                                </b>
-                            </span>
-
-                        </div>
-
-
-                        <button
-                            class="ingredient-add-button"
-                            id="addMoonmint">
-
-                            Add
-
-                        </button>
-
+                    <div
+                        class="potion-ingredient-list"
+                        id="ingredientShelf">
                     </div>
 
 
@@ -247,13 +217,17 @@
 <!-- =========================================
      JAVASCRIPT
 
-     1. game.js
+     1. data.js
+        Contains plants, potions,
+        recipes, and other game content.
+
+     2. game.js
         Loads shared save data.
 
-     2. navigation.js
+     3. navigation.js
         Creates sidebar and resource bar.
 
-     3. potions.js
+     4. potions.js
         Controls experimentation,
         recipes, and potion discoveries.
 ========================================== -->
