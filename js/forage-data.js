@@ -1,7 +1,7 @@
 // ==========================================
 // MOSSWOOD APOTHECARY
 // Foraging Data
-// V2 - Discovery-Based Seed Rewards
+// V3 - Ghostcap Discovery
 // ==========================================
 
 
@@ -157,17 +157,11 @@ const FORAGE_LOCATION_DATA = {
 // MOSSWOOD FOREST REWARDS
 // ==========================================
 //
-// The discoverySeed reward changes depending
-// on whether its hidden botanical is known.
-//
 // BEFORE NIGHTBELL DISCOVERY:
 //      Strange Seed
 //
 // AFTER NIGHTBELL DISCOVERY:
 //      Nightbell Seed
-//
-// This same system can later be reused for
-// other locations and botanicals.
 // ==========================================
 
 const FOREST_FORAGE_REWARDS = [
@@ -277,42 +271,23 @@ const FOREST_FORAGE_REWARDS = [
 // MISTFEN MARSH REWARDS
 // ==========================================
 //
-// Temporary reward table.
+// BEFORE GHOSTCAP DISCOVERY:
+//      Strange Seed
 //
-// We are NOT introducing the next botanical
-// yet. When we add one, one of these rewards
-// can become another discoverySeed reward.
+// AFTER GHOSTCAP DISCOVERY:
+//      Ghostcap Seed
 // ==========================================
 
 const MARSH_FORAGE_REWARDS = [
 
+    // --------------------------------------
+    // NIGHTBELL
+    // 40%
+// --------------------------------------
+
     {
         chance:
             0.40,
-
-        type:
-            "ingredient",
-
-        itemId:
-            "moonmint",
-
-        minAmount:
-            2,
-
-        maxAmount:
-            3,
-
-        icon:
-            "🌿",
-
-        text:
-            "Your familiar found Moonmint growing thickly along the damp edges of the marsh."
-    },
-
-
-    {
-        chance:
-            0.30,
 
         type:
             "ingredient",
@@ -330,13 +305,18 @@ const MARSH_FORAGE_REWARDS = [
             "🪻",
 
         text:
-            "A cluster of Nightbell was discovered among the mist-covered reeds."
+            "Your familiar returned with Nightbell gathered from beneath the mist-covered reeds."
     },
 
 
+    // --------------------------------------
+    // NIGHTBELL SEEDS
+    // 25%
+    // --------------------------------------
+
     {
         chance:
-            0.20,
+            0.25,
 
         type:
             "seed",
@@ -348,15 +328,58 @@ const MARSH_FORAGE_REWARDS = [
             1,
 
         maxAmount:
-            1,
+            2,
 
         icon:
             "🪻",
 
         text:
-            "Your familiar returned with a Nightbell seed caught carefully between its paws."
+            "Your familiar discovered Nightbell seeds hidden among the damp marsh grasses."
     },
 
+
+    // --------------------------------------
+    // GHOSTCAP DISCOVERY
+    // 25%
+    // --------------------------------------
+
+    {
+        chance:
+            0.25,
+
+        type:
+            "discoverySeed",
+
+        plantId:
+            "ghostcap",
+
+        minAmount:
+            1,
+
+        maxAmount:
+            1,
+
+        mysteryIcon:
+            "✦",
+
+        discoveredIcon:
+            "🍄",
+
+        mysteryTitle:
+            "Found a Strange Seed",
+
+        mysteryText:
+            "Your familiar returned from the deepest part of the marsh carrying something unfamiliar. Its pale surface almost seems to glow through the mist.",
+
+        discoveredText:
+            "Your familiar returned with a Ghostcap specimen gathered from the misty marsh floor."
+    },
+
+
+    // --------------------------------------
+    // NOTHING
+    // 10%
+    // --------------------------------------
 
     {
         chance:
