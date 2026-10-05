@@ -4140,3 +4140,125 @@ nav {
     }
 
 }
+/* ==========================================
+   GREENHOUSE SEED SELECTION
+========================================== */
+
+.seed-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    width: 100%;
+}
+
+.seed-menu-title {
+    margin-bottom: 3px;
+
+    color: var(--muted);
+
+    font-size: 9px;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+}
+
+.seed-choice {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+
+    width: 100%;
+
+    padding: 10px 12px;
+
+    text-align: left;
+
+    color: var(--cream);
+    background: #171a14;
+
+    border: 1px solid var(--border);
+    border-radius: 4px;
+
+    cursor: pointer;
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease;
+}
+
+.seed-choice:hover:not(:disabled) {
+    background:
+        rgba(102, 120, 77, 0.12);
+
+    border-color:
+        var(--green-light);
+}
+
+.seed-choice:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+.seed-choice-icon {
+    width: 30px;
+
+    text-align: center;
+
+    font-size: 20px;
+}
+
+.seed-choice strong {
+    display: block;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.seed-choice small {
+    display: block;
+
+    margin-top: 1px;
+
+    color: var(--muted);
+
+    font-size: 10px;
+}
+
+.strange-seed-choice {
+    background:
+        linear-gradient(
+            120deg,
+            rgba(111, 84, 133, 0.10),
+            transparent
+        ),
+        #171a14;
+}
+
+.strange-seed-choice:hover:not(:disabled) {
+    border-color:
+        rgba(154, 126, 174, 0.55);
+
+    background:
+        rgba(111, 84, 133, 0.14);
+}
+
+.seed-menu-cancel {
+    padding: 7px;
+
+    color: var(--muted);
+    background: transparent;
+
+    border: none;
+
+    font-size: 11px;
+
+    cursor: pointer;
+}
+
+.seed-menu-cancel:hover {
+    color: var(--cream);
+}
