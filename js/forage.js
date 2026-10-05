@@ -1,6 +1,7 @@
 // ==========================================
 // MOSSWOOD APOTHECARY
-// Foraging V1
+// Foraging V2
+// Mystery Seed Integration
 // ==========================================
 
 
@@ -16,23 +17,20 @@ const FOREST_FORAGE_TIME =
 // FORAGE SAVE MIGRATION
 // ==========================================
 
-// Older Mosswood saves may not contain
-// the forage section yet.
-//
-// This adds it without resetting any of
-// the player's existing progress.
-
 if (!game.forage) {
 
     game.forage = {
+
         active: false,
         location: null,
         startedAt: null,
         finishesAt: null,
         lastResult: null
+
     };
 
     saveGame();
+
 }
 
 
@@ -45,6 +43,7 @@ if (
     game.forage.lastResult = null;
 
     saveGame();
+
 }
 
 
@@ -57,8 +56,12 @@ function startForestForage() {
     // Do not allow another forage while
     // the familiar is already away.
 
-    if (game.forage.active) {
+    if (
+        game.forage.active
+    ) {
+
         return;
+
     }
 
 
@@ -95,8 +98,12 @@ function startForestForage() {
 
 function completeForage() {
 
-    if (!game.forage.active) {
+    if (
+        !game.forage.active
+    ) {
+
         return;
+
     }
 
 
@@ -104,7 +111,9 @@ function completeForage() {
         Date.now() <
         game.forage.finishesAt
     ) {
+
         return;
+
     }
 
 
@@ -132,7 +141,9 @@ function completeForage() {
     // 45% - MOONMINT
     // ======================================
 
-    if (roll < 0.45) {
+    if (
+        roll < 0.45
+    ) {
 
         const amount =
             Math.floor(
@@ -164,7 +175,9 @@ function completeForage() {
     // 30% - MOONMINT SEEDS
     // ======================================
 
-    else if (roll < 0.75) {
+    else if (
+        roll < 0.75
+    ) {
 
         const amount =
             Math.floor(
@@ -195,24 +208,26 @@ function completeForage() {
     // ======================================
     // 17% - STRANGE SEED
     // ======================================
+    //
+    // Mosswood Forest's mystery seed
+    // currently contains Nightbell.
+    //
+    // The player does NOT see that.
+    //
+    // Future locations can call:
+    //
+    // addMysterySeed("ghostcap");
+    //
+    // or another plant ID instead.
+    // ======================================
 
-    else if (roll < 0.92) {
+    else if (
+        roll < 0.92
+    ) {
 
-        // Make sure the save has somewhere
-        // to store unidentified seeds.
-
-        if (
-            typeof game.seeds.unknown
-            !== "number"
-        ) {
-
-            game.seeds.unknown =
-                0;
-
-        }
-
-
-        game.seeds.unknown++;
+        addMysterySeed(
+            "nightbell"
+        );
 
 
         resultTitle =
@@ -328,12 +343,18 @@ function formatForageTime(
 
     return (
         String(minutes)
-            .padStart(2, "0")
+            .padStart(
+                2,
+                "0"
+            )
         +
         ":"
         +
         String(seconds)
-            .padStart(2, "0")
+            .padStart(
+                2,
+                "0"
+            )
     );
 
 }
@@ -357,9 +378,13 @@ function renderFamiliar() {
         );
 
 
-    if (game.forage.active) {
+    if (
+        game.forage.active
+    ) {
 
-        if (status) {
+        if (
+            status
+        ) {
 
             status.textContent =
                 `Your familiar is exploring ${game.forage.location}.`;
@@ -367,7 +392,9 @@ function renderFamiliar() {
         }
 
 
-        if (state) {
+        if (
+            state
+        ) {
 
             state.textContent =
                 "FORAGING";
@@ -378,7 +405,9 @@ function renderFamiliar() {
 
     else {
 
-        if (status) {
+        if (
+            status
+        ) {
 
             status.textContent =
                 "Your familiar waits patiently for somewhere to explore.";
@@ -386,7 +415,9 @@ function renderFamiliar() {
         }
 
 
-        if (state) {
+        if (
+            state
+        ) {
 
             state.textContent =
                 "READY";
@@ -410,12 +441,18 @@ function renderForageButton() {
         );
 
 
-    if (!button) {
+    if (
+        !button
+    ) {
+
         return;
+
     }
 
 
-    if (game.forage.active) {
+    if (
+        game.forage.active
+    ) {
 
         button.disabled =
             true;
@@ -474,9 +511,13 @@ function renderForageProgress() {
     // NO ACTIVE EXPEDITION
     // ======================================
 
-    if (!game.forage.active) {
+    if (
+        !game.forage.active
+    ) {
 
-        if (title) {
+        if (
+            title
+        ) {
 
             title.textContent =
                 "No Active Forage";
@@ -484,7 +525,9 @@ function renderForageProgress() {
         }
 
 
-        if (text) {
+        if (
+            text
+        ) {
 
             text.textContent =
                 "Send your familiar somewhere to begin searching.";
@@ -492,7 +535,9 @@ function renderForageProgress() {
         }
 
 
-        if (timer) {
+        if (
+            timer
+        ) {
 
             timer.textContent =
                 "--:--";
@@ -500,7 +545,9 @@ function renderForageProgress() {
         }
 
 
-        if (progressBar) {
+        if (
+            progressBar
+        ) {
 
             progressBar.style.width =
                 "0%";
@@ -541,12 +588,17 @@ function renderForageProgress() {
             100,
             Math.max(
                 0,
-                (elapsed / totalTime) * 100
+                (
+                    elapsed /
+                    totalTime
+                ) * 100
             )
         );
 
 
-    if (title) {
+    if (
+        title
+    ) {
 
         title.textContent =
             game.forage.location;
@@ -554,7 +606,9 @@ function renderForageProgress() {
     }
 
 
-    if (text) {
+    if (
+        text
+    ) {
 
         text.textContent =
             "Your familiar is searching the forest floor, roots, and forgotten paths.";
@@ -562,7 +616,9 @@ function renderForageProgress() {
     }
 
 
-    if (timer) {
+    if (
+        timer
+    ) {
 
         timer.textContent =
             formatForageTime(
@@ -572,7 +628,9 @@ function renderForageProgress() {
     }
 
 
-    if (progressBar) {
+    if (
+        progressBar
+    ) {
 
         progressBar.style.width =
             `${progress}%`;
@@ -594,13 +652,21 @@ function renderForageResult() {
         );
 
 
-    if (!result) {
+    if (
+        !result
+    ) {
+
         return;
+
     }
 
 
-    if (!game.forage.lastResult) {
+    if (
+        !game.forage.lastResult
+    ) {
+
         return;
+
     }
 
 
@@ -696,7 +762,9 @@ const forestForageButton =
     );
 
 
-if (forestForageButton) {
+if (
+    forestForageButton
+) {
 
     forestForageButton.addEventListener(
         "click",
