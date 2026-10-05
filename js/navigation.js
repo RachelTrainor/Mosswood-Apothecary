@@ -44,6 +44,8 @@ function createNavigation() {
 
         <nav>
 
+            <!-- GREENHOUSE -->
+
             <a
                 class="nav-button nav-link
                 ${currentPage === "greenhouse.html" ? "active" : ""}"
@@ -53,6 +55,8 @@ function createNavigation() {
 
             </a>
 
+
+            <!-- POTION ROOM -->
 
             <a
                 class="nav-button nav-link
@@ -64,6 +68,8 @@ function createNavigation() {
             </a>
 
 
+            <!-- APOTHECARY -->
+
             <span
                 class="nav-button nav-disabled">
 
@@ -71,6 +77,8 @@ function createNavigation() {
 
             </span>
 
+
+            <!-- FORAGE -->
 
             <span
                 class="nav-button nav-disabled">
@@ -80,15 +88,19 @@ function createNavigation() {
             </span>
 
 
+            <!-- GRIMOIRE -->
+
             <a
-    class="nav-button nav-link
-    ${currentPage === "grimoire.html" ? "active" : ""}"
-    href="grimoire.html">
+                class="nav-button nav-link
+                ${currentPage === "grimoire.html" ? "active" : ""}"
+                href="grimoire.html">
 
-    📖 Grimoire
+                📖 Grimoire
 
-</a>
+            </a>
 
+
+            <!-- UPGRADES -->
 
             <span
                 class="nav-button nav-disabled">
@@ -97,6 +109,8 @@ function createNavigation() {
 
             </span>
 
+
+            <!-- INVENTORY -->
 
             <span
                 class="nav-button nav-disabled">
@@ -171,11 +185,18 @@ createNavigation();
 createResourceBar();
 
 
-// game.js may have already loaded before
-// navigation.js created the resource elements.
+// ==========================================
+// UPDATE RESOURCE VALUES
+// ==========================================
+
+// game.js loads before navigation.js.
 //
-// Refresh them now if the shared function
-// exists.
+// That means the resource elements did not
+// exist when game.js first tried to update
+// them.
+//
+// Now that navigation.js has created them,
+// update them again.
 
 if (
     typeof updateResourceBar
