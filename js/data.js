@@ -1,15 +1,7 @@
 // ==========================================
 // MOSSWOOD APOTHECARY
 // Central Game Data
-// ==========================================
-//
-// This file contains the definitions for
-// plants, seeds, potions, recipes, and other
-// expandable game content.
-//
-// Adding future content should happen here
-// instead of being hard-coded across several
-// different game files.
+// V2 - Expandable Content System
 // ==========================================
 
 
@@ -18,6 +10,10 @@
 // ==========================================
 
 const PLANT_DATA = {
+
+    // --------------------------------------
+    // MOONMINT
+    // --------------------------------------
 
     moonmint: {
 
@@ -37,18 +33,27 @@ const PLANT_DATA = {
         fieldNotes:
             "Known for its calming properties and pale, fragrant leaves.",
 
-        growTime: 60 * 1000,
+        growTime:
+            60 * 1000,
 
-        dryTime: 25 * 1000,
+        dryTime:
+            25 * 1000,
 
-        seedReturnChance: 0.25,
+        seedReturnChance:
+            0.25,
 
-        startingSeeds: 3,
+        startingSeeds:
+            3,
 
-        alwaysKnown: true
+        alwaysKnown:
+            true
 
     },
 
+
+    // --------------------------------------
+    // NIGHTBELL
+    // --------------------------------------
 
     nightbell: {
 
@@ -60,23 +65,29 @@ const PLANT_DATA = {
 
         seedIcon: "🪻",
 
-        type: "Woodland Flower",
+        type:
+            "Woodland Flower",
 
         description:
-            "A dusky woodland flower first identified after cultivating a mysterious Strange Seed.",
+            "A dusky woodland flower first identified after cultivating a mysterious seed.",
 
         fieldNotes:
             "Its deeper alchemical properties remain uncertain. Experimentation may reveal more.",
 
-        growTime: 75 * 1000,
+        growTime:
+            75 * 1000,
 
-        dryTime: 25 * 1000,
+        dryTime:
+            25 * 1000,
 
-        seedReturnChance: 0.25,
+        seedReturnChance:
+            0.25,
 
-        startingSeeds: 0,
+        startingSeeds:
+            0,
 
-        alwaysKnown: false
+        alwaysKnown:
+            false
 
     }
 
@@ -84,23 +95,52 @@ const PLANT_DATA = {
 
 
 // ==========================================
-// SPECIAL SEEDS
+// MYSTERY SEED SETTINGS
+// ==========================================
+//
+// Mystery seeds are intentionally NOT tied
+// to one specific plant here.
+//
+// The actual plant hidden inside a mystery
+// seed will be stored with that individual
+// seed in the player's save.
+//
+// Example:
+//
+// {
+//     id: "mystery_seed_1",
+//     revealsPlant: "nightbell"
+// }
+//
+// Later another seed could be:
+//
+// {
+//     id: "mystery_seed_2",
+//     revealsPlant: "ghostcap"
+// }
+//
+// Both still appear to the player as
+// "Strange Seed" until planted and revealed.
 // ==========================================
 
 const SPECIAL_SEED_DATA = {
 
     unknown: {
 
-        id: "unknown",
+        id:
+            "unknown",
 
-        name: "Strange Seed",
+        name:
+            "Strange Seed",
 
-        icon: "✦",
+        icon:
+            "✦",
 
         description:
             "An unfamiliar seed gathered somewhere beyond the greenhouse.",
 
-        startingAmount: 0
+        startingAmount:
+            0
 
     }
 
@@ -115,15 +155,20 @@ const POTION_DATA = {
 
     calm: {
 
-        id: "calm",
+        id:
+            "calm",
 
-        discoveryId: "potionOfCalm",
+        discoveryId:
+            "potionOfCalm",
 
-        name: "Potion of Calm",
+        name:
+            "Potion of Calm",
 
-        icon: "⚗",
+        icon:
+            "⚗",
 
-        inventoryIcon: "🧪",
+        inventoryIcon:
+            "🧪",
 
         description:
             "A pale green draught carrying the cool scent of Moonmint.",
@@ -131,9 +176,11 @@ const POTION_DATA = {
         effect:
             "Calms the mind and settles restless thoughts.",
 
-        sellPrice: 15,
+        sellPrice:
+            15,
 
-        startingAmount: 0
+        startingAmount:
+            0
 
     }
 
@@ -148,9 +195,11 @@ const RECIPE_DATA = {
 
     potionOfCalm: {
 
-        id: "potionOfCalm",
+        id:
+            "potionOfCalm",
 
-        potionId: "calm",
+        potionId:
+            "calm",
 
         ingredients: [
             "moonmint",
@@ -163,38 +212,49 @@ const RECIPE_DATA = {
 
 
 // ==========================================
-// FORAGE LOCATIONS
+// FORAGING LOCATIONS
 // ==========================================
 
 const FORAGE_LOCATION_DATA = {
 
     forest: {
 
-        id: "forest",
+        id:
+            "forest",
 
-        name: "Mosswood Forest",
+        name:
+            "Mosswood Forest",
 
-        unlocked: true
+        unlocked:
+            true
 
     },
+
 
     marsh: {
 
-        id: "marsh",
+        id:
+            "marsh",
 
-        name: "Mistfen Marsh",
+        name:
+            "Mistfen Marsh",
 
-        unlocked: false
+        unlocked:
+            false
 
     },
 
+
     ruins: {
 
-        id: "ruins",
+        id:
+            "ruins",
 
-        name: "Hollowmere Ruins",
+        name:
+            "Hollowmere Ruins",
 
-        unlocked: false
+        unlocked:
+            false
 
     }
 
@@ -202,7 +262,7 @@ const FORAGE_LOCATION_DATA = {
 
 
 // ==========================================
-// DATA HELPERS
+// PLANT HELPERS
 // ==========================================
 
 function getPlantData(
@@ -210,32 +270,8 @@ function getPlantData(
 ) {
 
     return (
-        PLANT_DATA[plantId]
-        || null
-    );
-
-}
-
-
-function getPotionData(
-    potionId
-) {
-
-    return (
-        POTION_DATA[potionId]
-        || null
-    );
-
-}
-
-
-function getRecipeData(
-    recipeId
-) {
-
-    return (
-        RECIPE_DATA[recipeId]
-        || null
+        PLANT_DATA[plantId] ||
+        null
     );
 
 }
@@ -250,13 +286,11 @@ function getPlantName(
             plantId
         );
 
-
     if (!plant) {
 
         return "Unknown Plant";
 
     }
-
 
     return plant.name;
 
@@ -272,14 +306,78 @@ function getPlantIcon(
             plantId
         );
 
-
     if (!plant) {
 
         return "❔";
 
     }
 
-
     return plant.icon;
+
+}
+
+
+// ==========================================
+// POTION HELPERS
+// ==========================================
+
+function getPotionData(
+    potionId
+) {
+
+    return (
+        POTION_DATA[potionId] ||
+        null
+    );
+
+}
+
+
+// ==========================================
+// RECIPE HELPERS
+// ==========================================
+
+function getRecipeData(
+    recipeId
+) {
+
+    return (
+        RECIPE_DATA[recipeId] ||
+        null
+    );
+
+}
+
+
+// ==========================================
+// SPECIAL SEED HELPERS
+// ==========================================
+
+function getSpecialSeedData(
+    seedId
+) {
+
+    return (
+        SPECIAL_SEED_DATA[seedId] ||
+        null
+    );
+
+}
+
+
+// ==========================================
+// FORAGING LOCATION HELPERS
+// ==========================================
+
+function getForageLocationData(
+    locationId
+) {
+
+    return (
+        FORAGE_LOCATION_DATA[
+            locationId
+        ] ||
+        null
+    );
 
 }
