@@ -1,6 +1,6 @@
 // ==========================================
 // MOSSWOOD APOTHECARY
-// Inventory V1
+// Inventory V2
 // ==========================================
 
 
@@ -17,6 +17,11 @@ function getInventoryValues() {
                 "moonmint"
             ),
 
+        nightbell:
+            getIngredientAmount(
+                "nightbell"
+            ),
+
         moonmintSeeds:
             getSeedAmount(
                 "moonmint"
@@ -25,6 +30,11 @@ function getInventoryValues() {
         strangeSeeds:
             getSeedAmount(
                 "unknown"
+            ),
+
+        nightbellSeeds:
+            getSeedAmount(
+                "nightbell"
             ),
 
         calmPotions:
@@ -50,9 +60,13 @@ function getInventoryTotal() {
     return (
         items.moonmint
         +
+        items.nightbell
+        +
         items.moonmintSeeds
         +
         items.strangeSeeds
+        +
+        items.nightbellSeeds
         +
         items.calmPotions
     );
@@ -110,6 +124,24 @@ function renderInventory() {
 
 
     // --------------------------------------
+    // NIGHTBELL
+    // --------------------------------------
+
+    const nightbellElement =
+        document.getElementById(
+            "inventoryNightbell"
+        );
+
+
+    if (nightbellElement) {
+
+        nightbellElement.textContent =
+            items.nightbell;
+
+    }
+
+
+    // --------------------------------------
     // MOONMINT SEEDS
     // --------------------------------------
 
@@ -141,6 +173,24 @@ function renderInventory() {
 
         strangeSeedElement.textContent =
             items.strangeSeeds;
+
+    }
+
+
+    // --------------------------------------
+    // NIGHTBELL SEEDS
+    // --------------------------------------
+
+    const nightbellSeedElement =
+        document.getElementById(
+            "inventoryNightbellSeeds"
+        );
+
+
+    if (nightbellSeedElement) {
+
+        nightbellSeedElement.textContent =
+            items.nightbellSeeds;
 
     }
 
@@ -188,6 +238,56 @@ function renderInventory() {
         else {
 
             strangeSeedCard.classList.remove(
+                "discovered-item"
+            );
+
+        }
+
+    }
+
+
+    // --------------------------------------
+    // NIGHTBELL APPEARANCE
+    // --------------------------------------
+
+    const nightbellCard =
+        document.getElementById(
+            "nightbellCard"
+        );
+
+
+    if (nightbellCard) {
+
+        if (
+            hasDiscovered("nightbell")
+            ||
+            items.nightbell > 0
+        ) {
+
+            nightbellCard.classList.add(
+                "discovered-item"
+            );
+
+        }
+
+    }
+
+
+    const nightbellSeedCard =
+        document.getElementById(
+            "nightbellSeedCard"
+        );
+
+
+    if (nightbellSeedCard) {
+
+        if (
+            hasDiscovered("nightbell")
+            ||
+            items.nightbellSeeds > 0
+        ) {
+
+            nightbellSeedCard.classList.add(
                 "discovered-item"
             );
 
