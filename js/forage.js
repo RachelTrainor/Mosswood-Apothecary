@@ -1,6 +1,7 @@
 // ==========================================
 // MOSSWOOD APOTHECARY
-// Foraging V5
+// Foraging V6
+// Dynamic Planting Materials
 // Discovery Seeds + Active Foraging
 // ==========================================
 
@@ -463,7 +464,7 @@ function giveForageReward(reward) {
 
 
     // ======================================
-    // NORMAL SEED
+    // NORMAL PLANTING MATERIAL
     // ======================================
 
     else if (
@@ -477,32 +478,30 @@ function giveForageReward(reward) {
         );
 
 
-        const plant =
-            getPlantData(
+        title =
+            `Found ${amount} ${getPlantingItemName(
+                reward.itemId,
+                amount
+            )}`;
+
+
+        icon =
+            getPlantingItemIcon(
                 reward.itemId
             );
-
-
-        const plantName =
-            plant
-                ? plant.name
-                : "Plant";
-
-
-        title =
-            `Found ${amount} ${plantName} Seed${amount === 1 ? "" : "s"}`;
     }
 
 
     // ======================================
-    // DISCOVERY SEED
+    // DISCOVERY PLANTING MATERIAL
     // ======================================
     //
     // BEFORE the botanical is discovered:
     //     Give a Strange Seed.
     //
     // AFTER the botanical is discovered:
-    //     Give the identified plant seed.
+    //     Give its identified planting
+    //     material (seed, spore, etc.).
     //
     // ======================================
 
@@ -541,21 +540,32 @@ function giveForageReward(reward) {
                     : "Plant";
 
 
+            const plantingItemName =
+                getPlantingItemName(
+                    reward.plantId,
+                    amount
+                );
+
+
+            const genericPlantingItemName =
+                getPlantingItemGenericName(
+                    reward.plantId,
+                    amount
+                );
+
+
             title =
-                `Found ${amount} ${plantName} Seed${amount === 1 ? "" : "s"}`;
+                `Found ${amount} ${plantingItemName}`;
 
 
             text =
                 reward.discoveredText ||
-                `Your familiar returned with ${plantName} seed${amount === 1 ? "" : "s"}.`;
+                `Your familiar returned with ${plantName} ${genericPlantingItemName}.`;
 
 
             icon =
-                reward.discoveredIcon ||
-                (
-                    plant
-                        ? plant.seedIcon
-                        : "🌱"
+                getPlantingItemIcon(
+                    reward.plantId
                 );
         }
 
