@@ -1,21 +1,191 @@
 // ==========================================
 // MOSSWOOD APOTHECARY
-// Greenhouse V1
+// Greenhouse V2
 // ==========================================
 
 
 // ==========================================
-// PLANT SETTINGS
+// BASE PLANT SETTINGS
 // ==========================================
 
 // Short times for development/testing.
-// We can make these much longer later.
+// These can become much longer later.
 
-const MOONMINT_GROW_TIME =
+const BASE_MOONMINT_GROW_TIME =
     60 * 1000;
 
-const MOONMINT_DRY_TIME =
+const BASE_MOONMINT_DRY_TIME =
     25 * 1000;
+
+
+// ==========================================
+// UPGRADE MIGRATION
+// ==========================================
+
+// Older saves may not contain upgrades yet.
+// Add them without resetting existing progress.
+
+if (!game.upgrades) {
+
+    game.upgrades = {
+        expansion: 0,
+        irrigation: 0,
+        growth: 0
+    };
+
+}
+
+
+if (
+    typeof game.upgrades.expansion
+    !== "number"
+) {
+
+    game.upgrades.expansion = 0;
+
+}
+
+
+if (
+    typeof game.upgrades.irrigation
+    !== "number"
+) {
+
+    game.upgrades.irrigation = 0;
+
+}
+
+
+if (
+    typeof game.upgrades.growth
+    !== "number"
+) {
+
+    game.upgrades.growth = 0;
+
+}
+
+
+// ==========================================
+// GREENHOUSE EXPANSION
+// ==========================================
+
+function getRequiredPlotCount() {
+
+    const expansionLevel =
+        game.upgrades.expansion;
+
+    // Level 0 = 4 plots
+    // Level 1 = 6 plots
+    // Level 2 = 8 plots
+    // Level 3 = 10 plots
+    // Level 4 = 12 plots
+
+    return (
+        4 +
+        (
+            expansionLevel * 2
+        )
+    );
+
+}
+
+
+function applyGreenhouseExpansion() {
+
+    const requiredPlots =
+        getRequiredPlotCount();
+
+
+    if (!game.greenhouse.plots) {
+
+        game.greenhouse.plots = [];
+
+    }
+
+
+    // Only ADD plots.
+    // Never remove existing plots or plants.
+
+    while (
+        game.greenhouse.plots.length
+        < requiredPlots
+    ) {
+
+        game.greenhouse.plots.push(
+            null
+        );
+
+    }
+
+
+    // Greenhouse level follows expansion level.
+
+    game.greenhouse.level =
+        game.upgrades.expansion + 1;
+
+}
+
+
+// Apply expansion immediately when page loads.
+
+applyGreenhouseExpansion();
+
+saveGame();
+
+
+// ==========================================
+// IRRIGATION UPGRADE
+// ==========================================
+
+function getMoonmintDryTime() {
+
+    const irrigationLevel =
+        game.upgrades.irrigation;
+
+
+    // Each level keeps soil moist
+    // 10% longer.
+
+    const bonus =
+        irrigationLevel * 0.10;
+
+
+    return (
+        BASE_MOONMINT_DRY_TIME *
+        (
+            1 + bonus
+        )
+    );
+
+}
+
+
+// ==========================================
+// GROWTH UPGRADE
+// ==========================================
+
+function getMoonmintGrowTime() {
+
+    const growthLevel =
+        game.upgrades.growth;
+
+
+    // Each level reduces total
+    // growth time by 5%.
+
+    const reduction =
+        growthLevel * 0.05;
+
+
+    return (
+        BASE_MOONMINT_GROW_TIME *
+        (
+            1 - reduction
+        )
+    );
+
+}
 
 
 // ==========================================
@@ -234,10 +404,14 @@ function getGrowthProgress(plot) {
         - plot.plantedAt;
 
 
+    const growTime =
+        getMoonmintGrowTime();
+
+
     const progress =
         (
             elapsed /
-            MOONMINT_GROW_TIME
+            growTime
         ) * 100;
 
 
@@ -255,10 +429,14 @@ function getGrowthProgress(plot) {
 
 function isPlantDry(plot) {
 
+    const dryTime =
+        getMoonmintDryTime();
+
+
     return (
         Date.now()
         - plot.lastWatered
-        >= MOONMINT_DRY_TIME
+        >= dryTime
     );
 
 }
@@ -275,11 +453,15 @@ function formatGrowthTime(plot) {
         - plot.plantedAt;
 
 
+    const growTime =
+        getMoonmintGrowTime();
+
+
     const remaining =
         Math.max(
             0,
 
-            MOONMINT_GROW_TIME
+            growTime
             - elapsed
         );
 
@@ -642,6 +824,12 @@ function renderGreenhouseInfo() {
 // ==========================================
 
 function renderGreenhouse() {
+
+    // Make sure newly purchased expansion
+    // levels are reflected in the plots.
+
+    applyGreenhouseExpansion();
+
 
     updateResourceBar();
 
