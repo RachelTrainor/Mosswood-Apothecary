@@ -1,6 +1,7 @@
 // ==========================================
 // MOSSWOOD APOTHECARY
-// Potion Room V1
+// Potion Room V2
+// Central Data Integration
 // ==========================================
 
 
@@ -18,19 +19,43 @@ let experiment = [];
 
 
 // ==========================================
-// INGREDIENT INFORMATION
+// INGREDIENT DATA HELPERS
 // ==========================================
 
-const ingredientData = {
+function getPotionIngredientData(
+    ingredientId
+) {
 
-    moonmint: {
-        name: "Moonmint",
-        icon: "🌿",
-        description:
-            "A cool, fragrant herb harvested from the greenhouse."
+    const plant =
+        PLANT_DATA[
+            ingredientId
+        ];
+
+
+    if (!plant) {
+
+        return null;
+
     }
 
-};
+
+    return {
+
+        id:
+            plant.id,
+
+        name:
+            plant.name,
+
+        icon:
+            plant.icon,
+
+        description:
+            plant.description
+
+    };
+
+}
 
 
 // ==========================================
@@ -43,7 +68,9 @@ function addIngredientToExperiment(
 
     // Maximum of three ingredients.
 
-    if (experiment.length >= 3) {
+    if (
+        experiment.length >= 3
+    ) {
 
         showPotionResult(
             "The cauldron is full.",
@@ -51,23 +78,32 @@ function addIngredientToExperiment(
         );
 
         return;
+
     }
 
 
-    // Make sure this ingredient exists.
+    // Make sure the ingredient exists.
 
-    if (!ingredientData[ingredient]) {
+    const ingredientInfo =
+        getPotionIngredientData(
+            ingredient
+        );
+
+
+    if (!ingredientInfo) {
 
         return;
+
     }
 
 
     // Count how many of this ingredient
-    // are already sitting in the cauldron.
+    // are already in the cauldron.
 
     const selectedAmount =
         experiment.filter(
-            item => item === ingredient
+            item =>
+                item === ingredient
         ).length;
 
 
@@ -79,8 +115,7 @@ function addIngredientToExperiment(
         );
 
 
-    // Prevent player from selecting
-    // ingredients they don't own.
+    // Prevent selecting more than owned.
 
     if (
         selectedAmount >=
@@ -89,10 +124,11 @@ function addIngredientToExperiment(
 
         showPotionResult(
             "Nothing left on the shelf.",
-            `You don't have any more ${ingredientData[ingredient].name} available.`
+            `You don't have any more ${ingredientInfo.name} available.`
         );
 
         return;
+
     }
 
 
@@ -141,7 +177,9 @@ function removeExperimentIngredient(
 
 function clearExperiment() {
 
-    if (experiment.length === 0) {
+    if (
+        experiment.length === 0
+    ) {
 
         showPotionResult(
             "The cauldron is already empty.",
@@ -168,6 +206,57 @@ function clearExperiment() {
 
 
 // ==========================================
+// CREATE RECIPE KEY
+// ==========================================
+
+function createRecipeKey(
+    ingredients
+) {
+
+    return [...ingredients]
+        .sort()
+        .join("+");
+
+}
+
+
+// ==========================================
+// FIND RECIPE
+// ==========================================
+
+function findRecipeByIngredients(
+    ingredients
+) {
+
+    const experimentKey =
+        createRecipeKey(
+            ingredients
+        );
+
+
+    return Object.values(
+        RECIPE_DATA
+    ).find(
+        recipe => {
+
+            const recipeKey =
+                createRecipeKey(
+                    recipe.ingredients
+                );
+
+
+            return (
+                recipeKey ===
+                experimentKey
+            );
+
+        }
+    ) || null;
+
+}
+
+
+// ==========================================
 // BREW EXPERIMENT
 // ==========================================
 
@@ -175,7 +264,9 @@ function brewExperiment() {
 
     // Nothing selected.
 
-    if (experiment.length === 0) {
+    if (
+        experiment.length === 0
+    ) {
 
         showPotionResult(
             "The cauldron is empty.",
@@ -239,17 +330,33 @@ function brewExperiment() {
             );
 
 
-        if (available < required) {
+        if (
+            available < required
+        ) {
+
+            const ingredientInfo =
+                getPotionIngredientData(
+                    ingredient
+                );
+
+
+            const ingredientName =
+                ingredientInfo
+                    ? ingredientInfo.name
+                    : "ingredient";
+
 
             showPotionResult(
                 "Something is missing.",
-                `You no longer have enough ${ingredientData[ingredient].name} for this experiment.`
+                `You no longer have enough ${ingredientName} for this experiment.`
             );
 
 
             experiment = [];
 
+
             renderPotionRoom();
+
 
             return;
 
@@ -259,24 +366,27 @@ function brewExperiment() {
 
 
     // --------------------------------------
-    // CONSUME INGREDIENTS
+    // FIND MATCHING RECIPE
     // --------------------------------------
 
-    /*
-        We change the inventory directly here
-        and save once after the experiment.
+    const recipe =
+        findRecipeByIngredients(
+            experiment
+        );
 
-        This avoids saving multiple times
-        when recipes eventually use several
-        different ingredients.
-    */
+
+    // --------------------------------------
+    // CONSUME INGREDIENTS
+    // --------------------------------------
 
     for (
         const ingredient
         in requiredIngredients
     ) {
 
-        game.inventory[ingredient] -=
+        game.inventory[
+            ingredient
+        ] -=
             requiredIngredients[
                 ingredient
             ];
@@ -284,100 +394,91 @@ function brewExperiment() {
     }
 
 
-    // --------------------------------------
-    // CREATE RECIPE KEY
-    // --------------------------------------
-
-    /*
-        Sorting means:
-
-        Moonmint + Gloomcap
-
-        is treated the same as:
-
-        Gloomcap + Moonmint
-    */
-
-    const recipeKey =
-        [...experiment]
-            .sort()
-            .join("+");
-
-
-    // --------------------------------------
-    // CHECK RECIPE
-    // --------------------------------------
-
-    let successfulRecipe = false;
-
-
     // ======================================
-    // POTION OF CALM
+    // SUCCESSFUL RECIPE
     // ======================================
 
-    if (
-        recipeKey ===
-        "moonmint+moonmint"
-    ) {
+    if (recipe) {
 
-        successfulRecipe = true;
+        const potion =
+            POTION_DATA[
+                recipe.potionId
+            ];
 
 
-        // Add potion to inventory.
+        if (potion) {
 
-        if (
-            typeof game.potions.calm
-            !== "number"
-        ) {
+            // ----------------------------------
+            // ADD POTION
+            // ----------------------------------
 
-            game.potions.calm = 0;
+            if (
+                typeof game.potions[
+                    potion.id
+                ] !== "number"
+            ) {
+
+                game.potions[
+                    potion.id
+                ] = 0;
+
+            }
+
+
+            game.potions[
+                potion.id
+            ]++;
+
+
+            // ----------------------------------
+            // FIRST DISCOVERY
+            // ----------------------------------
+
+            const firstDiscovery =
+                !hasDiscovered(
+                    recipe.id
+                );
+
+
+            if (firstDiscovery) {
+
+                game.discoveries.push(
+                    recipe.id
+                );
+
+
+                showPotionResult(
+                    `✦ New Discovery: ${potion.name} ✦`,
+                    `${potion.description} The recipe has been recorded in your Grimoire.`,
+                    "discovery"
+                );
+
+            }
+
+
+            // ----------------------------------
+            // ALREADY DISCOVERED
+            // ----------------------------------
+
+            else {
+
+                showPotionResult(
+                    potion.name,
+                    potion.description,
+                    "success"
+                );
+
+            }
 
         }
 
-
-        game.potions.calm++;
-
-
-        // ----------------------------------
-        // FIRST DISCOVERY
-        // ----------------------------------
-
-        const firstDiscovery =
-            !hasDiscovered(
-                "potionOfCalm"
-            );
-
-
-        if (firstDiscovery) {
-
-            game.discoveries.push(
-                "potionOfCalm"
-            );
-
-
-            showPotionResult(
-                "✦ New Discovery: Potion of Calm ✦",
-
-                "The mixture settles into a pale green draught carrying the cool scent of Moonmint. The recipe has been recorded in your Grimoire.",
-
-                "discovery"
-            );
-
-        }
-
-
-        // ----------------------------------
-        // ALREADY DISCOVERED
-        // ----------------------------------
 
         else {
 
             showPotionResult(
-                "Potion of Calm",
-
-                "The familiar pale green draught settles inside the bottle.",
-
-                "success"
+                "Unstable Mixture",
+                "The ingredients react strangely, but no usable potion can be recovered.",
+                "failure"
             );
 
         }
@@ -389,13 +490,11 @@ function brewExperiment() {
     // FAILED EXPERIMENT
     // ======================================
 
-    if (!successfulRecipe) {
+    else {
 
         showPotionResult(
             "Failed Experiment",
-
             "The mixture bubbles hopefully for a moment before fading into a murky, useless liquid.",
-
             "failure"
         );
 
@@ -416,7 +515,7 @@ function brewExperiment() {
     saveGame();
 
 
-    // Update resources across this page.
+    // Update resource bar.
 
     updateResourceBar();
 
@@ -445,7 +544,9 @@ function showPotionResult(
 
 
     if (!result) {
+
         return;
+
     }
 
 
@@ -465,16 +566,29 @@ function showPotionResult(
     let symbol = "☾";
 
 
-    if (type === "discovery") {
+    if (
+        type === "discovery"
+    ) {
 
         symbol = "✦";
 
     }
 
 
-    if (type === "success") {
+    if (
+        type === "success"
+    ) {
 
         symbol = "⚗";
+
+    }
+
+
+    if (
+        type === "failure"
+    ) {
+
+        symbol = "☁";
 
     }
 
@@ -515,7 +629,9 @@ function renderExperimentSlots() {
 
 
     if (!container) {
+
         return;
+
     }
 
 
@@ -544,48 +660,49 @@ function renderExperimentSlots() {
         // FILLED SLOT
         // ----------------------------------
 
-        if (
-            ingredient &&
-            ingredientData[ingredient]
-        ) {
+        if (ingredient) {
 
             const data =
-                ingredientData[
+                getPotionIngredientData(
                     ingredient
-                ];
+                );
 
 
-            slot.className =
-                "ingredient-slot filled";
+            if (data) {
+
+                slot.className =
+                    "ingredient-slot filled";
 
 
-            slot.innerHTML = `
+                slot.innerHTML = `
 
-                <span class="slot-plant">
-                    ${data.icon}
-                </span>
+                    <span class="slot-plant">
+                        ${data.icon}
+                    </span>
 
-                <strong>
-                    ${data.name}
-                </strong>
+                    <strong>
+                        ${data.name}
+                    </strong>
 
-                <small>
-                    Remove
-                </small>
+                    <small>
+                        Remove
+                    </small>
 
-            `;
+                `;
 
 
-            slot.addEventListener(
-                "click",
-                () => {
+                slot.addEventListener(
+                    "click",
+                    () => {
 
-                    removeExperimentIngredient(
-                        i
-                    );
+                        removeExperimentIngredient(
+                            i
+                        );
 
-                }
-            );
+                    }
+                );
+
+            }
 
         }
 
@@ -594,7 +711,12 @@ function renderExperimentSlots() {
         // EMPTY SLOT
         // ----------------------------------
 
-        else {
+        if (
+            !ingredient ||
+            !getPotionIngredientData(
+                ingredient
+            )
+        ) {
 
             slot.className =
                 "ingredient-slot empty";
@@ -652,6 +774,24 @@ function renderIngredientShelf() {
 
 
 // ==========================================
+// GET DISCOVERED RECIPE COUNT
+// ==========================================
+
+function getDiscoveredRecipeCount() {
+
+    return Object.keys(
+        RECIPE_DATA
+    ).filter(
+        recipeId =>
+            hasDiscovered(
+                recipeId
+            )
+    ).length;
+
+}
+
+
+// ==========================================
 // RENDER DISCOVERY COUNT
 // ==========================================
 
@@ -664,15 +804,19 @@ function renderDiscoveryCount() {
 
 
     if (!element) {
+
         return;
+
     }
 
 
     const amount =
-        game.discoveries.length;
+        getDiscoveredRecipeCount();
 
 
-    if (amount === 1) {
+    if (
+        amount === 1
+    ) {
 
         element.textContent =
             "1 recipe discovered";
