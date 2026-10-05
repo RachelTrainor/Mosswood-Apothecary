@@ -2184,3 +2184,618 @@ nav {
     }
 
 }
+/* ==========================================
+   INTRO / TITLE SCREEN
+========================================== */
+
+.intro-body {
+    min-height: 100vh;
+    margin: 0;
+
+    overflow-x: hidden;
+
+    background:
+        radial-gradient(
+            circle at 50% 35%,
+            rgba(71, 84, 55, 0.24),
+            transparent 32%
+        ),
+        radial-gradient(
+            circle at 50% 100%,
+            rgba(102, 120, 77, 0.12),
+            transparent 42%
+        ),
+        linear-gradient(
+            180deg,
+            #0a0d09 0%,
+            #10140e 48%,
+            #080a07 100%
+        );
+
+    color: var(--cream);
+}
+
+
+/* ==========================================
+   INTRO SCREEN
+========================================== */
+
+.intro-screen {
+    position: relative;
+
+    min-height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 60px 25px;
+
+    overflow: hidden;
+}
+
+
+/* Subtle atmospheric glow */
+
+.intro-glow {
+    position: absolute;
+
+    top: 50%;
+    left: 50%;
+
+    width: 700px;
+    height: 700px;
+
+    transform:
+        translate(-50%, -50%);
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(102, 120, 77, 0.12),
+            rgba(102, 120, 77, 0.025) 45%,
+            transparent 70%
+        );
+
+    border-radius: 50%;
+
+    pointer-events: none;
+}
+
+
+/* ==========================================
+   STARS / DECORATION
+========================================== */
+
+.intro-stars {
+    position: absolute;
+
+    top: 8%;
+    left: 50%;
+
+    width: min(700px, 85vw);
+
+    transform:
+        translateX(-50%);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    color: rgba(196, 164, 106, 0.45);
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    pointer-events: none;
+}
+
+.intro-stars span:nth-child(1),
+.intro-stars span:nth-child(5) {
+    font-size: 12px;
+}
+
+.intro-stars span:nth-child(2),
+.intro-stars span:nth-child(4) {
+    font-size: 18px;
+    opacity: 0.45;
+}
+
+.intro-stars span:nth-child(3) {
+    font-size: 17px;
+}
+
+
+/* ==========================================
+   INTRO CONTENT
+========================================== */
+
+.intro-content {
+    position: relative;
+    z-index: 2;
+
+    width: min(760px, 100%);
+
+    text-align: center;
+
+    padding:
+        55px 65px 48px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(28, 34, 24, 0.78),
+            rgba(12, 15, 11, 0.88)
+        );
+
+    border:
+        1px solid
+        rgba(139, 156, 107, 0.24);
+
+    border-radius: 10px;
+
+    box-shadow:
+        0 30px 90px
+        rgba(0, 0, 0, 0.38),
+        inset 0 0 60px
+        rgba(102, 120, 77, 0.025);
+
+    backdrop-filter:
+        blur(5px);
+}
+
+
+/* Decorative inner border */
+
+.intro-content::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 9px;
+
+    border:
+        1px solid
+        rgba(196, 164, 106, 0.08);
+
+    border-radius: 6px;
+
+    pointer-events: none;
+}
+
+
+/* ==========================================
+   MOON
+========================================== */
+
+.intro-moon {
+    margin-bottom: 16px;
+
+    color: var(--gold);
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 58px;
+    line-height: 1;
+
+    text-shadow:
+        0 0 30px
+        rgba(196, 164, 106, 0.18);
+}
+
+
+/* ==========================================
+   INTRO EYEBROW
+========================================== */
+
+.intro-eyebrow {
+    margin-bottom: 14px;
+
+    color: var(--green-light);
+
+    font-size: 10px;
+    font-weight: 600;
+
+    letter-spacing: 5px;
+}
+
+
+/* ==========================================
+   TITLE
+========================================== */
+
+.intro-title {
+    margin: 0;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-weight: 500;
+
+    text-transform: uppercase;
+
+    color: var(--cream);
+
+    line-height: 0.86;
+
+    letter-spacing: 3px;
+}
+
+.intro-title span {
+    display: block;
+}
+
+.intro-title span:first-child {
+    font-size:
+        clamp(
+            58px,
+            9vw,
+            92px
+        );
+}
+
+.intro-title span:last-child {
+    margin-top: 13px;
+
+    color: var(--gold);
+
+    font-size:
+        clamp(
+            28px,
+            5vw,
+            43px
+        );
+
+    letter-spacing: 9px;
+}
+
+
+/* ==========================================
+   DIVIDER
+========================================== */
+
+.intro-divider {
+    width: min(390px, 80%);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 15px;
+
+    margin:
+        31px auto 27px;
+}
+
+.intro-divider > span:not(
+    .intro-divider-symbol
+) {
+    flex: 1;
+
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(196, 164, 106, 0.42)
+        );
+}
+
+.intro-divider > span:last-child {
+    transform:
+        rotate(180deg);
+}
+
+.intro-divider-symbol {
+    color: var(--gold);
+
+    font-size: 11px;
+}
+
+
+/* ==========================================
+   STORY TEXT
+========================================== */
+
+.intro-story {
+    margin: 0 auto 12px;
+
+    color: var(--cream);
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 23px;
+    font-style: italic;
+
+    line-height: 1.5;
+}
+
+.intro-description {
+    max-width: 550px;
+
+    margin:
+        0 auto 31px;
+
+    color: var(--muted);
+
+    font-size: 13px;
+
+    line-height: 1.8;
+}
+
+
+/* ==========================================
+   ENTER MOSSWOOD BUTTON
+========================================== */
+
+.enter-mosswood-button,
+.enter-mosswood-button:link,
+.enter-mosswood-button:visited {
+    position: relative;
+
+    display: inline-block;
+
+    min-width: 235px;
+
+    padding:
+        15px 30px;
+
+    color: var(--cream);
+
+    background:
+        linear-gradient(
+            180deg,
+            #48563a,
+            var(--green-dark)
+        );
+
+    border:
+        1px solid
+        #718259;
+
+    border-radius: 4px;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 21px;
+    font-weight: 600;
+
+    letter-spacing: 1.5px;
+
+    text-decoration: none;
+
+    box-shadow:
+        0 8px 24px
+        rgba(0, 0, 0, 0.22);
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.enter-mosswood-button:hover {
+    color: var(--cream);
+
+    background:
+        linear-gradient(
+            180deg,
+            #60704d,
+            #465638
+        );
+
+    border-color:
+        var(--green-light);
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 12px 30px
+        rgba(0, 0, 0, 0.3),
+        0 0 25px
+        rgba(102, 120, 77, 0.08);
+}
+
+.enter-mosswood-button:active {
+    transform:
+        translateY(0);
+}
+
+
+/* ==========================================
+   SAVE NOTE
+========================================== */
+
+.intro-save-note {
+    margin-top: 23px;
+
+    color:
+        rgba(156, 155, 142, 0.7);
+
+    font-size: 10px;
+
+    letter-spacing: 1.5px;
+}
+
+
+/* ==========================================
+   BOTANICAL BOTTOM DECORATION
+========================================== */
+
+.intro-botanical {
+    position: absolute;
+
+    bottom: 25px;
+    left: 50%;
+
+    transform:
+        translateX(-50%);
+
+    display: flex;
+    align-items: center;
+
+    gap: 18px;
+
+    color:
+        rgba(139, 156, 107, 0.45);
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    pointer-events: none;
+}
+
+.intro-botanical span:first-child {
+    transform:
+        scaleX(-1);
+}
+
+.intro-botanical span:nth-child(2) {
+    font-size: 22px;
+
+    opacity: 0.65;
+}
+
+
+/* ==========================================
+   INTRO CORNER DETAILS
+========================================== */
+
+.intro-screen::before,
+.intro-screen::after {
+    content: "";
+
+    position: absolute;
+
+    width: 250px;
+    height: 250px;
+
+    opacity: 0.12;
+
+    pointer-events: none;
+}
+
+.intro-screen::before {
+    top: -90px;
+    left: -90px;
+
+    border-right:
+        1px solid var(--green-light);
+
+    border-bottom:
+        1px solid var(--green-light);
+
+    border-radius:
+        0 0 100% 0;
+}
+
+.intro-screen::after {
+    right: -90px;
+    bottom: -90px;
+
+    border-top:
+        1px solid var(--green-light);
+
+    border-left:
+        1px solid var(--green-light);
+
+    border-radius:
+        100% 0 0 0;
+}
+
+
+/* ==========================================
+   INTRO MOBILE
+========================================== */
+
+@media (max-width: 700px) {
+
+    .intro-screen {
+        padding:
+            35px 18px 75px;
+    }
+
+    .intro-content {
+        padding:
+            45px 25px 40px;
+    }
+
+    .intro-moon {
+        font-size: 48px;
+    }
+
+    .intro-title span:first-child {
+        font-size:
+            clamp(
+                48px,
+                16vw,
+                68px
+            );
+    }
+
+    .intro-title span:last-child {
+        font-size:
+            clamp(
+                23px,
+                8vw,
+                34px
+            );
+
+        letter-spacing: 5px;
+    }
+
+    .intro-story {
+        font-size: 20px;
+    }
+
+    .intro-description {
+        font-size: 12px;
+    }
+
+    .enter-mosswood-button {
+        width: 100%;
+        min-width: 0;
+    }
+
+}
+
+
+/* ==========================================
+   INTRO SMALL MOBILE
+========================================== */
+
+@media (max-width: 420px) {
+
+    .intro-content {
+        padding:
+            40px 20px 35px;
+    }
+
+    .intro-title span:first-child {
+        font-size: 46px;
+    }
+
+    .intro-title span:last-child {
+        font-size: 22px;
+
+        letter-spacing: 4px;
+    }
+
+    .intro-divider {
+        margin:
+            25px auto 22px;
+    }
+
+}
