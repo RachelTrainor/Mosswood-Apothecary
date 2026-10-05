@@ -3718,3 +3718,425 @@ nav {
     }
 
 }
+/* ==========================================
+   INVENTORY
+========================================== */
+
+.inventory-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+
+    margin-top: 40px;
+    padding: 27px 30px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(102, 120, 77, 0.10),
+            rgba(196, 164, 106, 0.03)
+        ),
+        var(--panel);
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.inventory-summary h3 {
+    margin: 5px 0 5px;
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 29px;
+    font-weight: 600;
+
+    color: var(--cream);
+}
+
+.inventory-summary p {
+    margin: 0;
+
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+
+/* ==========================================
+   TOTAL ITEMS
+========================================== */
+
+.inventory-total {
+    min-width: 145px;
+
+    padding: 15px 20px;
+
+    text-align: center;
+
+    background:
+        rgba(196, 164, 106, 0.04);
+
+    border: 1px solid var(--border);
+    border-radius: 5px;
+}
+
+.inventory-total span {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: var(--muted);
+
+    font-size: 9px;
+    letter-spacing: 1.8px;
+}
+
+.inventory-total strong {
+    display: block;
+
+    color: var(--gold);
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 27px;
+    font-weight: 600;
+}
+
+
+/* ==========================================
+   INVENTORY SECTIONS
+========================================== */
+
+.inventory-section {
+    margin-top: 25px;
+    padding: 30px;
+
+    background: var(--panel);
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.inventory-section-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 30px;
+
+    margin-bottom: 22px;
+    padding-bottom: 18px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.inventory-section-heading h3 {
+    margin: 5px 0 0;
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 29px;
+    font-weight: 600;
+
+    color: var(--cream);
+}
+
+.inventory-section-heading p {
+    max-width: 390px;
+    margin: 0;
+
+    text-align: right;
+
+    color: var(--muted);
+
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+
+/* ==========================================
+   INVENTORY GRID
+========================================== */
+
+.inventory-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 15px;
+}
+
+
+/* ==========================================
+   INVENTORY CARD
+========================================== */
+
+.inventory-card {
+    position: relative;
+
+    display: grid;
+
+    grid-template-columns:
+        68px 1fr auto;
+
+    align-items: center;
+
+    gap: 18px;
+
+    min-height: 135px;
+
+    padding: 20px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(102, 120, 77, 0.05),
+            transparent 55%
+        ),
+        #12150f;
+
+    border: 1px solid var(--border);
+    border-radius: 6px;
+
+    transition:
+        border-color 0.2s ease,
+        transform 0.2s ease,
+        background 0.2s ease;
+}
+
+.inventory-card:hover {
+    border-color:
+        rgba(139, 156, 107, 0.42);
+
+    transform:
+        translateY(-2px);
+}
+
+
+/* ==========================================
+   ITEM ICON
+========================================== */
+
+.inventory-icon {
+    width: 62px;
+    height: 62px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 28px;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(102, 120, 77, 0.15),
+            rgba(102, 120, 77, 0.025)
+        );
+
+    border: 1px solid var(--border);
+    border-radius: 50%;
+}
+
+
+/* ==========================================
+   ITEM INFORMATION
+========================================== */
+
+.inventory-card-content {
+    min-width: 0;
+}
+
+.inventory-card-content h4 {
+    margin: 4px 0 6px;
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 23px;
+    font-weight: 600;
+
+    color: var(--cream);
+}
+
+.inventory-card-content p {
+    max-width: 430px;
+    margin: 0;
+
+    color: var(--muted);
+
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+
+/* ==========================================
+   ITEM QUANTITY
+========================================== */
+
+.inventory-quantity {
+    min-width: 65px;
+
+    padding-left: 15px;
+
+    text-align: center;
+
+    border-left: 1px solid var(--border);
+}
+
+.inventory-quantity span {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: var(--muted);
+
+    font-size: 8px;
+    letter-spacing: 1.5px;
+}
+
+.inventory-quantity strong {
+    display: block;
+
+    color: var(--cream);
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 26px;
+    font-weight: 600;
+}
+
+
+/* ==========================================
+   STRANGE SEED
+========================================== */
+
+.strange-seed-card {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(95, 77, 116, 0.06),
+            transparent 60%
+        ),
+        #12150f;
+}
+
+.strange-seed-card .inventory-icon {
+    color: #b9a3c7;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(122, 94, 145, 0.14),
+            rgba(122, 94, 145, 0.025)
+        );
+}
+
+
+/* Strange Seed becomes more noticeable
+   once the player actually owns one. */
+
+.strange-seed-card.discovered-item {
+    border-color:
+        rgba(154, 126, 174, 0.38);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(111, 84, 133, 0.11),
+            transparent 65%
+        ),
+        #12150f;
+}
+
+.strange-seed-card.discovered-item
+.inventory-icon {
+    border-color:
+        rgba(154, 126, 174, 0.38);
+
+    box-shadow:
+        0 0 18px
+        rgba(117, 88, 139, 0.10);
+}
+
+
+/* ==========================================
+   EMPTY ITEM STATE
+========================================== */
+
+.inventory-card:has(
+    .inventory-quantity strong
+) {
+    overflow: hidden;
+}
+
+
+/* ==========================================
+   INVENTORY RESPONSIVE
+========================================== */
+
+@media (max-width: 1050px) {
+
+    .inventory-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .inventory-summary {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .inventory-total {
+        width: 100%;
+    }
+
+    .inventory-section {
+        padding: 22px;
+    }
+
+    .inventory-section-heading {
+        align-items: flex-start;
+        flex-direction: column;
+
+        gap: 10px;
+    }
+
+    .inventory-section-heading p {
+        text-align: left;
+    }
+
+    .inventory-card {
+        grid-template-columns:
+            55px 1fr;
+
+        gap: 15px;
+    }
+
+    .inventory-icon {
+        width: 52px;
+        height: 52px;
+
+        font-size: 24px;
+    }
+
+    .inventory-quantity {
+        grid-column: 1 / -1;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        width: 100%;
+
+        padding:
+            12px 0 0;
+
+        border-left: none;
+        border-top:
+            1px solid var(--border);
+    }
+
+    .inventory-quantity span {
+        margin: 0;
+    }
+
+}
