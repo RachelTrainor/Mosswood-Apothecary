@@ -4262,3 +4262,376 @@ nav {
 .seed-menu-cancel:hover {
     color: var(--cream);
 }
+/* ==================================================
+   MOSSWOOD INTRO
+   Rustic Woodland Entrance
+================================================== */
+
+.mosswood-intro {
+    margin: 0;
+    padding: 0;
+
+    width: 100%;
+    min-height: 100vh;
+
+    overflow: hidden;
+
+    background: #0b100b;
+}
+
+
+.mosswood-entrance {
+    position: relative;
+
+    width: 100%;
+    height: 100vh;
+    min-height: 650px;
+
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* ==================================================
+   BACKGROUND
+================================================== */
+
+.mosswood-background {
+    position: absolute;
+
+    inset: 0;
+
+    background-image:
+        url("assets/images/mosswood-intro-bg.png");
+
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+
+    z-index: 0;
+
+    transform: scale(1.02);
+}
+
+
+/* ==================================================
+   DARK EDGE VIGNETTE
+================================================== */
+
+.mosswood-vignette {
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        radial-gradient(
+            ellipse at center,
+            transparent 35%,
+            rgba(4, 7, 4, 0.18) 65%,
+            rgba(3, 5, 3, 0.72) 100%
+        );
+
+    pointer-events: none;
+
+    z-index: 1;
+}
+
+
+/* ==================================================
+   TITLE SIGN
+================================================== */
+
+.mosswood-sign {
+    position: relative;
+
+    z-index: 3;
+
+    width: min(72vw, 850px);
+    height: auto;
+
+    margin-top: -90px;
+
+    filter:
+        drop-shadow(0 18px 28px rgba(0, 0, 0, 0.65));
+
+    animation:
+        mosswood-sign-enter 1.2s ease-out both;
+}
+
+
+/* ==================================================
+   INTRO COPY
+================================================== */
+
+.mosswood-intro-copy {
+    position: relative;
+
+    z-index: 4;
+
+    width: min(600px, 80vw);
+
+    margin-top: -35px;
+
+    text-align: center;
+
+    color: #eee4cc;
+
+    text-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.9);
+
+    animation:
+        mosswood-copy-enter 1.2s 0.25s ease-out both;
+}
+
+
+.mosswood-intro-copy p {
+    margin: 0;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: clamp(
+        1rem,
+        1.7vw,
+        1.35rem
+    );
+
+    font-style: italic;
+
+    line-height: 1.7;
+}
+
+
+.mosswood-intro-copy span {
+    display: block;
+
+    margin-top: 12px;
+
+    font-family:
+        Arial,
+        sans-serif;
+
+    font-size: 0.75rem;
+
+    letter-spacing: 0.18em;
+
+    text-transform: uppercase;
+
+    color: #d2c69d;
+
+    opacity: 0.9;
+}
+
+
+/* ==================================================
+   ENTER BUTTON
+================================================== */
+
+.mosswood-enter {
+    position: relative;
+
+    z-index: 5;
+
+    display: block;
+
+    width: min(360px, 52vw);
+
+    margin-top: 25px;
+
+    transition:
+        transform 0.25s ease,
+        filter 0.25s ease;
+
+    animation:
+        mosswood-button-enter 1.2s 0.45s ease-out both;
+}
+
+
+.mosswood-enter img {
+    display: block;
+
+    width: 100%;
+    height: auto;
+
+    filter:
+        drop-shadow(
+            0 10px 14px
+            rgba(0, 0, 0, 0.65)
+        );
+}
+
+
+.mosswood-enter:hover {
+    transform:
+        translateY(-4px)
+        scale(1.025);
+
+    filter:
+        brightness(1.08)
+        drop-shadow(
+            0 14px 20px
+            rgba(0, 0, 0, 0.7)
+        );
+}
+
+
+.mosswood-enter:active {
+    transform:
+        translateY(1px)
+        scale(0.99);
+}
+
+
+/* ==================================================
+   SAVE NOTE
+================================================== */
+
+.mosswood-save-note {
+    position: relative;
+
+    z-index: 4;
+
+    margin:
+        8px
+        0
+        0;
+
+    font-family:
+        Arial,
+        sans-serif;
+
+    font-size: 0.65rem;
+
+    letter-spacing: 0.16em;
+
+    text-transform: uppercase;
+
+    color: #d1c59b;
+
+    opacity: 0.65;
+
+    text-shadow:
+        0 2px 5px rgba(0, 0, 0, 0.8);
+}
+
+
+/* ==================================================
+   ANIMATIONS
+================================================== */
+
+@keyframes mosswood-sign-enter {
+
+    from {
+        opacity: 0;
+        transform:
+            translateY(-25px)
+            scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform:
+            translateY(0)
+            scale(1);
+    }
+
+}
+
+
+@keyframes mosswood-copy-enter {
+
+    from {
+        opacity: 0;
+        transform:
+            translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform:
+            translateY(0);
+    }
+
+}
+
+
+@keyframes mosswood-button-enter {
+
+    from {
+        opacity: 0;
+        transform:
+            translateY(20px)
+            scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+        transform:
+            translateY(0)
+            scale(1);
+    }
+
+}
+
+
+/* ==================================================
+   MOBILE
+================================================== */
+
+@media (max-width: 700px) {
+
+    .mosswood-entrance {
+        min-height: 600px;
+    }
+
+
+    .mosswood-background {
+        background-position:
+            57% center;
+    }
+
+
+    .mosswood-sign {
+        width: 92vw;
+
+        margin-top: -50px;
+    }
+
+
+    .mosswood-intro-copy {
+        width: 82vw;
+
+        margin-top: -20px;
+    }
+
+
+    .mosswood-intro-copy p {
+        font-size: 0.95rem;
+    }
+
+
+    .mosswood-intro-copy span {
+        font-size: 0.6rem;
+
+        line-height: 1.7;
+    }
+
+
+    .mosswood-enter {
+        width: 65vw;
+
+        margin-top: 18px;
+    }
+
+
+    .mosswood-save-note {
+        font-size: 0.55rem;
+    }
+
+}
