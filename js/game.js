@@ -1,7 +1,7 @@
 // ==========================================
 // MOSSWOOD APOTHECARY
 // Shared Game Data + Save System
-// V2 - Central Data Integration
+// V3 - Mystery Seed System
 // ==========================================
 
 const SAVE_KEY = "mosswoodSave";
@@ -31,6 +31,13 @@ function buildDefaultInventory() {
 // ==========================================
 // BUILD DEFAULT SEEDS
 // ==========================================
+//
+// Normal KNOWN seeds are stored here.
+//
+// Mystery / Strange Seeds are NOT stored
+// here anymore. They are stored individually
+// in game.mysterySeeds.
+// ==========================================
 
 function buildDefaultSeeds() {
 
@@ -41,16 +48,6 @@ function buildDefaultSeeds() {
 
             seeds[plant.id] =
                 plant.startingSeeds || 0;
-
-        }
-    );
-
-
-    Object.values(SPECIAL_SEED_DATA).forEach(
-        seed => {
-
-            seeds[seed.id] =
-                seed.startingAmount || 0;
 
         }
     );
@@ -96,6 +93,17 @@ const defaultGame = {
     seeds:
         buildDefaultSeeds(),
 
+    // Each Strange Seed is stored separately.
+    //
+    // Example:
+    //
+    // {
+    //     id: "mystery_12345_1",
+    //     revealsPlant: "nightbell"
+    // }
+
+    mysterySeeds: [],
+
     potions:
         buildDefaultPotions(),
 
@@ -130,6 +138,12 @@ const defaultGame = {
         irrigation: 0,
         growth: 0
 
+    },
+
+    migrations: {
+
+        mysterySeedsV1: false
+
     }
 
 };
@@ -143,6 +157,27 @@ function getDefaultGame() {
 
     return JSON.parse(
         JSON.stringify(defaultGame)
+    );
+
+}
+
+
+// ==========================================
+// CREATE MYSTERY SEED ID
+// ==========================================
+
+let mysterySeedIdCounter = 0;
+
+
+function createMysterySeedId() {
+
+    mysterySeedIdCounter++;
+
+    return (
+        "mystery_"
+        + Date.now()
+        + "_"
+        + mysterySeedIdCounter
     );
 
 }
@@ -210,7 +245,7 @@ function loadGame() {
 
 
         // ----------------------------------
-        // SEEDS
+        // NORMAL SEEDS
         // ----------------------------------
 
         if (
@@ -224,6 +259,22 @@ function loadGame() {
                 ...oldGame.seeds
 
             };
+
+        }
+
+
+        // ----------------------------------
+        // MYSTERY SEEDS
+        // ----------------------------------
+
+        if (
+            Array.isArray(
+                oldGame.mysterySeeds
+            )
+        ) {
+
+            newGame.mysterySeeds =
+                oldGame.mysterySeeds;
 
         }
 
@@ -348,8 +399,27 @@ function loadGame() {
 
 
         // ----------------------------------
-        // UPGRADE SAFETY
+        // MIGRATION FLAGS
         // ----------------------------------
+
+        if (
+            oldGame.migrations &&
+            typeof oldGame.migrations === "object"
+        ) {
+
+            newGame.migrations = {
+
+                ...newGame.migrations,
+                ...oldGame.migrations
+
+            };
+
+        }
+
+
+        // ==================================
+        // UPGRADE SAFETY
+        // ==================================
 
         if (
             typeof newGame.upgrades.expansion
@@ -381,9 +451,9 @@ function loadGame() {
         }
 
 
-        // ----------------------------------
+        // ==================================
         // ENSURE ALL PLANTS EXIST
-        // ----------------------------------
+        // ==================================
 
         Object.values(PLANT_DATA).forEach(
             plant => {
@@ -417,34 +487,9 @@ function loadGame() {
         );
 
 
-        // ----------------------------------
-        // ENSURE SPECIAL SEEDS EXIST
-        // ----------------------------------
-
-        Object.values(
-            SPECIAL_SEED_DATA
-        ).forEach(
-            seed => {
-
-                if (
-                    typeof newGame.seeds[
-                        seed.id
-                    ] !== "number"
-                ) {
-
-                    newGame.seeds[
-                        seed.id
-                    ] = 0;
-
-                }
-
-            }
-        );
-
-
-        // ----------------------------------
+        // ==================================
         // ENSURE ALL POTIONS EXIST
-        // ----------------------------------
+        // ==================================
 
         Object.values(POTION_DATA).forEach(
             potion => {
@@ -465,9 +510,127 @@ function loadGame() {
         );
 
 
+        // ==================================
+        // OLD STRANGE SEED MIGRATION
+        // ==================================
+        //
+        // Old versions stored Strange Seeds
+        // as:
+        //
+        // game.seeds.unknown = number
+        //
+        // At that point Nightbell was the
+        // only possible mystery plant.
+        //
+        // Convert those old seeds into
+        // individual mystery seed objects.
+        //
+        // This migration only runs once.
+        // ==================================
+
+        if (
+            !newGame.migrations.mysterySeedsV1
+        ) {
+
+            let oldStrangeSeedAmount = 0;
+
+
+            if (
+                oldGame.seeds &&
+                typeof oldGame.seeds.unknown
+                === "number"
+            ) {
+
+                oldStrangeSeedAmount =
+                    Math.max(
+                        0,
+                        Math.floor(
+                            oldGame.seeds.unknown
+                        )
+                    );
+
+            }
+
+
+            for (
+                let i = 0;
+                i < oldStrangeSeedAmount;
+                i++
+            ) {
+
+                newGame.mysterySeeds.push({
+
+                    id:
+                        createMysterySeedId(),
+
+                    revealsPlant:
+                        "nightbell"
+
+                });
+
+            }
+
+
+            newGame.migrations.mysterySeedsV1 =
+                true;
+
+        }
+
+
+        // Old "unknown" seed count is no
+        // longer used after migration.
+
+        if (
+            Object.prototype.hasOwnProperty.call(
+                newGame.seeds,
+                "unknown"
+            )
+        ) {
+
+            delete newGame.seeds.unknown;
+
+        }
+
+
+        // ==================================
+        // MYSTERY SEED SAFETY
+        // ==================================
+
+        if (
+            !Array.isArray(
+                newGame.mysterySeeds
+            )
+        ) {
+
+            newGame.mysterySeeds = [];
+
+        }
+
+
+        // Remove malformed mystery seeds.
+
+        newGame.mysterySeeds =
+            newGame.mysterySeeds.filter(
+                seed => {
+
+                    return (
+                        seed &&
+                        typeof seed === "object" &&
+                        typeof seed.revealsPlant
+                            === "string" &&
+                        PLANT_DATA[
+                            seed.revealsPlant
+                        ]
+                    );
+
+                }
+            );
+
+
         return newGame;
 
     }
+
 
     catch (error) {
 
@@ -694,12 +857,29 @@ function removeIngredient(
 
 
 // ==========================================
-// SEED HELPERS
+// NORMAL SEED HELPERS
 // ==========================================
 
 function getSeedAmount(
     seed
 ) {
+
+    // Compatibility:
+    //
+    // Existing pages still ask for
+    // getSeedAmount("unknown").
+    //
+    // Return the number of individual
+    // mystery seeds instead.
+
+    if (
+        seed === "unknown"
+    ) {
+
+        return getMysterySeedAmount();
+
+    }
+
 
     return (
         game.seeds[seed]
@@ -713,6 +893,37 @@ function addSeeds(
     seed,
     amount = 1
 ) {
+
+    // Compatibility for old code.
+    //
+    // If something tries to add an
+    // "unknown" seed before forage.js
+    // is updated, create Nightbell
+    // mystery seeds instead.
+    //
+    // Once forage.js is updated it will
+    // call addMysterySeed() directly.
+
+    if (
+        seed === "unknown"
+    ) {
+
+        for (
+            let i = 0;
+            i < amount;
+            i++
+        ) {
+
+            addMysterySeed(
+                "nightbell"
+            );
+
+        }
+
+        return;
+
+    }
+
 
     if (
         typeof game.seeds[
@@ -742,6 +953,40 @@ function removeSeeds(
     amount = 1
 ) {
 
+    // Compatibility for old code.
+
+    if (
+        seed === "unknown"
+    ) {
+
+        if (
+            getMysterySeedAmount()
+            < amount
+        ) {
+
+            return false;
+
+        }
+
+
+        for (
+            let i = 0;
+            i < amount;
+            i++
+        ) {
+
+            takeMysterySeed();
+
+        }
+
+
+        saveGame();
+
+        return true;
+
+    }
+
+
     const current =
         getSeedAmount(
             seed
@@ -765,6 +1010,163 @@ function removeSeeds(
     saveGame();
 
     return true;
+
+}
+
+
+// ==========================================
+// MYSTERY SEED HELPERS
+// ==========================================
+
+function getMysterySeedAmount() {
+
+    if (
+        !Array.isArray(
+            game.mysterySeeds
+        )
+    ) {
+
+        return 0;
+
+    }
+
+
+    return game.mysterySeeds.length;
+
+}
+
+
+// ==========================================
+// ADD MYSTERY SEED
+// ==========================================
+//
+// This is what forage.js will eventually
+// use.
+//
+// Example:
+//
+// addMysterySeed("nightbell");
+//
+// Later:
+//
+// addMysterySeed("ghostcap");
+// ==========================================
+
+function addMysterySeed(
+    revealsPlant
+) {
+
+    const plant =
+        getPlantData(
+            revealsPlant
+        );
+
+
+    if (!plant) {
+
+        console.warn(
+            "Cannot create mystery seed. Unknown plant:",
+            revealsPlant
+        );
+
+        return null;
+
+    }
+
+
+    if (
+        !Array.isArray(
+            game.mysterySeeds
+        )
+    ) {
+
+        game.mysterySeeds = [];
+
+    }
+
+
+    const mysterySeed = {
+
+        id:
+            createMysterySeedId(),
+
+        revealsPlant:
+            revealsPlant
+
+    };
+
+
+    game.mysterySeeds.push(
+        mysterySeed
+    );
+
+
+    saveGame();
+
+    return mysterySeed;
+
+}
+
+
+// ==========================================
+// PEEK AT NEXT MYSTERY SEED
+// ==========================================
+//
+// Used internally by the game.
+// The player is not shown revealsPlant.
+// ==========================================
+
+function peekMysterySeed() {
+
+    if (
+        !Array.isArray(
+            game.mysterySeeds
+        )
+        ||
+        game.mysterySeeds.length === 0
+    ) {
+
+        return null;
+
+    }
+
+
+    return game.mysterySeeds[0];
+
+}
+
+
+// ==========================================
+// TAKE MYSTERY SEED
+// ==========================================
+//
+// Removes and returns one Strange Seed.
+// Greenhouse will use this when the player
+// plants one.
+// ==========================================
+
+function takeMysterySeed() {
+
+    if (
+        !Array.isArray(
+            game.mysterySeeds
+        )
+        ||
+        game.mysterySeeds.length === 0
+    ) {
+
+        return null;
+
+    }
+
+
+    const mysterySeed =
+        game.mysterySeeds.shift();
+
+
+    saveGame();
+
+    return mysterySeed;
 
 }
 
