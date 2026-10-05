@@ -104,12 +104,14 @@ function createNavigation() {
 
             <!-- UPGRADES -->
 
-            <span
-                class="nav-button nav-disabled">
+            <a
+    class="nav-button nav-link
+    ${currentPage === "upgrades.html" ? "active" : ""}"
+    href="upgrades.html">
 
-                ⚒ Upgrades
+    ⚒ Upgrades
 
-            </span>
+</a>
 
 
             <!-- INVENTORY -->
