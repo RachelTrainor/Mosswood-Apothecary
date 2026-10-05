@@ -70,12 +70,14 @@ function createNavigation() {
 
             <!-- APOTHECARY -->
 
-            <span
-                class="nav-button nav-disabled">
+            <a
+    class="nav-button nav-link
+    ${currentPage === "apothecary.html" ? "active" : ""}"
+    href="apothecary.html">
 
-                🏚 Apothecary
+    🏚 Apothecary
 
-            </span>
+</a>
 
 
             <a
