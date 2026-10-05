@@ -1,7 +1,7 @@
 // ==========================================
 // MOSSWOOD APOTHECARY
 // Foraging Data
-// V1
+// V2 - Discovery-Based Seed Rewards
 // ==========================================
 
 
@@ -154,7 +154,20 @@ const FORAGE_LOCATION_DATA = {
 
 
 // ==========================================
-// FOREST REWARD TABLE
+// MOSSWOOD FOREST REWARDS
+// ==========================================
+//
+// The discoverySeed reward changes depending
+// on whether its hidden botanical is known.
+//
+// BEFORE NIGHTBELL DISCOVERY:
+//      Strange Seed
+//
+// AFTER NIGHTBELL DISCOVERY:
+//      Nightbell Seed
+//
+// This same system can later be reused for
+// other locations and botanicals.
 // ==========================================
 
 const FOREST_FORAGE_REWARDS = [
@@ -203,7 +216,7 @@ const FOREST_FORAGE_REWARDS = [
             "🌱",
 
         text:
-            "A few small seeds were discovered tangled among the moss."
+            "A few small Moonmint seeds were discovered tangled among the moss."
     },
 
 
@@ -212,9 +225,9 @@ const FOREST_FORAGE_REWARDS = [
             0.17,
 
         type:
-            "mysterySeed",
+            "discoverySeed",
 
-        revealsPlant:
+        plantId:
             "nightbell",
 
         minAmount:
@@ -223,14 +236,20 @@ const FOREST_FORAGE_REWARDS = [
         maxAmount:
             1,
 
-        icon:
+        mysteryIcon:
             "✦",
 
-        title:
+        discoveredIcon:
+            "🪻",
+
+        mysteryTitle:
             "Found a Strange Seed",
 
-        text:
-            "Your familiar returned with a dark, unfamiliar seed. Whatever it grows into remains a mystery."
+        mysteryText:
+            "Your familiar returned with a dark, unfamiliar seed. Whatever it grows into remains a mystery.",
+
+        discoveredText:
+            "Your familiar returned with a Nightbell seed gathered from the forest floor."
     },
 
 
@@ -255,12 +274,14 @@ const FOREST_FORAGE_REWARDS = [
 
 
 // ==========================================
-// TEMPORARY MARSH REWARD TABLE
+// MISTFEN MARSH REWARDS
 // ==========================================
 //
-// No new botanical is being introduced yet.
-// When we create the next plant, this is where
-// we can add its Strange Seed reward.
+// Temporary reward table.
+//
+// We are NOT introducing the next botanical
+// yet. When we add one, one of these rewards
+// can become another discoverySeed reward.
 // ==========================================
 
 const MARSH_FORAGE_REWARDS = [
@@ -358,7 +379,7 @@ const MARSH_FORAGE_REWARDS = [
 
 
 // ==========================================
-// LOCATION HELPERS
+// LOCATION HELPER
 // ==========================================
 
 function getForageLocationData(
