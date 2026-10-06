@@ -1,7 +1,7 @@
 // ==========================================
 // MOSSWOOD APOTHECARY
-// Apothecary Shop V2
-// Dynamic Potion Shop
+// Apothecary Shop V3
+// Inventory-Only Potion Shelf
 // ==========================================
 
 
@@ -166,7 +166,7 @@ function sellPotion(
 
 
 // ==========================================
-// CREATE DISCOVERED POTION CARD
+// CREATE POTION CARD
 // ==========================================
 
 function createPotionCard(
@@ -192,18 +192,20 @@ function createPotionCard(
     card.innerHTML = `
 
         <div class="shop-potion-icon">
+
             ${
                 potion.inventoryIcon ||
                 potion.icon ||
                 "🧪"
             }
+
         </div>
 
 
         <div class="shop-potion-content">
 
             <span class="card-label">
-                DISCOVERED REMEDY
+                REMEDY FOR SALE
             </span>
 
             <h4>
@@ -263,25 +265,8 @@ function createPotionCard(
         "sell-potion-button";
 
 
-    button.disabled =
-        amount <= 0;
-
-
-    if (
-        amount <= 0
-    ) {
-
-        button.textContent =
-            "Out of Stock";
-
-    }
-
-    else {
-
-        button.textContent =
-            "Sell Potion";
-
-    }
+    button.textContent =
+        "Sell Potion";
 
 
     button.addEventListener(
@@ -317,10 +302,10 @@ function createPotionCard(
 
 
 // ==========================================
-// CREATE UNKNOWN POTION CARD
+// CREATE EMPTY SHELF MESSAGE
 // ==========================================
 
-function createUnknownPotionCard() {
+function createEmptyShelfMessage() {
 
     const card =
         document.createElement(
@@ -335,7 +320,7 @@ function createUnknownPotionCard() {
     card.innerHTML = `
 
         <div class="shop-potion-icon">
-            ?
+            🧪
         </div>
 
 
@@ -346,22 +331,13 @@ function createUnknownPotionCard() {
             </span>
 
             <h4>
-                Unknown Remedy
+                No Potions in Stock
             </h4>
 
             <p>
-                Experiment in the Potion Room
-                to discover another remedy for sale.
+                Brew some remedies in the Potion Room
+                to stock the Apothecary shelves.
             </p>
-
-
-            <button
-                class="sell-potion-button"
-                disabled>
-
-                Undiscovered
-
-            </button>
 
         </div>
 
@@ -369,6 +345,47 @@ function createUnknownPotionCard() {
 
 
     return card;
+
+}
+
+
+// ==========================================
+// GET POTIONS CURRENTLY FOR SALE
+// ==========================================
+
+function getPotionsForSale() {
+
+    return Object.values(
+        POTION_DATA
+    ).filter(
+        potion => {
+
+            // Potion must be discovered.
+
+            if (
+                !isPotionDiscovered(
+                    potion
+                )
+            ) {
+
+                return false;
+
+            }
+
+
+            // Potion must actually be in
+            // the player's inventory.
+
+            const amount =
+                getPotionAmount(
+                    potion.id
+                );
+
+
+            return amount > 0;
+
+        }
+    );
 
 }
 
@@ -396,32 +413,39 @@ function renderPotionShelf() {
         "";
 
 
-    Object.values(
-        POTION_DATA
-    ).forEach(
+    const potionsForSale =
+        getPotionsForSale();
+
+
+    // --------------------------------------
+    // EMPTY SHELF
+    // --------------------------------------
+
+    if (
+        potionsForSale.length === 0
+    ) {
+
+        grid.appendChild(
+            createEmptyShelfMessage()
+        );
+
+        return;
+
+    }
+
+
+    // --------------------------------------
+    // POTIONS CURRENTLY IN STOCK
+    // --------------------------------------
+
+    potionsForSale.forEach(
         potion => {
 
-            if (
-                isPotionDiscovered(
+            grid.appendChild(
+                createPotionCard(
                     potion
                 )
-            ) {
-
-                grid.appendChild(
-                    createPotionCard(
-                        potion
-                    )
-                );
-
-            }
-
-            else {
-
-                grid.appendChild(
-                    createUnknownPotionCard()
-                );
-
-            }
+            );
 
         }
     );
