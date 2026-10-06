@@ -4700,3 +4700,311 @@ nav {
     }
 
 }
+/* ==========================================
+   FAMILIAR PAGE
+========================================== */
+
+.familiar-section {
+    margin-top: 28px;
+}
+
+
+/* ==========================================
+   FAMILIAR PROFILE
+========================================== */
+
+.familiar-card {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 34px;
+    align-items: center;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(32, 37, 28, .95),
+            rgba(20, 23, 18, .95)
+        );
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+
+    padding: 28px;
+}
+
+
+.familiar-portrait {
+    min-height: 210px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(102, 120, 77, .16),
+            rgba(10, 12, 9, .65)
+        );
+
+    border: 1px solid var(--border);
+    border-radius: 7px;
+}
+
+
+.familiar-placeholder {
+    font-size: 82px;
+    line-height: 1;
+}
+
+
+.familiar-info h3 {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 34px;
+    margin: 8px 0 10px;
+}
+
+
+.familiar-info p {
+    color: var(--muted);
+    max-width: 560px;
+    line-height: 1.6;
+}
+
+
+/* ==========================================
+   FAMILIAR NEEDS
+========================================== */
+
+.familiar-needs {
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 18px;
+
+    margin-top: 22px;
+}
+
+
+.familiar-need {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+
+    padding: 18px 20px;
+}
+
+
+.familiar-need-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin-bottom: 12px;
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 19px;
+}
+
+
+.familiar-need-header span {
+    color: var(--cream);
+}
+
+
+.familiar-need-header strong {
+    color: var(--gold);
+    font-size: 17px;
+    font-weight: 600;
+}
+
+
+/* ==========================================
+   PROGRESS BARS
+========================================== */
+
+.familiar-meter {
+    width: 100%;
+    height: 14px;
+
+    background: #0c0e0b;
+
+    border: 1px solid var(--border);
+    border-radius: 20px;
+
+    overflow: hidden;
+
+    box-shadow:
+        inset 0 2px 4px
+        rgba(0, 0, 0, .55);
+}
+
+
+.familiar-meter-fill {
+    width: 100%;
+    height: 100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--green-dark),
+            var(--green-light)
+        );
+
+    border-radius: 20px;
+
+    transition:
+        width .35s ease;
+}
+
+
+/* Give Bond a slightly different look */
+
+#bondBar {
+    background:
+        linear-gradient(
+            90deg,
+            #725b39,
+            var(--gold)
+        );
+}
+
+
+/* ==========================================
+   CARE / INTERACTION AREA
+========================================== */
+
+.familiar-actions {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 12px;
+
+    margin-top: 20px;
+}
+
+
+.familiar-action-button {
+    min-height: 54px;
+
+    padding: 12px 16px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #30362a,
+            #22271f
+        );
+
+    color: var(--cream);
+
+    border: 1px solid var(--border);
+    border-radius: 6px;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 19px;
+
+    cursor: pointer;
+
+    transition:
+        border-color .2s ease,
+        background .2s ease,
+        transform .15s ease;
+}
+
+
+.familiar-action-button:hover {
+    border-color: var(--green-light);
+
+    background:
+        linear-gradient(
+            180deg,
+            #394331,
+            #282f24
+        );
+}
+
+
+.familiar-action-button:active {
+    transform: translateY(1px);
+}
+
+
+.familiar-action-button:disabled {
+    cursor: not-allowed;
+    opacity: .45;
+}
+
+
+/* ==========================================
+   FAMILIAR MESSAGE
+========================================== */
+
+.familiar-message {
+    margin-top: 18px;
+
+    padding: 15px 18px;
+
+    background:
+        rgba(10, 12, 9, .55);
+
+    border-left:
+        3px solid var(--green-light);
+
+    color: var(--muted);
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 18px;
+    font-style: italic;
+
+    line-height: 1.5;
+}
+
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media (max-width: 800px) {
+
+    .familiar-card {
+        grid-template-columns: 1fr;
+    }
+
+
+    .familiar-portrait {
+        min-height: 180px;
+    }
+
+
+    .familiar-needs {
+        grid-template-columns: 1fr;
+    }
+
+
+    .familiar-actions {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+@media (max-width: 500px) {
+
+    .familiar-actions {
+        grid-template-columns: 1fr;
+    }
+
+}
