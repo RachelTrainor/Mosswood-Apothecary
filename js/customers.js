@@ -1,13 +1,9 @@
 // ==========================================
 // MOSSWOOD APOTHECARY
 // Customer Request System
-// V1
+// V2
 // ==========================================
 
-
-// ==========================================
-// CUSTOMER STATE
-// ==========================================
 
 let customerTimerInterval = null;
 
@@ -18,73 +14,74 @@ let customerTimerInterval = null;
 
 function getCustomerRequestPotions() {
 
-    if (
-        typeof POTION_DATA === "undefined"
-    ) {
-        return [];
-    }
-
-
-    return Object.values(POTION_DATA)
-        .filter(potion => {
-
-            if (!potion.discoveryId) {
-                return true;
-            }
-
-
-            if (
-                typeof hasDiscovered
-                !== "function"
-            ) {
-                return false;
-            }
-
+    return Object.values(
+        POTION_DATA
+    ).filter(
+        potion => {
 
             return hasDiscovered(
                 potion.discoveryId
             );
 
-        });
+        }
+    );
 
 }
 
 
 // ==========================================
-// RANDOM CUSTOMER
+// CHOOSE RANDOM CUSTOMER
 // ==========================================
 
 function chooseRandomCustomer() {
 
     const customers =
-        Object.values(CUSTOMER_DATA);
+        getAllCustomers();
 
 
-    if (customers.length === 0) {
+    if (
+        customers.length === 0
+    ) {
+
         return null;
+
     }
 
 
     const totalWeight =
         customers.reduce(
-            (total, customer) =>
-                total +
-                (customer.weight || 1),
+            (total, customer) => {
+
+                return (
+                    total +
+                    (customer.weight || 1)
+                );
+
+            },
             0
         );
 
 
     let roll =
-        Math.random() * totalWeight;
+        Math.random() *
+        totalWeight;
 
 
-    for (const customer of customers) {
+    for (
+        const customer
+        of customers
+    ) {
 
-        roll -= customer.weight || 1;
+        roll -=
+            customer.weight || 1;
 
 
-        if (roll <= 0) {
+        if (
+            roll <= 0
+        ) {
+
             return customer;
+
         }
 
     }
@@ -98,59 +95,77 @@ function chooseRandomCustomer() {
 
 
 // ==========================================
-// RANDOM POTION
+// CHOOSE RANDOM POTION
 // ==========================================
 
 function chooseRandomCustomerPotion() {
 
-    const availablePotions =
+    const potions =
         getCustomerRequestPotions();
 
 
-    if (availablePotions.length === 0) {
+    if (
+        potions.length === 0
+    ) {
+
         return null;
+
     }
 
 
     const index =
         Math.floor(
             Math.random() *
-            availablePotions.length
+            potions.length
         );
 
 
-    return availablePotions[index];
+    return potions[
+        index
+    ];
 
 }
 
 
 // ==========================================
-// REQUEST QUANTITY
+// CHOOSE QUANTITY
 // ==========================================
 
 function chooseCustomerQuantity() {
 
-    // Most requests will only ask for one.
-    // Larger orders are less common.
+    const roll =
+        Math.random();
 
-    const roll = Math.random();
 
+    // 10% chance of requesting 3.
 
     if (
-        CUSTOMER_REQUEST_SETTINGS.maxQuantity >= 3 &&
+        CUSTOMER_REQUEST_SETTINGS
+            .maxQuantity >= 3
+        &&
         roll >= 0.90
     ) {
+
         return 3;
+
     }
 
+
+    // 25% chance of requesting 2.
 
     if (
-        CUSTOMER_REQUEST_SETTINGS.maxQuantity >= 2 &&
+        CUSTOMER_REQUEST_SETTINGS
+            .maxQuantity >= 2
+        &&
         roll >= 0.65
     ) {
+
         return 2;
+
     }
 
+
+    // 65% chance of requesting 1.
 
     return 1;
 
@@ -158,7 +173,7 @@ function chooseCustomerQuantity() {
 
 
 // ==========================================
-// CALCULATE REWARD
+// CALCULATE CUSTOMER REWARD
 // ==========================================
 
 function calculateCustomerReward(
@@ -167,7 +182,7 @@ function calculateCustomerReward(
 ) {
 
     const normalValue =
-        (potion.sellValue || 1) *
+        potion.sellPrice *
         quantity;
 
 
@@ -190,7 +205,8 @@ function calculateCustomerReward(
     return Math.max(
         normalValue + 1,
         Math.round(
-            normalValue * multiplier
+            normalValue *
+            multiplier
         )
     );
 
@@ -198,7 +214,7 @@ function calculateCustomerReward(
 
 
 // ==========================================
-// CREATE CUSTOMER REQUEST
+// GENERATE REQUEST
 // ==========================================
 
 function generateCustomerRequest() {
@@ -206,12 +222,18 @@ function generateCustomerRequest() {
     const customer =
         chooseRandomCustomer();
 
+
     const potion =
         chooseRandomCustomerPotion();
 
 
-    if (!customer || !potion) {
+    if (
+        !customer ||
+        !potion
+    ) {
+
         return null;
+
     }
 
 
@@ -226,7 +248,8 @@ function generateCustomerRequest() {
         );
 
 
-    const now = Date.now();
+    const now =
+        Date.now();
 
 
     return {
@@ -257,51 +280,26 @@ function generateCustomerRequest() {
 
 
 // ==========================================
-// ENSURE CUSTOMER SAVE DATA
+// NEXT CUSTOMER DELAY
 // ==========================================
 
-function ensureCustomerState() {
+function getRandomCustomerDelay() {
 
-    if (
-        typeof game === "undefined"
-    ) {
-        return;
-    }
+    const minimum =
+        CUSTOMER_REQUEST_SETTINGS
+            .minArrivalDelay;
 
 
-    if (
-        !Object.prototype.hasOwnProperty.call(
-            game,
-            "activeCustomer"
-        )
-    ) {
-        game.activeCustomer = null;
-    }
+    const maximum =
+        CUSTOMER_REQUEST_SETTINGS
+            .maxArrivalDelay;
 
 
-    if (
-        !Object.prototype.hasOwnProperty.call(
-            game,
-            "nextCustomerAt"
-        )
-    ) {
-        game.nextCustomerAt = 0;
-    }
-
-}
-
-
-// ==========================================
-// SAVE CUSTOMER STATE
-// ==========================================
-
-function saveCustomerState() {
-
-    if (
-        typeof saveGame === "function"
-    ) {
-        saveGame();
-    }
+    return Math.floor(
+        minimum +
+        Math.random() *
+        (maximum - minimum)
+    );
 
 }
 
@@ -312,247 +310,49 @@ function saveCustomerState() {
 
 function scheduleNextCustomer() {
 
-    const minimum =
-        CUSTOMER_REQUEST_SETTINGS
-            .minArrivalDelay;
-
-    const maximum =
-        CUSTOMER_REQUEST_SETTINGS
-            .maxArrivalDelay;
+    game.customers.active =
+        null;
 
 
-    const delay =
-        Math.floor(
-            minimum +
-            Math.random() *
-            (maximum - minimum)
-        );
+    game.customers.nextCustomerAt =
+        Date.now() +
+        getRandomCustomerDelay();
 
 
-    game.nextCustomerAt =
-        Date.now() + delay;
-
-
-    saveCustomerState();
+    saveGame();
 
 }
 
 
 // ==========================================
-// CHECK FOR CUSTOMER
+// CUSTOMER MESSAGE
 // ==========================================
 
-function updateCustomerSystem() {
-
-    ensureCustomerState();
-
-
-    if (
-        typeof game === "undefined"
-    ) {
-        return;
-    }
-
-
-    const now = Date.now();
-
-
-    // ------------------------------
-    // EXPIRED CUSTOMER
-    // ------------------------------
-
-    if (
-        game.activeCustomer &&
-        now >=
-        game.activeCustomer.expiresAt
-    ) {
-
-        game.activeCustomer = null;
-
-        scheduleNextCustomer();
-
-    }
-
-
-    // ------------------------------
-    // WAITING FOR NEXT CUSTOMER
-    // ------------------------------
-
-    if (!game.activeCustomer) {
-
-        if (!game.nextCustomerAt) {
-
-            game.nextCustomerAt =
-                now;
-
-        }
-
-
-        if (
-            now >=
-            game.nextCustomerAt
-        ) {
-
-            const request =
-                generateCustomerRequest();
-
-
-            if (request) {
-
-                game.activeCustomer =
-                    request;
-
-                game.nextCustomerAt =
-                    0;
-
-                saveCustomerState();
-
-            }
-
-        }
-
-    }
-
-
-    renderCustomerRequest();
-
-}
-
-
-// ==========================================
-// GET POTION AMOUNT
-// ==========================================
-
-function getCustomerPotionAmount(
-    potionId
+function setCustomerMessage(
+    message
 ) {
 
-    if (
-        !game ||
-        !game.potions
-    ) {
-        return 0;
+    const element =
+        document.getElementById(
+            "customerMessage"
+        );
+
+
+    if (!element) {
+
+        return;
+
     }
 
 
-    return Number(
-        game.potions[potionId]
-    ) || 0;
+    element.textContent =
+        message || "";
 
 }
 
 
 // ==========================================
-// FULFILL REQUEST
-// ==========================================
-
-function fulfillCustomerRequest() {
-
-    if (!game.activeCustomer) {
-        return;
-    }
-
-
-    const request =
-        game.activeCustomer;
-
-
-    const potion =
-        typeof getPotionData === "function"
-            ? getPotionData(
-                request.potionId
-            )
-            : POTION_DATA[
-                request.potionId
-            ];
-
-
-    if (!potion) {
-        return;
-    }
-
-
-    const owned =
-        getCustomerPotionAmount(
-            request.potionId
-        );
-
-
-    if (
-        owned <
-        request.quantity
-    ) {
-
-        setCustomerMessage(
-            "You do not have enough of that potion."
-        );
-
-        return;
-    }
-
-
-    game.potions[
-        request.potionId
-    ] -= request.quantity;
-
-
-    game.coins =
-        (Number(game.coins) || 0) +
-        request.reward;
-
-
-    const customer =
-        getCustomerData(
-            request.customerId
-        );
-
-
-    const customerName =
-        customer
-            ? customer.name
-            : "The customer";
-
-
-    game.activeCustomer = null;
-
-
-    scheduleNextCustomer();
-
-
-    saveCustomerState();
-
-
-    if (
-        typeof updateResourceBar
-        === "function"
-    ) {
-        updateResourceBar();
-    }
-
-
-    setCustomerMessage(
-        `${customerName} accepted the order. You earned ${request.reward} coins.`
-    );
-
-
-    renderCustomerRequest();
-
-
-    // Refresh normal Apothecary potion
-    // cards if that function exists.
-
-    if (
-        typeof renderApothecary
-        === "function"
-    ) {
-        renderApothecary();
-    }
-
-}
-
-
-// ==========================================
-// FORMAT TIMER
+// FORMAT TIME
 // ==========================================
 
 function formatCustomerTime(
@@ -563,19 +363,22 @@ function formatCustomerTime(
         Math.max(
             0,
             Math.ceil(
-                milliseconds / 1000
+                milliseconds /
+                1000
             )
         );
 
 
     const minutes =
         Math.floor(
-            totalSeconds / 60
+            totalSeconds /
+            60
         );
 
 
     const seconds =
-        totalSeconds % 60;
+        totalSeconds %
+        60;
 
 
     return (
@@ -592,30 +395,215 @@ function formatCustomerTime(
 
 
 // ==========================================
-// CUSTOMER MESSAGE
+// FULFILL REQUEST
 // ==========================================
 
-function setCustomerMessage(message) {
+function fulfillCustomerRequest() {
 
-    const element =
-        document.getElementById(
-            "customerMessage"
-        );
+    const request =
+        game.customers.active;
 
 
-    if (!element) {
+    if (!request) {
+
         return;
+
     }
 
 
-    element.textContent =
-        message || "";
+    const potion =
+        getPotionData(
+            request.potionId
+        );
+
+
+    const customer =
+        getCustomerData(
+            request.customerId
+        );
+
+
+    if (
+        !potion ||
+        !customer
+    ) {
+
+        return;
+
+    }
+
+
+    const amount =
+        getPotionAmount(
+            potion.id
+        );
+
+
+    if (
+        amount <
+        request.quantity
+    ) {
+
+        setCustomerMessage(
+            `You need ${request.quantity} ${potion.name}, but only have ${amount}.`
+        );
+
+        return;
+
+    }
+
+
+    // --------------------------------------
+    // REMOVE POTIONS
+    // --------------------------------------
+
+    game.potions[
+        potion.id
+    ] -= request.quantity;
+
+
+    // --------------------------------------
+    // ADD REWARD
+    // --------------------------------------
+
+    game.coins +=
+        request.reward;
+
+
+    // --------------------------------------
+    // CLEAR REQUEST + SCHEDULE NEXT
+    // --------------------------------------
+
+    game.customers.active =
+        null;
+
+
+    game.customers.nextCustomerAt =
+        Date.now() +
+        getRandomCustomerDelay();
+
+
+    // --------------------------------------
+    // SAVE
+    // --------------------------------------
+
+    saveGame();
+
+
+    // --------------------------------------
+    // UPDATE UI
+    // --------------------------------------
+
+    updateResourceBar();
+
+    renderPotionShelf();
+
+
+    setCustomerMessage(
+        `${customer.name} accepted the order. You earned ${request.reward} coins.`
+    );
+
+
+    renderCustomerRequest();
 
 }
 
 
 // ==========================================
-// RENDER CUSTOMER
+// CHECK CUSTOMER STATE
+// ==========================================
+
+function updateCustomerSystem() {
+
+    const now =
+        Date.now();
+
+
+    // --------------------------------------
+    // ACTIVE CUSTOMER EXPIRED
+    // --------------------------------------
+
+    if (
+        game.customers.active &&
+        now >=
+        game.customers.active.expiresAt
+    ) {
+
+        game.customers.active =
+            null;
+
+
+        game.customers.nextCustomerAt =
+            now +
+            getRandomCustomerDelay();
+
+
+        saveGame();
+
+    }
+
+
+    // --------------------------------------
+    // NO ACTIVE CUSTOMER
+    // --------------------------------------
+
+    if (
+        !game.customers.active
+    ) {
+
+        // First visit to the Apothecary:
+        // allow a customer immediately.
+
+        if (
+            !game.customers.nextCustomerAt
+        ) {
+
+            game.customers.nextCustomerAt =
+                now;
+
+        }
+
+
+        // Time for a new visitor.
+
+        if (
+            now >=
+            game.customers.nextCustomerAt
+        ) {
+
+            const request =
+                generateCustomerRequest();
+
+
+            // Only create a request if the
+            // player has discovered a potion.
+
+            if (request) {
+
+                game.customers.active =
+                    request;
+
+
+                game.customers.nextCustomerAt =
+                    0;
+
+
+                saveGame();
+
+            }
+
+        }
+
+    }
+
+
+    renderCustomerRequest();
+
+}
+
+
+// ==========================================
+// RENDER CUSTOMER REQUEST
 // ==========================================
 
 function renderCustomerRequest() {
@@ -627,18 +615,22 @@ function renderCustomerRequest() {
 
 
     if (!container) {
+
         return;
+
     }
 
 
-    // ------------------------------
-    // ACTIVE CUSTOMER
-    // ------------------------------
+    // ======================================
+    // ACTIVE REQUEST
+    // ======================================
 
-    if (game.activeCustomer) {
+    if (
+        game.customers.active
+    ) {
 
         const request =
-            game.activeCustomer;
+            game.customers.active;
 
 
         const customer =
@@ -648,31 +640,34 @@ function renderCustomerRequest() {
 
 
         const potion =
-            typeof getPotionData
-                === "function"
-                ? getPotionData(
-                    request.potionId
-                )
-                : POTION_DATA[
-                    request.potionId
-                ];
+            getPotionData(
+                request.potionId
+            );
 
 
-        if (!customer || !potion) {
+        if (
+            !customer ||
+            !potion
+        ) {
 
             container.innerHTML = `
-                <p>
-                    The shop is quiet.
-                </p>
+                <div class="customer-card customer-empty">
+
+                    <h3>
+                        The shop is quiet.
+                    </h3>
+
+                </div>
             `;
 
             return;
+
         }
 
 
-        const owned =
-            getCustomerPotionAmount(
-                request.potionId
+        const amount =
+            getPotionAmount(
+                potion.id
             );
 
 
@@ -682,7 +677,7 @@ function renderCustomerRequest() {
 
 
         const canFulfill =
-            owned >=
+            amount >=
             request.quantity;
 
 
@@ -690,21 +685,14 @@ function renderCustomerRequest() {
 
             <div class="customer-card">
 
-                <div class="customer-heading">
+                <span class="card-label">
+                    CUSTOMER REQUEST
+                </span>
 
-                    <div>
 
-                        <span class="eyebrow">
-                            CUSTOMER REQUEST
-                        </span>
-
-                        <h3>
-                            ${customer.name}
-                        </h3>
-
-                    </div>
-
-                </div>
+                <h3>
+                    ${customer.name}
+                </h3>
 
 
                 <p class="customer-dialogue">
@@ -714,20 +702,32 @@ function renderCustomerRequest() {
 
                 <div class="customer-order">
 
-                    <span>
-                        ${potion.inventoryIcon || potion.icon || "🧪"}
-                    </span>
+                    <div class="customer-order-icon">
+
+                        ${
+                            potion.inventoryIcon ||
+                            potion.icon ||
+                            "🧪"
+                        }
+
+                    </div>
+
 
                     <div>
 
-                        <strong>
+                        <span class="card-label">
+                            REQUESTING
+                        </span>
+
+                        <h4>
                             ${potion.name}
                             ×${request.quantity}
-                        </strong>
+                        </h4>
 
-                        <small>
-                            You have ${owned}
-                        </small>
+                        <p>
+                            You currently have
+                            ${amount}.
+                        </p>
 
                     </div>
 
@@ -736,31 +736,50 @@ function renderCustomerRequest() {
 
                 <div class="customer-details">
 
-                    <span>
-                        Reward:
-                        <strong>
-                            ${request.reward} coins
-                        </strong>
-                    </span>
+                    <div>
 
-                    <span>
-                        Leaves in:
-                        <strong id="customerTimer">
+                        <span class="card-label">
+                            REWARD
+                        </span>
+
+                        <strong>
+                            🪙 ${request.reward}
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span class="card-label">
+                            LEAVES IN
+                        </span>
+
+                        <strong
+                            id="customerTimer">
+
                             ${formatCustomerTime(
                                 remaining
                             )}
+
                         </strong>
-                    </span>
+
+                    </div>
 
                 </div>
 
 
                 <button
-                    class="primary-button"
+                    class="sell-potion-button"
                     id="fulfillCustomerButton"
-                    ${canFulfill ? "" : "disabled"}
-                >
-                    Fulfill Request
+                    ${canFulfill ? "" : "disabled"}>
+
+                    ${
+                        canFulfill
+                            ? "Fulfill Request"
+                            : "Not Enough Potions"
+                    }
+
                 </button>
 
             </div>
@@ -789,23 +808,58 @@ function renderCustomerRequest() {
     }
 
 
-    // ------------------------------
-    // WAITING FOR CUSTOMER
-    // ------------------------------
+    // ======================================
+    // NO ACTIVE CUSTOMER
+    // ======================================
 
     const remaining =
         Math.max(
             0,
-            game.nextCustomerAt -
+            game.customers
+                .nextCustomerAt -
             Date.now()
         );
+
+
+    // No discovered potions yet.
+
+    if (
+        getCustomerRequestPotions()
+            .length === 0
+    ) {
+
+        container.innerHTML = `
+
+            <div class="customer-card customer-empty">
+
+                <span class="card-label">
+                    CUSTOMER REQUESTS
+                </span>
+
+                <h3>
+                    No remedies to request yet.
+                </h3>
+
+                <p>
+                    Discover a potion in the
+                    Potion Room and visitors may
+                    begin requesting it.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
 
 
     container.innerHTML = `
 
         <div class="customer-card customer-empty">
 
-            <span class="eyebrow">
+            <span class="card-label">
                 CUSTOMER REQUESTS
             </span>
 
@@ -817,20 +871,19 @@ function renderCustomerRequest() {
                 Another visitor may arrive soon.
             </p>
 
-            ${
-                remaining > 0
-                    ? `
-                        <small>
-                            Next visitor in
-                            <strong id="customerArrivalTimer">
-                                ${formatCustomerTime(
-                                    remaining
-                                )}
-                            </strong>
-                        </small>
-                    `
-                    : ""
-            }
+
+            <span class="card-label">
+                NEXT VISITOR
+            </span>
+
+            <strong
+                id="customerArrivalTimer">
+
+                ${formatCustomerTime(
+                    remaining
+                )}
+
+            </strong>
 
         </div>
 
@@ -840,33 +893,33 @@ function renderCustomerRequest() {
 
 
 // ==========================================
-// TIMER DISPLAY
+// UPDATE TIMERS
 // ==========================================
 
 function updateCustomerTimers() {
-
-    if (
-        typeof game === "undefined"
-    ) {
-        return;
-    }
-
 
     const now =
         Date.now();
 
 
-    if (game.activeCustomer) {
+    // --------------------------------------
+    // ACTIVE CUSTOMER TIMER
+    // --------------------------------------
+
+    if (
+        game.customers.active
+    ) {
+
+        const remaining =
+            game.customers.active
+                .expiresAt -
+            now;
+
 
         const timer =
             document.getElementById(
                 "customerTimer"
             );
-
-
-        const remaining =
-            game.activeCustomer.expiresAt -
-            now;
 
 
         if (timer) {
@@ -879,7 +932,9 @@ function updateCustomerTimers() {
         }
 
 
-        if (remaining <= 0) {
+        if (
+            remaining <= 0
+        ) {
 
             updateCustomerSystem();
 
@@ -891,26 +946,36 @@ function updateCustomerTimers() {
     }
 
 
-    const arrivalTimer =
+    // --------------------------------------
+    // ARRIVAL TIMER
+    // --------------------------------------
+
+    const remaining =
+        game.customers
+            .nextCustomerAt -
+        now;
+
+
+    const timer =
         document.getElementById(
             "customerArrivalTimer"
         );
 
 
-    if (arrivalTimer) {
+    if (timer) {
 
-        arrivalTimer.textContent =
+        timer.textContent =
             formatCustomerTime(
-                game.nextCustomerAt -
-                now
+                remaining
             );
 
     }
 
 
     if (
-        game.nextCustomerAt &&
-        now >= game.nextCustomerAt
+        game.customers
+            .nextCustomerAt &&
+        remaining <= 0
     ) {
 
         updateCustomerSystem();
@@ -921,17 +986,17 @@ function updateCustomerTimers() {
 
 
 // ==========================================
-// INITIALIZE CUSTOMER SYSTEM
+// INITIALIZE
 // ==========================================
 
 function initializeCustomerSystem() {
 
-    ensureCustomerState();
-
     updateCustomerSystem();
 
 
-    if (customerTimerInterval) {
+    if (
+        customerTimerInterval
+    ) {
 
         clearInterval(
             customerTimerInterval
