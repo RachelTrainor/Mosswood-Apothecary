@@ -58,71 +58,4645 @@ body {
 
 
 /* ==========================================
-   MOSSWOOD SIDEBAR
+   SIDEBAR
    ========================================== */
 
 .sidebar {
-    width: 300px;
-    height: 100vh;
+    width: 260px;
 
-    position: fixed;
-    top: 0;
-    left: 0;
+    background: rgba(10, 12, 9, .97);
+
+    border-right: 1px solid var(--border);
+
+    padding: 38px 20px;
 
     flex-shrink: 0;
-
-    padding: 150px 55px 145px;
-
-    background-color: #0d1711;
-    background-image: url("assets/images/mosswood-sidebar.png");
-    background-repeat: no-repeat;
-    background-position: top center;
-
-    /* Keeps the sidebar artwork at its original proportions. */
-    background-size: 300px auto;
-
-    overflow: hidden;
-    z-index: 100;
 }
 
 
-/* ==========================================
-   NAVIGATION
-   ========================================== */
+.logo {
+    text-align: center;
+    margin-bottom: 45px;
+}
 
-.mosswood-nav {
-    position: relative;
-    z-index: 2;
 
+.logo .moon {
+    color: var(--gold);
+    font-size: 32px;
+}
+
+
+.logo h1 {
+    font-family: "Cormorant Garamond", serif;
+
+    text-transform: uppercase;
+
+    letter-spacing: 2px;
+
+    font-size: 27px;
+
+    line-height: 1;
+
+    margin-top: 10px;
+}
+
+
+nav {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-
-    width: 100%;
+    gap: 8px;
 }
 
 
 .nav-button {
     width: 100%;
-    min-height: 52px;
+
+    border: none;
+
+    background: transparent;
+
+    color: var(--muted);
+
+    padding: 15px 18px;
+
+    text-align: left;
+
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: 20px;
+
+    border-radius: 5px;
+
+    cursor: pointer;
+}
+
+
+.nav-button:hover {
+    background: var(--panel);
+    color: var(--cream);
+}
+
+
+.nav-button.active {
+    background:
+        linear-gradient(
+            90deg,
+            #30362a,
+            #22271f
+        );
+
+    color: var(--cream);
+
+    border-left: 3px solid var(--green-light);
+}
+
+
+.nav-link {
+    display: block;
+    text-decoration: none;
+}
+
+
+.nav-disabled {
+    cursor: default;
+    opacity: .55;
+}
+
+
+/* ==========================================
+   CONTENT
+   ========================================== */
+
+.content {
+    flex: 1;
+    min-width: 0;
+}
+
+
+/* ==========================================
+   TOP BAR
+   ========================================== */
+
+.topbar {
+    min-height: 78px;
+
+    border-bottom: 1px solid var(--border);
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 12px 45px;
+
+    background: rgba(15, 17, 13, .75);
+}
+
+
+.resource {
+    min-width: 115px;
+
+    padding: 11px 18px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 6px;
+
+    background: var(--panel);
+
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: 21px;
+}
+
+
+/* ==========================================
+   SCREEN
+   ========================================== */
+
+.screen {
+    max-width: 1100px;
+
+    margin: auto;
+
+    padding: 65px 55px 100px;
+}
+
+
+.eyebrow {
+    color: var(--green-light);
+
+    letter-spacing: 4px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    margin-bottom: 12px;
+}
+
+
+.screen h2 {
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: clamp(48px, 6vw, 72px);
+
+    font-weight: 500;
+
+    line-height: .95;
+
+    margin-bottom: 20px;
+}
+
+
+.description {
+    color: var(--muted);
+
+    max-width: 620px;
+
+    line-height: 1.8;
+
+    margin-bottom: 42px;
+}
+
+
+/* ==========================================
+   GREENHOUSE HEADER
+   ========================================== */
+
+.greenhouse-heading {
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content: space-between;
+
+    gap: 25px;
+
+    margin-bottom: 22px;
+}
+
+
+.card-label {
+    color: var(--green-light);
+
+    font-size: 11px;
+
+    letter-spacing: 3px;
+}
+
+
+.greenhouse-heading h3,
+.inventory-title h3 {
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: 34px;
+
+    margin-top: 4px;
+}
+
+
+.seed-counter {
+    background: var(--panel);
+
+    border: 1px solid var(--border);
+
+    border-radius: 6px;
+
+    padding: 13px 18px;
+
+    color: var(--muted);
+}
+
+
+.seed-counter strong {
+    color: var(--cream);
+
+    margin-left: 12px;
+
+    font-size: 19px;
+}
+
+
+/* ==========================================
+   GREENHOUSE PLOTS
+   ========================================== */
+
+.plots {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 18px;
+
+    margin-bottom: 40px;
+}
+
+
+.plot {
+    min-height: 255px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(37, 44, 31, .95),
+            rgba(20, 24, 18, .98)
+        );
+
+    border: 1px solid var(--border);
+
+    border-radius: 8px;
+
+    padding: 25px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: space-between;
+
+    position: relative;
+
+    overflow: hidden;
+}
+
+
+.plot::before {
+    content: "";
+
+    position: absolute;
+
+    inset: auto 20px 65px 20px;
+
+    height: 58px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            ellipse,
+            #493a2a,
+            var(--soil)
+        );
+
+    opacity: .75;
+}
+
+
+.plot-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+}
+
+
+.plot-number {
+    color: var(--muted);
+
+    font-size: 11px;
+
+    letter-spacing: 2px;
+}
+
+
+.plant-icon {
+    font-size: 56px;
+
+    margin: 22px 0 10px;
+}
+
+
+.plot h4 {
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: 26px;
+
+    margin-bottom: 5px;
+}
+
+
+.plot-status {
+    color: var(--muted);
+
+    font-size: 13px;
+
+    min-height: 20px;
+}
+
+
+/* ==========================================
+   PROGRESS
+   ========================================== */
+
+.progress-track {
+    width: 100%;
+
+    height: 7px;
+
+    background: #0d0f0c;
+
+    border-radius: 10px;
+
+    overflow: hidden;
+
+    margin-top: 14px;
+}
+
+
+.progress-bar {
+    height: 100%;
+
+    width: 0%;
+
+    background: var(--green-light);
+
+    transition: width .5s linear;
+}
+
+
+/* ==========================================
+   GREENHOUSE BUTTONS
+   ========================================== */
+
+.plot-actions {
+    display: flex;
+
+    gap: 8px;
+
+    position: relative;
+
+    z-index: 3;
+
+    margin-top: 25px;
+}
+
+
+.game-button {
+    flex: 1;
+
+    border: 1px solid #718259;
+
+    background: var(--green-dark);
+
+    color: var(--cream);
+
+    min-height: 43px;
+
+    padding: 10px 14px;
+
+    border-radius: 4px;
+
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: 17px;
+
+    cursor: pointer;
+}
+
+
+.game-button:hover {
+    background: var(--green);
+}
+
+
+.game-button.secondary {
+    background: #22271f;
+
+    border-color: var(--border);
+}
+
+
+.game-button:disabled {
+    opacity: .4;
+
+    cursor: default;
+}
+
+
+/* ==========================================
+   GREENHOUSE INVENTORY
+   ========================================== */
+
+.inventory-panel {
+    border-top: 1px solid var(--border);
+
+    padding-top: 30px;
+}
+
+
+.inventory-title {
+    margin-bottom: 18px;
+}
+
+
+.ingredient-card {
+    max-width: 500px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+
+    background: var(--panel);
+
+    border: 1px solid var(--border);
+
+    padding: 18px;
+
+    border-radius: 7px;
+}
+
+
+.ingredient-icon {
+    width: 55px;
+
+    height: 55px;
+
+    display: grid;
+
+    place-items: center;
+
+    background: var(--panel-light);
+
+    border-radius: 6px;
+
+    font-size: 28px;
+
+    flex-shrink: 0;
+}
+
+
+.ingredient-card strong {
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: 22px;
+}
+
+
+.ingredient-card p {
+    color: var(--muted);
+
+    font-size: 12px;
+
+    margin-top: 4px;
+}
+
+
+.ingredient-count {
+    margin-left: auto;
+
+    color: var(--gold);
+
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: 27px;
+}
+
+
+/* ==========================================
+   GREENHOUSE MESSAGE
+   ========================================== */
+
+.game-message {
+    margin-top: 25px;
+
+    color: var(--green-light);
+
+    min-height: 25px;
+
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: 18px;
+}
+
+
+/* ==========================================
+   POTION ROOM
+   ========================================== */
+
+.potion-room-grid {
+    display: grid;
+
+    grid-template-columns:
+        1.15fr .85fr;
+
+    gap: 20px;
+}
+
+
+.potion-panel {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(37, 44, 31, .95),
+            rgba(20, 24, 18, .98)
+        );
+
+    border: 1px solid var(--border);
+
+    border-radius: 8px;
+
+    padding: 28px;
+}
+
+
+.potion-panel h3 {
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: 34px;
+
+    margin: 5px 0 8px;
+}
+
+
+.potion-help {
+    color: var(--muted);
+
+    font-size: 13px;
+
+    line-height: 1.6;
+}
+
+
+/* ==========================================
+   CAULDRON
+   ========================================== */
+
+.cauldron {
+    width: 120px;
+    height: 120px;
+
+    margin: 28px auto 25px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 50%;
+
+    border: 1px solid var(--border);
+
+    background:
+        radial-gradient(
+            circle,
+            #30392a,
+            #171b14 65%
+        );
+
+    font-size: 64px;
+
+    box-shadow:
+        0 0 30px rgba(139, 156, 107, .08);
+}
+
+
+/* ==========================================
+   INGREDIENT SLOTS
+   ========================================== */
+
+.ingredient-slots {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 10px;
+
+    margin-bottom: 20px;
+}
+
+
+.ingredient-slot {
+    min-height: 115px;
+
+    border-radius: 6px;
+
+    padding: 12px;
+
+    font-family: "Inter", sans-serif;
+}
+
+
+.ingredient-slot.empty {
+    border: 1px dashed #525849;
+
+    background: #11140f;
+
+    color: var(--muted);
+}
+
+
+.ingredient-slot.filled {
+    border: 1px solid #59644a;
+
+    background: #242a20;
+
+    color: var(--cream);
+
+    cursor: pointer;
+}
+
+
+.ingredient-slot.filled:hover {
+    border-color: var(--green-light);
+
+    background: #2b3225;
+}
+
+
+.ingredient-slot strong,
+.ingredient-slot small {
+    display: block;
+}
+
+
+.slot-plant {
+    display: block;
+
+    font-size: 32px;
+
+    margin-bottom: 7px;
+}
+
+
+.ingredient-slot strong {
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: 18px;
+}
+
+
+.ingredient-slot small {
+    color: var(--muted);
+
+    margin-top: 5px;
+}
+
+
+.empty-plus {
+    display: block;
+
+    font-size: 28px;
+
+    margin-bottom: 7px;
+}
+
+
+/* ==========================================
+   POTION BUTTONS
+   ========================================== */
+
+.brew-button {
+    width: 100%;
+
+    padding: 14px;
+
+    border: 1px solid #718259;
+
+    border-radius: 4px;
+
+    background: var(--green-dark);
+
+    color: var(--cream);
+
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: 20px;
+
+    cursor: pointer;
+
+    transition:
+        background .2s ease,
+        border-color .2s ease;
+}
+
+
+.brew-button:hover {
+    background: var(--green);
+
+    border-color: var(--green-light);
+}
+
+
+.clear-brew-button {
+    width: 100%;
+
+    border: none;
+
+    background: transparent;
+
+    color: var(--muted);
+
+    padding: 12px;
+
+    cursor: pointer;
+
+    font-family: "Inter", sans-serif;
+}
+
+
+.clear-brew-button:hover {
+    color: var(--cream);
+}
+
+
+/* ==========================================
+   POTION INGREDIENT SHELF
+   ========================================== */
+
+.potion-ingredient {
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    margin-top: 20px;
+
+    padding: 16px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 6px;
+
+    background: #12150f;
+}
+
+
+.potion-ingredient-details {
+    flex: 1;
+}
+
+
+.potion-ingredient-details strong {
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: 22px;
+}
+
+
+.potion-ingredient-details p {
+    color: var(--muted);
+
+    font-size: 11px;
+
+    line-height: 1.5;
+
+    margin: 3px 0 8px;
+}
+
+
+.potion-ingredient-details span {
+    color: var(--muted);
+
+    font-size: 12px;
+}
+
+
+.potion-ingredient-details b {
+    color: var(--cream);
+}
+
+
+.ingredient-add-button {
+    border: 1px solid #718259;
+
+    border-radius: 4px;
+
+    background: var(--green-dark);
+
+    color: var(--cream);
+
+    padding: 9px 14px;
+
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: 17px;
+
+    cursor: pointer;
+}
+
+
+.ingredient-add-button:hover {
+    background: var(--green);
+}
+
+
+/* ==========================================
+   DISCOVERY / RESEARCH
+   ========================================== */
+
+.discovery-summary {
+    margin-top: 30px;
+
+    padding-top: 25px;
+
+    border-top: 1px solid var(--border);
+}
+
+
+.discovery-summary p {
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: 21px;
+
+    margin-top: 9px;
+}
+
+
+/* ==========================================
+   EXPERIMENT RESULT
+   ========================================== */
+
+.experiment-result {
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+
+    margin-top: 20px;
+
+    padding: 20px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 7px;
+
+    background: var(--panel);
+}
+
+
+.result-symbol {
+    color: var(--gold);
+
+    font-size: 30px;
+
+    flex-shrink: 0;
+}
+
+
+.experiment-result strong {
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: 22px;
+}
+
+
+.experiment-result p {
+    color: var(--muted);
+
+    font-size: 13px;
+
+    line-height: 1.6;
+
+    margin-top: 4px;
+}
+
+
+.experiment-result.discovery {
+    border-color: var(--gold);
+
+    background:
+        linear-gradient(
+            120deg,
+            rgba(74, 64, 42, .45),
+            rgba(24, 27, 21, .97)
+        );
+}
+
+
+.experiment-result.success {
+    border-color: var(--green-light);
+}
+
+
+.experiment-result.failure {
+    border-color: #574942;
+}
+
+
+/* ==========================================
+   TABLET
+   ========================================== */
+
+@media (max-width: 900px) {
+
+    .potion-room-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+/* ==========================================
+   MOBILE
+   ========================================== */
+
+@media (max-width: 800px) {
+
+    .game {
+        display: block;
+    }
+
+
+    .sidebar {
+        width: 100%;
+
+        padding: 20px;
+    }
+
+
+    .logo {
+        margin-bottom: 20px;
+    }
+
+
+    nav {
+        display: grid;
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+
+    .nav-button {
+        font-size: 17px;
+
+        padding: 12px;
+    }
+
+
+    .topbar {
+        justify-content: center;
+
+        padding: 15px;
+
+        flex-wrap: wrap;
+    }
+
+
+    .resource {
+        min-width: auto;
+    }
+
+
+    .screen {
+        padding: 45px 22px 70px;
+    }
+
+
+    .plots {
+        grid-template-columns: 1fr;
+    }
+
+
+    .greenhouse-heading {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+
+    .potion-room-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .potion-panel {
+        padding: 22px;
+    }
+
+
+    .ingredient-slots {
+        grid-template-columns: 1fr;
+    }
+
+
+    .ingredient-slot {
+        min-height: 90px;
+    }
+
+
+    .potion-ingredient {
+        align-items: flex-start;
+
+        flex-wrap: wrap;
+    }
+
+
+    .ingredient-add-button {
+        width: 100%;
+    }
+
+
+    .experiment-result {
+        align-items: flex-start;
+    }
+
+}
+
+
+/* ==========================================
+   SMALL MOBILE
+   ========================================== */
+
+@media (max-width: 500px) {
+
+    nav {
+        grid-template-columns: 1fr;
+    }
+
+
+    .screen h2 {
+        font-size: 48px;
+    }
+
+
+    .topbar {
+        gap: 8px;
+    }
+
+
+    .resource {
+        font-size: 18px;
+
+        padding: 9px 12px;
+    }
+
+
+    .ingredient-card {
+        align-items: flex-start;
+    }
+
+
+    .ingredient-count {
+        font-size: 23px;
+    }
+}
+
+    /* ==========================================
+   GRIMOIRE
+========================================== */
+
+.grimoire-summary {
+    margin-top: 42px;
+    padding: 28px 32px;
 
     display: flex;
     align-items: center;
-    gap: 11px;
+    justify-content: space-between;
+    gap: 30px;
 
-    padding: 11px 14px;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(102, 120, 77, 0.10),
+            rgba(196, 164, 106, 0.03)
+        ),
+        var(--panel);
 
-    border: 1px solid rgba(201, 164, 113, 0.32);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.grimoire-summary h3 {
+    margin: 5px 0 6px;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 30px;
+    font-weight: 600;
+
+    color: var(--cream);
+}
+
+.grimoire-summary p {
+    margin: 0;
+
+    color: var(--muted);
+    line-height: 1.6;
+}
+
+.grimoire-count {
+    min-width: 130px;
+    padding: 16px 24px;
+
+    text-align: center;
+
+    border-left:
+        1px solid var(--border);
+}
+
+.grimoire-count span {
+    display: block;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 46px;
+    line-height: 1;
+
+    color: var(--gold);
+}
+
+.grimoire-count small {
+    display: block;
+
+    margin-top: 8px;
+
+    font-size: 10px;
+    letter-spacing: 3px;
+
+    color: var(--green-light);
+}
+
+
+/* ==========================================
+   GRIMOIRE SECTIONS
+========================================== */
+
+.grimoire-section {
+    margin-top: 28px;
+    padding: 30px;
+
+    background: var(--panel);
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.grimoire-section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 30px;
+
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+
+    border-bottom:
+        1px solid var(--border);
+}
+
+.grimoire-section-heading h3 {
+    margin: 5px 0 0;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 30px;
+    font-weight: 600;
+
+    color: var(--cream);
+}
+
+.grimoire-section-heading p {
+    max-width: 420px;
+    margin: 0;
+
+    text-align: right;
+
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+
+/* ==========================================
+   RECIPE GRID
+========================================== */
+
+.recipe-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 18px;
+}
+
+
+/* ==========================================
+   RECIPE CARDS
+========================================== */
+
+.recipe-card {
+    min-height: 290px;
+    padding: 24px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, 0.015),
+            transparent
+        ),
+        #12150f;
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 7px;
+}
+
+.recipe-card.discovered {
+    border-color:
+        rgba(139, 156, 107, 0.45);
+
+    box-shadow:
+        inset 0 0 35px
+        rgba(102, 120, 77, 0.04);
+}
+
+.recipe-card-top {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    margin-bottom: 18px;
+}
+
+.recipe-icon {
+    width: 58px;
+    height: 58px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    font-size: 27px;
+
+    color: var(--cream);
+
+    background:
+        rgba(102, 120, 77, 0.10);
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 50%;
+}
+
+.recipe-card h4 {
+    margin: 3px 0 0;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 26px;
+    font-weight: 600;
+
+    color: var(--cream);
+}
+
+.recipe-description {
+    min-height: 48px;
+
+    margin: 0;
+
+    color: var(--muted);
+    line-height: 1.6;
+}
+
+.recipe-divider {
+    height: 1px;
+
+    margin: 19px 0;
+
+    background: var(--border);
+}
+
+.recipe-subheading {
+    display: block;
+
+    margin-bottom: 9px;
+
+    font-size: 10px;
+    letter-spacing: 2.5px;
+
+    color: var(--green-light);
+}
+
+.recipe-ingredients {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.recipe-ingredient {
+    padding: 7px 10px;
+
+    font-size: 12px;
+
+    color: var(--cream);
+
+    background:
+        rgba(102, 120, 77, 0.12);
+
+    border:
+        1px solid
+        rgba(139, 156, 107, 0.25);
+
+    border-radius: 4px;
+}
+
+.recipe-effect {
+    margin-top: 20px;
+}
+
+.recipe-effect p {
+    margin: 0;
+
+    color: var(--cream);
+    line-height: 1.5;
+}
+
+
+/* ==========================================
+   UNKNOWN RECIPES
+========================================== */
+
+.recipe-card.locked {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    border-style: dashed;
+
+    opacity: 0.72;
+}
+
+.locked-recipe-symbol {
+    width: 62px;
+    height: 62px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 16px;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 34px;
+
+    color: var(--muted);
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 50%;
+}
+
+.recipe-card.locked h4 {
+    margin: 6px 0 8px;
+}
+
+.recipe-card.locked p {
+    max-width: 300px;
+    margin: 0;
+
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+.mystery-recipe {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    margin-top: 20px;
+}
+
+.mystery-recipe span {
+    padding: 7px 10px;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    color: var(--muted);
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 4px;
+}
+
+
+/* ==========================================
+   BOTANICAL NOTES
+========================================== */
+
+.botanical-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 18px;
+}
+
+.botanical-card {
+    display: flex;
+    gap: 20px;
+
+    padding: 24px;
+
+    background: #12150f;
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 7px;
+}
+
+.botanical-icon {
+    width: 68px;
+    height: 68px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    font-size: 31px;
+
+    background:
+        rgba(102, 120, 77, 0.12);
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 6px;
+}
+
+.botanical-card h4 {
+    margin: 4px 0 8px;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 27px;
+    font-weight: 600;
+
+    color: var(--cream);
+}
+
+.botanical-card p {
+    margin: 0;
+
+    color: var(--muted);
+    line-height: 1.6;
+}
+
+.trait-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    margin-top: 16px;
+}
+
+.trait {
+    padding: 6px 10px;
+
+    font-size: 11px;
+    letter-spacing: 1px;
+
+    color: var(--green-light);
+
+    background:
+        rgba(102, 120, 77, 0.10);
+
+    border:
+        1px solid
+        rgba(139, 156, 107, 0.25);
+
+    border-radius: 4px;
+}
+
+.unknown-trait {
+    color: var(--muted);
+
+    border-style: dashed;
+
+    background: transparent;
+}
+
+
+/* ==========================================
+   GRIMOIRE RESPONSIVE
+========================================== */
+
+@media (max-width: 1000px) {
+
+    .recipe-grid,
+    .botanical-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .grimoire-summary {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .grimoire-count {
+        width: 100%;
+
+        padding:
+            18px 0 0;
+
+        border-left: none;
+
+        border-top:
+            1px solid var(--border);
+    }
+
+    .grimoire-section-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .grimoire-section-heading p {
+        text-align: left;
+    }
+
+    .botanical-card {
+        flex-direction: column;
+    }
+
+
+
+}
+/* ==========================================
+   FORAGE
+========================================== */
+
+.forage-familiar {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+
+    margin-top: 38px;
+    padding: 24px 28px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(102, 120, 77, 0.10),
+            rgba(196, 164, 106, 0.025)
+        ),
+        var(--panel);
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.familiar-icon {
+    width: 76px;
+    height: 76px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    font-size: 38px;
+
+    background: #11140f;
+
+    border: 1px solid var(--border);
+    border-radius: 50%;
+}
+
+.familiar-info {
+    flex: 1;
+}
+
+.familiar-info h3 {
+    margin: 4px 0 5px;
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 28px;
+    font-weight: 600;
+
+    color: var(--cream);
+}
+
+.familiar-info p {
+    margin: 0;
+
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+.familiar-state {
+    padding: 9px 14px;
+
+    color: var(--green-light);
+
+    background: rgba(102, 120, 77, 0.10);
+
+    border: 1px solid rgba(139, 156, 107, 0.30);
+    border-radius: 4px;
+
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+}
+
+
+/* ==========================================
+   FORAGE SECTION
+========================================== */
+
+.forage-section {
+    margin-top: 28px;
+    padding: 30px;
+
+    background: var(--panel);
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.forage-section-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 30px;
+
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.forage-section-heading h3 {
+    margin-top: 5px;
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 30px;
+    font-weight: 600;
+
+    color: var(--cream);
+}
+
+.forage-section-heading p {
+    max-width: 400px;
+    margin: 0;
+
+    color: var(--muted);
+
+    text-align: right;
+    line-height: 1.5;
+}
+
+
+/* ==========================================
+   FORAGE LOCATION GRID
+========================================== */
+
+.forage-location-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 16px;
+}
+
+.forage-location {
+    display: flex;
+    flex-direction: column;
+
+    min-height: 400px;
+
+    overflow: hidden;
+
+    background: #12150f;
+
+    border: 1px solid var(--border);
+    border-radius: 7px;
+}
+
+.forage-location.available {
+    border-color: rgba(139, 156, 107, 0.45);
+}
+
+.forage-location.locked {
+    opacity: 0.55;
+}
+
+
+/* ==========================================
+   LOCATION ART
+========================================== */
+
+.location-art {
+    position: relative;
+
+    min-height: 145px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(102, 120, 77, 0.25),
+            transparent 65%
+        ),
+        linear-gradient(
+            180deg,
+            #20271c,
+            #151912
+        );
+
+    border-bottom: 1px solid var(--border);
+}
+
+.forage-location.locked .location-art {
+    filter: grayscale(0.5);
+}
+
+.location-symbol {
+    font-size: 58px;
+}
+
+.location-status {
+    position: absolute;
+
+    top: 12px;
+    right: 12px;
+
+    padding: 5px 8px;
+
+    color: var(--green-light);
+
+    background: rgba(11, 13, 10, 0.85);
+
+    border: 1px solid var(--border);
     border-radius: 3px;
+
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+}
+
+.forage-location.locked .location-status {
+    color: var(--muted);
+}
+
+
+/* ==========================================
+   LOCATION CONTENT
+========================================== */
+
+.location-content {
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 20px;
+}
+
+.location-content h4 {
+    margin: 4px 0 8px;
+
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: 25px;
+    font-weight: 600;
+
+    color: var(--cream);
+}
+
+.location-content p {
+    margin: 0;
+
+    color: var(--muted);
+
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.location-details {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    margin: 18px 0;
+
+    color: var(--muted);
+
+    font-size: 11px;
+}
+
+.forage-button {
+    width: 100%;
+
+    margin-top: auto;
+    padding: 12px 14px;
+
+    background: var(--green-dark);
+
+    border: 1px solid #718259;
+    border-radius: 4px;
+
+    color: var(--cream);
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 18px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.forage-button:hover:not(:disabled) {
+    background: var(--green);
+    border-color: var(--green-light);
+}
+
+.forage-button:disabled {
+    background: #1c201a;
+
+    border-color: var(--border);
+
+    color: var(--muted);
+
+    cursor: default;
+}
+
+
+/* ==========================================
+   ACTIVE FORAGE
+========================================== */
+
+.forage-progress-panel {
+    position: relative;
+
+    margin-top: 20px;
+    padding: 25px 28px 32px;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            120deg,
+            rgba(102, 120, 77, 0.08),
+            transparent
+        ),
+        var(--panel);
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.forage-progress-panel h3 {
+    margin: 4px 0 5px;
+
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: 27px;
+    font-weight: 600;
+
+    color: var(--cream);
+}
+
+.forage-progress-panel p {
+    margin: 0;
+
+    color: var(--muted);
+
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.forage-timer {
+    position: absolute;
+
+    top: 26px;
+    right: 28px;
+
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: 30px;
+
+    color: var(--gold);
+}
+
+.forage-progress-track {
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    height: 6px;
+
+    background: #0c0e0b;
+}
+
+.forage-progress-bar {
+    width: 0%;
+    height: 100%;
+
+    background: var(--green-light);
+
+    transition: width 1s linear;
+}
+
+
+/* ==========================================
+   FORAGE RESULT
+========================================== */
+
+.forage-result {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    margin-top: 20px;
+    padding: 24px 28px;
+
+    background: #12150f;
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.forage-result-icon {
+    width: 62px;
+    height: 62px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    font-size: 30px;
+
+    background: rgba(102, 120, 77, 0.10);
+
+    border: 1px solid var(--border);
+    border-radius: 50%;
+}
+
+.forage-result h3 {
+    margin: 4px 0 5px;
+
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: 25px;
+    font-weight: 600;
+
+    color: var(--cream);
+}
+
+.forage-result p {
+    margin: 0;
+
+    color: var(--muted);
+
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+
+/* ==========================================
+   FORAGE RESPONSIVE
+========================================== */
+
+@media (max-width: 1050px) {
+
+    .forage-location-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .forage-location {
+        min-height: auto;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .forage-familiar {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .familiar-state {
+        align-self: flex-start;
+    }
+
+    .forage-section-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .forage-section-heading p {
+        text-align: left;
+    }
+
+    .forage-timer {
+        position: static;
+
+        margin-top: 15px;
+    }
+
+    .forage-result {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+}
+/* ==========================================
+   INTRO / TITLE SCREEN
+========================================== */
+
+.intro-body {
+    min-height: 100vh;
+    margin: 0;
+
+    overflow-x: hidden;
+
+    background:
+        radial-gradient(
+            circle at 50% 35%,
+            rgba(71, 84, 55, 0.24),
+            transparent 32%
+        ),
+        radial-gradient(
+            circle at 50% 100%,
+            rgba(102, 120, 77, 0.12),
+            transparent 42%
+        ),
+        linear-gradient(
+            180deg,
+            #0a0d09 0%,
+            #10140e 48%,
+            #080a07 100%
+        );
+
+    color: var(--cream);
+}
+
+
+/* ==========================================
+   INTRO SCREEN
+========================================== */
+
+.intro-screen {
+    position: relative;
+
+    min-height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 60px 25px;
+
+    overflow: hidden;
+}
+
+
+/* Subtle atmospheric glow */
+
+.intro-glow {
+    position: absolute;
+
+    top: 50%;
+    left: 50%;
+
+    width: 700px;
+    height: 700px;
+
+    transform:
+        translate(-50%, -50%);
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(102, 120, 77, 0.12),
+            rgba(102, 120, 77, 0.025) 45%,
+            transparent 70%
+        );
+
+    border-radius: 50%;
+
+    pointer-events: none;
+}
+
+
+/* ==========================================
+   STARS / DECORATION
+========================================== */
+
+.intro-stars {
+    position: absolute;
+
+    top: 8%;
+    left: 50%;
+
+    width: min(700px, 85vw);
+
+    transform:
+        translateX(-50%);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    color: rgba(196, 164, 106, 0.45);
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    pointer-events: none;
+}
+
+.intro-stars span:nth-child(1),
+.intro-stars span:nth-child(5) {
+    font-size: 12px;
+}
+
+.intro-stars span:nth-child(2),
+.intro-stars span:nth-child(4) {
+    font-size: 18px;
+    opacity: 0.45;
+}
+
+.intro-stars span:nth-child(3) {
+    font-size: 17px;
+}
+
+
+/* ==========================================
+   INTRO CONTENT
+========================================== */
+
+.intro-content {
+    position: relative;
+    z-index: 2;
+
+    width: min(760px, 100%);
+
+    text-align: center;
+
+    padding:
+        55px 65px 48px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(28, 34, 24, 0.78),
+            rgba(12, 15, 11, 0.88)
+        );
+
+    border:
+        1px solid
+        rgba(139, 156, 107, 0.24);
+
+    border-radius: 10px;
+
+    box-shadow:
+        0 30px 90px
+        rgba(0, 0, 0, 0.38),
+        inset 0 0 60px
+        rgba(102, 120, 77, 0.025);
+
+    backdrop-filter:
+        blur(5px);
+}
+
+
+/* Decorative inner border */
+
+.intro-content::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 9px;
+
+    border:
+        1px solid
+        rgba(196, 164, 106, 0.08);
+
+    border-radius: 6px;
+
+    pointer-events: none;
+}
+
+
+/* ==========================================
+   MOON
+========================================== */
+
+.intro-moon {
+    margin-bottom: 16px;
+
+    color: var(--gold);
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 58px;
+    line-height: 1;
+
+    text-shadow:
+        0 0 30px
+        rgba(196, 164, 106, 0.18);
+}
+
+
+/* ==========================================
+   INTRO EYEBROW
+========================================== */
+
+.intro-eyebrow {
+    margin-bottom: 14px;
+
+    color: var(--green-light);
+
+    font-size: 10px;
+    font-weight: 600;
+
+    letter-spacing: 5px;
+}
+
+
+/* ==========================================
+   TITLE
+========================================== */
+
+.intro-title {
+    margin: 0;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-weight: 500;
+
+    text-transform: uppercase;
+
+    color: var(--cream);
+
+    line-height: 0.86;
+
+    letter-spacing: 3px;
+}
+
+.intro-title span {
+    display: block;
+}
+
+.intro-title span:first-child {
+    font-size:
+        clamp(
+            58px,
+            9vw,
+            92px
+        );
+}
+
+.intro-title span:last-child {
+    margin-top: 13px;
+
+    color: var(--gold);
+
+    font-size:
+        clamp(
+            28px,
+            5vw,
+            43px
+        );
+
+    letter-spacing: 9px;
+}
+
+
+/* ==========================================
+   DIVIDER
+========================================== */
+
+.intro-divider {
+    width: min(390px, 80%);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 15px;
+
+    margin:
+        31px auto 27px;
+}
+
+.intro-divider > span:not(
+    .intro-divider-symbol
+) {
+    flex: 1;
+
+    height: 1px;
 
     background:
         linear-gradient(
             90deg,
-            rgba(13, 23, 17, 0.78),
-            rgba(27, 40, 29, 0.58)
+            transparent,
+            rgba(196, 164, 106, 0.42)
+        );
+}
+
+.intro-divider > span:last-child {
+    transform:
+        rotate(180deg);
+}
+
+.intro-divider-symbol {
+    color: var(--gold);
+
+    font-size: 11px;
+}
+
+
+/* ==========================================
+   STORY TEXT
+========================================== */
+
+.intro-story {
+    margin: 0 auto 12px;
+
+    color: var(--cream);
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 23px;
+    font-style: italic;
+
+    line-height: 1.5;
+}
+
+.intro-description {
+    max-width: 550px;
+
+    margin:
+        0 auto 31px;
+
+    color: var(--muted);
+
+    font-size: 13px;
+
+    line-height: 1.8;
+}
+
+
+/* ==========================================
+   ENTER MOSSWOOD BUTTON
+========================================== */
+
+.enter-mosswood-button,
+.enter-mosswood-button:link,
+.enter-mosswood-button:visited {
+    position: relative;
+
+    display: inline-block;
+
+    min-width: 235px;
+
+    padding:
+        15px 30px;
+
+    color: var(--cream);
+
+    background:
+        linear-gradient(
+            180deg,
+            #48563a,
+            var(--green-dark)
         );
 
-    color: #e6d1a8;
+    border:
+        1px solid
+        #718259;
 
-    font-family: "Cormorant Garamond", Georgia, serif;
-    font-size: 19px;
+    border-radius: 4px;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 21px;
+    font-weight: 600;
+
+    letter-spacing: 1.5px;
+
+    text-decoration: none;
+
+    box-shadow:
+        0 8px 24px
+        rgba(0, 0, 0, 0.22);
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.enter-mosswood-button:hover {
+    color: var(--cream);
+
+    background:
+        linear-gradient(
+            180deg,
+            #60704d,
+            #465638
+        );
+
+    border-color:
+        var(--green-light);
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 12px 30px
+        rgba(0, 0, 0, 0.3),
+        0 0 25px
+        rgba(102, 120, 77, 0.08);
+}
+
+.enter-mosswood-button:active {
+    transform:
+        translateY(0);
+}
+
+
+/* ==========================================
+   SAVE NOTE
+========================================== */
+
+.intro-save-note {
+    margin-top: 23px;
+
+    color:
+        rgba(156, 155, 142, 0.7);
+
+    font-size: 10px;
+
+    letter-spacing: 1.5px;
+}
+
+
+/* ==========================================
+   BOTANICAL BOTTOM DECORATION
+========================================== */
+
+.intro-botanical {
+    position: absolute;
+
+    bottom: 25px;
+    left: 50%;
+
+    transform:
+        translateX(-50%);
+
+    display: flex;
+    align-items: center;
+
+    gap: 18px;
+
+    color:
+        rgba(139, 156, 107, 0.45);
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    pointer-events: none;
+}
+
+.intro-botanical span:first-child {
+    transform:
+        scaleX(-1);
+}
+
+.intro-botanical span:nth-child(2) {
+    font-size: 22px;
+
+    opacity: 0.65;
+}
+
+
+/* ==========================================
+   INTRO CORNER DETAILS
+========================================== */
+
+.intro-screen::before,
+.intro-screen::after {
+    content: "";
+
+    position: absolute;
+
+    width: 250px;
+    height: 250px;
+
+    opacity: 0.12;
+
+    pointer-events: none;
+}
+
+.intro-screen::before {
+    top: -90px;
+    left: -90px;
+
+    border-right:
+        1px solid var(--green-light);
+
+    border-bottom:
+        1px solid var(--green-light);
+
+    border-radius:
+        0 0 100% 0;
+}
+
+.intro-screen::after {
+    right: -90px;
+    bottom: -90px;
+
+    border-top:
+        1px solid var(--green-light);
+
+    border-left:
+        1px solid var(--green-light);
+
+    border-radius:
+        100% 0 0 0;
+}
+
+
+/* ==========================================
+   INTRO MOBILE
+========================================== */
+
+@media (max-width: 700px) {
+
+    .intro-screen {
+        padding:
+            35px 18px 75px;
+    }
+
+    .intro-content {
+        padding:
+            45px 25px 40px;
+    }
+
+    .intro-moon {
+        font-size: 48px;
+    }
+
+    .intro-title span:first-child {
+        font-size:
+            clamp(
+                48px,
+                16vw,
+                68px
+            );
+    }
+
+    .intro-title span:last-child {
+        font-size:
+            clamp(
+                23px,
+                8vw,
+                34px
+            );
+
+        letter-spacing: 5px;
+    }
+
+    .intro-story {
+        font-size: 20px;
+    }
+
+    .intro-description {
+        font-size: 12px;
+    }
+
+    .enter-mosswood-button {
+        width: 100%;
+        min-width: 0;
+    }
+
+}
+
+
+/* ==========================================
+   INTRO SMALL MOBILE
+========================================== */
+
+@media (max-width: 420px) {
+
+    .intro-content {
+        padding:
+            40px 20px 35px;
+    }
+
+    .intro-title span:first-child {
+        font-size: 46px;
+    }
+
+    .intro-title span:last-child {
+        font-size: 22px;
+
+        letter-spacing: 4px;
+    }
+
+    .intro-divider {
+        margin:
+            25px auto 22px;
+    }
+
+}
+/* ==========================================
+   APOTHECARY
+========================================== */
+
+.shop-status-panel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+
+    margin-top: 40px;
+    padding: 26px 30px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(102, 120, 77, 0.10),
+            rgba(196, 164, 106, 0.03)
+        ),
+        var(--panel);
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.shop-status-panel h3 {
+    margin: 5px 0 5px;
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 29px;
+    font-weight: 600;
+
+    color: var(--cream);
+}
+
+.shop-status-panel p {
+    margin: 0;
+
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+.shop-status {
+    flex-shrink: 0;
+
+    padding: 10px 16px;
+
+    background:
+        rgba(102, 120, 77, 0.12);
+
+    border:
+        1px solid
+        rgba(139, 156, 107, 0.35);
+
+    border-radius: 4px;
+}
+
+.shop-status span {
+    color: var(--green-light);
+
+    font-size: 10px;
+    font-weight: 600;
+
+    letter-spacing: 2px;
+}
+
+
+/* ==========================================
+   SHOP SECTION
+========================================== */
+
+.shop-section {
+    margin-top: 25px;
+    padding: 30px;
+
+    background: var(--panel);
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.shop-section-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 30px;
+
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+
+    border-bottom:
+        1px solid var(--border);
+}
+
+.shop-section-heading h3 {
+    margin: 5px 0 0;
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 30px;
+    font-weight: 600;
+
+    color: var(--cream);
+}
+
+.shop-section-heading p {
+    max-width: 400px;
+    margin: 0;
+
+    text-align: right;
+
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+
+/* ==========================================
+   POTION SHELF
+========================================== */
+
+.shop-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 17px;
+}
+
+.shop-potion-card {
+    display: flex;
+    flex-direction: column;
+
+    min-height: 390px;
+
+    padding: 25px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(102, 120, 77, 0.05),
+            transparent 55%
+        ),
+        #12150f;
+
+    border:
+        1px solid
+        rgba(139, 156, 107, 0.35);
+
+    border-radius: 7px;
+}
+
+.shop-potion-card.locked {
+    opacity: 0.48;
+
+    border-color: var(--border);
+}
+
+.shop-potion-icon {
+    width: 72px;
+    height: 72px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 21px;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 34px;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(102, 120, 77, 0.17),
+            rgba(102, 120, 77, 0.04)
+        );
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 50%;
+}
+
+.shop-potion-content {
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.shop-potion-content h4 {
+    margin: 5px 0 9px;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 27px;
+    font-weight: 600;
+
+    color: var(--cream);
+}
+
+.shop-potion-content > p {
+    margin: 0;
+
+    color: var(--muted);
+
+    font-size: 13px;
+    line-height: 1.65;
+}
+
+
+/* ==========================================
+   STOCK + VALUE
+========================================== */
+
+.shop-potion-details {
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 10px;
+
+    margin-top: 23px;
+}
+
+.shop-potion-details > div {
+    padding: 13px;
+
+    background:
+        rgba(255, 255, 255, 0.015);
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 4px;
+}
+
+.shop-potion-details span {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: var(--muted);
+
+    font-size: 9px;
+    letter-spacing: 1.7px;
+}
+
+.shop-potion-details strong {
+    display: block;
+
+    color: var(--cream);
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 20px;
+    font-weight: 600;
+}
+
+
+/* ==========================================
+   SELL BUTTON
+========================================== */
+
+.sell-potion-button {
+    width: 100%;
+
+    margin-top: auto;
+    padding: 12px 15px;
+
+    color: var(--cream);
+
+    background:
+        var(--green-dark);
+
+    border:
+        1px solid #718259;
+
+    border-radius: 4px;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 18px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.sell-potion-button:hover:not(:disabled) {
+    background: var(--green);
+
+    border-color:
+        var(--green-light);
+
+    transform:
+        translateY(-1px);
+}
+
+.sell-potion-button:disabled {
+    color: var(--muted);
+
+    background: #1c201a;
+
+    border-color: var(--border);
+
+    cursor: default;
+}
+
+
+/* ==========================================
+   SALES JOURNAL
+========================================== */
+
+.sale-result {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    margin-top: 20px;
+    padding: 24px 28px;
+
+    background:
+        linear-gradient(
+            120deg,
+            rgba(196, 164, 106, 0.035),
+            transparent
+        ),
+        #12150f;
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 8px;
+}
+
+.sale-result-icon {
+    width: 62px;
+    height: 62px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    font-size: 28px;
+
+    background:
+        rgba(196, 164, 106, 0.07);
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 50%;
+}
+
+.sale-result h3 {
+    margin: 4px 0 5px;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 26px;
+    font-weight: 600;
+
+    color: var(--cream);
+}
+
+.sale-result p {
+    margin: 0;
+
+    color: var(--muted);
+
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+
+/* ==========================================
+   APOTHECARY RESPONSIVE
+========================================== */
+
+@media (max-width: 1050px) {
+
+    .shop-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .shop-potion-card {
+        min-height: 330px;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .shop-status-panel {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .shop-section-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .shop-section-heading p {
+        text-align: left;
+    }
+
+    .sale-result {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+}
+/* ==========================================
+   UPGRADES
+========================================== */
+
+.upgrade-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+
+    margin-top: 40px;
+    padding: 27px 30px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(102, 120, 77, 0.10),
+            rgba(196, 164, 106, 0.03)
+        ),
+        var(--panel);
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.upgrade-summary h3 {
+    margin: 5px 0 5px;
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 29px;
+    font-weight: 600;
+
+    color: var(--cream);
+}
+
+.upgrade-summary p {
+    margin: 0;
+
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+
+/* ==========================================
+   UPGRADE WALLET
+========================================== */
+
+.upgrade-wallet {
+    min-width: 165px;
+
+    padding: 15px 20px;
+
+    text-align: center;
+
+    background:
+        rgba(196, 164, 106, 0.04);
+
+    border: 1px solid var(--border);
+    border-radius: 5px;
+}
+
+.upgrade-wallet > span {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: var(--muted);
+
+    font-size: 9px;
+    letter-spacing: 1.8px;
+}
+
+.upgrade-wallet strong {
+    display: block;
+
+    color: var(--gold);
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 25px;
+    font-weight: 600;
+}
+
+
+/* ==========================================
+   UPGRADE SECTION
+========================================== */
+
+.upgrade-section {
+    margin-top: 25px;
+    padding: 30px;
+
+    background: var(--panel);
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.upgrade-section-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 30px;
+
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+
+    border-bottom:
+        1px solid var(--border);
+}
+
+.upgrade-section-heading h3 {
+    margin: 5px 0 0;
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 30px;
+    font-weight: 600;
+
+    color: var(--cream);
+}
+
+.upgrade-section-heading p {
+    max-width: 400px;
+    margin: 0;
+
+    text-align: right;
+
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+
+/* ==========================================
+   UPGRADE GRID
+========================================== */
+
+.upgrade-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 17px;
+}
+
+
+/* ==========================================
+   UPGRADE CARDS
+========================================== */
+
+.upgrade-card {
+    display: flex;
+    flex-direction: column;
+
+    min-height: 470px;
+
+    padding: 25px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(102, 120, 77, 0.055),
+            transparent 55%
+        ),
+        #12150f;
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 7px;
+
+    transition:
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.upgrade-card:hover {
+    border-color:
+        rgba(139, 156, 107, 0.45);
+
+    transform:
+        translateY(-2px);
+}
+
+
+/* ==========================================
+   UPGRADE ICON
+========================================== */
+
+.upgrade-icon {
+    width: 72px;
+    height: 72px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 20px;
+
+    font-size: 31px;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(102, 120, 77, 0.17),
+            rgba(102, 120, 77, 0.035)
+        );
+
+    border: 1px solid var(--border);
+
+    border-radius: 50%;
+}
+
+
+/* ==========================================
+   UPGRADE TEXT
+========================================== */
+
+.upgrade-card h4 {
+    margin: 5px 0 9px;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 27px;
+    font-weight: 600;
+
+    color: var(--cream);
+}
+
+.upgrade-card > p {
+    min-height: 66px;
+
+    margin: 0 0 20px;
+
+    color: var(--muted);
+
+    font-size: 13px;
+    line-height: 1.65;
+}
+
+
+/* ==========================================
+   UPGRADE LEVEL
+========================================== */
+
+.upgrade-level {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 13px 14px;
+
+    background:
+        rgba(255, 255, 255, 0.015);
+
+    border: 1px solid var(--border);
+
+    border-radius: 4px;
+}
+
+.upgrade-level span {
+    color: var(--muted);
+
+    font-size: 9px;
+    letter-spacing: 1.6px;
+}
+
+.upgrade-level strong {
+    color: var(--cream);
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 20px;
+    font-weight: 600;
+}
+
+
+/* ==========================================
+   NEXT BENEFIT
+========================================== */
+
+.upgrade-benefit {
+    margin-top: 11px;
+    padding: 13px 14px;
+
+    background:
+        rgba(102, 120, 77, 0.05);
+
+    border:
+        1px solid
+        rgba(139, 156, 107, 0.16);
+
+    border-radius: 4px;
+}
+
+.upgrade-benefit span {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: var(--green-light);
+
+    font-size: 9px;
+    letter-spacing: 1.6px;
+}
+
+.upgrade-benefit p {
+    margin: 0;
+
+    color: var(--muted);
+
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+
+/* ==========================================
+   UPGRADE BUTTON
+========================================== */
+
+.upgrade-button {
+    width: 100%;
+
+    margin-top: auto;
+    padding: 13px 15px;
+
+    color: var(--cream);
+
+    background:
+        var(--green-dark);
+
+    border:
+        1px solid #718259;
+
+    border-radius: 4px;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 18px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.upgrade-button:hover:not(:disabled) {
+    background: var(--green);
+
+    border-color:
+        var(--green-light);
+
+    transform:
+        translateY(-1px);
+}
+
+.upgrade-button:disabled {
+    color: var(--muted);
+
+    background: #1c201a;
+
+    border-color: var(--border);
+
+    cursor: default;
+
+    opacity: 0.55;
+}
+
+
+/* ==========================================
+   RESTORATION JOURNAL
+========================================== */
+
+.upgrade-result {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    margin-top: 20px;
+    padding: 24px 28px;
+
+    background:
+        linear-gradient(
+            120deg,
+            rgba(102, 120, 77, 0.06),
+            transparent
+        ),
+        #12150f;
+
+    border: 1px solid var(--border);
+
+    border-radius: 8px;
+}
+
+.upgrade-result-icon {
+    width: 62px;
+    height: 62px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    font-size: 28px;
+
+    background:
+        rgba(102, 120, 77, 0.10);
+
+    border: 1px solid var(--border);
+
+    border-radius: 50%;
+}
+
+.upgrade-result h3 {
+    margin: 4px 0 5px;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 26px;
+    font-weight: 600;
+
+    color: var(--cream);
+}
+
+.upgrade-result p {
+    margin: 0;
+
+    color: var(--muted);
+
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+
+/* ==========================================
+   UPGRADES RESPONSIVE
+========================================== */
+
+@media (max-width: 1050px) {
+
+    .upgrade-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .upgrade-card {
+        min-height: 400px;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .upgrade-summary {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .upgrade-wallet {
+        width: 100%;
+    }
+
+    .upgrade-section-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .upgrade-section-heading p {
+        text-align: left;
+    }
+
+    .upgrade-result {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+}
+/* ==========================================
+   INVENTORY
+========================================== */
+
+.inventory-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+
+    margin-top: 40px;
+    padding: 27px 30px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(102, 120, 77, 0.10),
+            rgba(196, 164, 106, 0.03)
+        ),
+        var(--panel);
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.inventory-summary h3 {
+    margin: 5px 0 5px;
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 29px;
+    font-weight: 600;
+
+    color: var(--cream);
+}
+
+.inventory-summary p {
+    margin: 0;
+
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+
+/* ==========================================
+   TOTAL ITEMS
+========================================== */
+
+.inventory-total {
+    min-width: 145px;
+
+    padding: 15px 20px;
+
+    text-align: center;
+
+    background:
+        rgba(196, 164, 106, 0.04);
+
+    border: 1px solid var(--border);
+    border-radius: 5px;
+}
+
+.inventory-total span {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: var(--muted);
+
+    font-size: 9px;
+    letter-spacing: 1.8px;
+}
+
+.inventory-total strong {
+    display: block;
+
+    color: var(--gold);
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 27px;
+    font-weight: 600;
+}
+
+
+/* ==========================================
+   INVENTORY SECTIONS
+========================================== */
+
+.inventory-section {
+    margin-top: 25px;
+    padding: 30px;
+
+    background: var(--panel);
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.inventory-section-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 30px;
+
+    margin-bottom: 22px;
+    padding-bottom: 18px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.inventory-section-heading h3 {
+    margin: 5px 0 0;
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 29px;
+    font-weight: 600;
+
+    color: var(--cream);
+}
+
+.inventory-section-heading p {
+    max-width: 390px;
+    margin: 0;
+
+    text-align: right;
+
+    color: var(--muted);
+
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+
+/* ==========================================
+   INVENTORY GRID
+========================================== */
+
+.inventory-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 15px;
+}
+
+
+/* ==========================================
+   INVENTORY CARD
+========================================== */
+
+.inventory-card {
+    position: relative;
+
+    display: grid;
+
+    grid-template-columns:
+        68px 1fr auto;
+
+    align-items: center;
+
+    gap: 18px;
+
+    min-height: 135px;
+
+    padding: 20px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(102, 120, 77, 0.05),
+            transparent 55%
+        ),
+        #12150f;
+
+    border: 1px solid var(--border);
+    border-radius: 6px;
+
+    transition:
+        border-color 0.2s ease,
+        transform 0.2s ease,
+        background 0.2s ease;
+}
+
+.inventory-card:hover {
+    border-color:
+        rgba(139, 156, 107, 0.42);
+
+    transform:
+        translateY(-2px);
+}
+
+
+/* ==========================================
+   ITEM ICON
+========================================== */
+
+.inventory-icon {
+    width: 62px;
+    height: 62px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 28px;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(102, 120, 77, 0.15),
+            rgba(102, 120, 77, 0.025)
+        );
+
+    border: 1px solid var(--border);
+    border-radius: 50%;
+}
+
+
+/* ==========================================
+   ITEM INFORMATION
+========================================== */
+
+.inventory-card-content {
+    min-width: 0;
+}
+
+.inventory-card-content h4 {
+    margin: 4px 0 6px;
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 23px;
+    font-weight: 600;
+
+    color: var(--cream);
+}
+
+.inventory-card-content p {
+    max-width: 430px;
+    margin: 0;
+
+    color: var(--muted);
+
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+
+/* ==========================================
+   ITEM QUANTITY
+========================================== */
+
+.inventory-quantity {
+    min-width: 65px;
+
+    padding-left: 15px;
+
+    text-align: center;
+
+    border-left: 1px solid var(--border);
+}
+
+.inventory-quantity span {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: var(--muted);
+
+    font-size: 8px;
+    letter-spacing: 1.5px;
+}
+
+.inventory-quantity strong {
+    display: block;
+
+    color: var(--cream);
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 26px;
+    font-weight: 600;
+}
+
+
+/* ==========================================
+   STRANGE SEED
+========================================== */
+
+.strange-seed-card {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(95, 77, 116, 0.06),
+            transparent 60%
+        ),
+        #12150f;
+}
+
+.strange-seed-card .inventory-icon {
+    color: #b9a3c7;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(122, 94, 145, 0.14),
+            rgba(122, 94, 145, 0.025)
+        );
+}
+
+
+/* Strange Seed becomes more noticeable
+   once the player actually owns one. */
+
+.strange-seed-card.discovered-item {
+    border-color:
+        rgba(154, 126, 174, 0.38);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(111, 84, 133, 0.11),
+            transparent 65%
+        ),
+        #12150f;
+}
+
+.strange-seed-card.discovered-item
+.inventory-icon {
+    border-color:
+        rgba(154, 126, 174, 0.38);
+
+    box-shadow:
+        0 0 18px
+        rgba(117, 88, 139, 0.10);
+}
+
+
+/* ==========================================
+   EMPTY ITEM STATE
+========================================== */
+
+.inventory-card:has(
+    .inventory-quantity strong
+) {
+    overflow: hidden;
+}
+
+
+/* ==========================================
+   INVENTORY RESPONSIVE
+========================================== */
+
+@media (max-width: 1050px) {
+
+    .inventory-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .inventory-summary {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .inventory-total {
+        width: 100%;
+    }
+
+    .inventory-section {
+        padding: 22px;
+    }
+
+    .inventory-section-heading {
+        align-items: flex-start;
+        flex-direction: column;
+
+        gap: 10px;
+    }
+
+    .inventory-section-heading p {
+        text-align: left;
+    }
+
+    .inventory-card {
+        grid-template-columns:
+            55px 1fr;
+
+        gap: 15px;
+    }
+
+    .inventory-icon {
+        width: 52px;
+        height: 52px;
+
+        font-size: 24px;
+    }
+
+    .inventory-quantity {
+        grid-column: 1 / -1;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        width: 100%;
+
+        padding:
+            12px 0 0;
+
+        border-left: none;
+        border-top:
+            1px solid var(--border);
+    }
+
+    .inventory-quantity span {
+        margin: 0;
+    }
+
+}
+/* ==========================================
+   GREENHOUSE SEED SELECTION
+========================================== */
+
+.seed-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    width: 100%;
+}
+
+.seed-menu-title {
+    margin-bottom: 3px;
+
+    color: var(--muted);
+
+    font-size: 9px;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+}
+
+.seed-choice {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+
+    width: 100%;
+
+    padding: 10px 12px;
+
+    text-align: left;
+
+    color: var(--cream);
+    background: #171a14;
+
+    border: 1px solid var(--border);
+    border-radius: 4px;
+
+    cursor: pointer;
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease;
+}
+
+.seed-choice:hover:not(:disabled) {
+    background:
+        rgba(102, 120, 77, 0.12);
+
+    border-color:
+        var(--green-light);
+}
+
+.seed-choice:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+.seed-choice-icon {
+    width: 30px;
+
+    text-align: center;
+
+    font-size: 20px;
+}
+
+.seed-choice strong {
+    display: block;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.seed-choice small {
+    display: block;
+
+    margin-top: 1px;
+
+    color: var(--muted);
+
+    font-size: 10px;
+}
+
+.strange-seed-choice {
+    background:
+        linear-gradient(
+            120deg,
+            rgba(111, 84, 133, 0.10),
+            transparent
+        ),
+        #171a14;
+}
+
+.strange-seed-choice:hover:not(:disabled) {
+    border-color:
+        rgba(154, 126, 174, 0.55);
+
+    background:
+        rgba(111, 84, 133, 0.14);
+}
+
+.seed-menu-cancel {
+    padding: 7px;
+
+    color: var(--muted);
+    background: transparent;
+
+    border: none;
+
+    font-size: 11px;
+
+    cursor: pointer;
+}
+
+.seed-menu-cancel:hover {
+    color: var(--cream);
+}
+/* ==================================================
+   MOSSWOOD INTRO
+   Rustic Woodland Entrance
+================================================== */
+
+.mosswood-intro {
+    margin: 0;
+    padding: 0;
+
+    width: 100%;
+    min-height: 100vh;
+
+    overflow: hidden;
+
+    background: #0b100b;
+}
+
+
+/* ==================================================
+   MAIN ENTRANCE
+================================================== */
+
+.mosswood-entrance {
+    position: relative;
+
+    width: 100%;
+    height: 100vh;
+    min-height: 650px;
+
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* ==================================================
+   BACKGROUND
+================================================== */
+
+.mosswood-background {
+    position: absolute;
+
+    inset: 0;
+
+    background-image:
+        url("assets/images/mosswood-intro-bg.png");
+
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+
+    z-index: 0;
+
+    transform: scale(1.02);
+}
+
+
+/* ==================================================
+   DARK VIGNETTE
+================================================== */
+
+.mosswood-vignette {
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        radial-gradient(
+            ellipse at center,
+            transparent 38%,
+            rgba(4, 7, 4, 0.12) 65%,
+            rgba(3, 5, 3, 0.58) 100%
+        );
+
+    pointer-events: none;
+
+    z-index: 1;
+}
+
+
+/* ==================================================
+   MOSSWOOD SIGN
+================================================== */
+
+.mosswood-sign {
+    position: relative;
+
+    z-index: 3;
+
+    width: min(64vw, 760px);
+    height: auto;
+
+    margin-top: -70px;
+
+    filter:
+        drop-shadow(
+            0 18px 28px
+            rgba(0, 0, 0, 0.65)
+        );
+
+    animation:
+        mosswood-sign-enter
+        1.2s
+        ease-out
+        both;
+}
+
+
+/* ==================================================
+   INTRO TEXT
+================================================== */
+
+.mosswood-intro-copy {
+    position: relative;
+
+    z-index: 4;
+
+    width: min(470px, 62vw);
+
+    margin-top: -8px;
+
+    text-align: center;
+
+    color: #d6c9a8;
+
+    text-shadow:
+        0 2px 5px rgba(0, 0, 0, 0.95);
+
+    animation:
+        mosswood-copy-enter
+        1.2s
+        0.25s
+        ease-out
+        both;
+}
+
+
+/* Main story line */
+
+.mosswood-intro-copy p {
+    margin: 0;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size:
+        clamp(
+            0.72rem,
+            1vw,
+            0.92rem
+        );
+
+    font-style: italic;
+    font-weight: normal;
+
+    line-height: 1.45;
+
+    color: #e0d4b8;
+
+    opacity: 0.88;
+
+    letter-spacing: 0.015em;
+}
+
+
+/* Grow / Forage / Brew line */
+
+.mosswood-intro-copy span {
+    display: block;
+
+    max-width: 440px;
+
+    margin:
+        9px
+        auto
+        0;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size:
+        clamp(
+            0.48rem,
+            0.6vw,
+            0.58rem
+        );
+
+    font-weight: normal;
+
+    letter-spacing: 0.16em;
+
+    line-height: 1.65;
+
+    text-transform: uppercase;
+
+    color: #b9ad8b;
+
+    opacity: 0.72;
+}
+
+
+/* ==================================================
+   ENTER MOSSWOOD BUTTON
+================================================== */
+
+.mosswood-enter {
+    position: relative;
+
+    z-index: 5;
+
+    display: block;
+
+    width: min(360px, 52vw);
+
+    margin-top: 24px;
+
+    transition:
+        transform 0.25s ease,
+        filter 0.25s ease;
+
+    animation:
+        mosswood-button-enter
+        1.2s
+        0.45s
+        ease-out
+        both;
+}
+
+
+.mosswood-enter img {
+    display: block;
+
+    width: 100%;
+    height: auto;
+
+    filter:
+        drop-shadow(
+            0 10px 14px
+            rgba(0, 0, 0, 0.65)
+        );
+}
+
+
+/* Button hover */
+
+.mosswood-enter:hover {
+    transform:
+        translateY(-4px)
+        scale(1.025);
+
+    filter:
+        brightness(1.08)
+        drop-shadow(
+            0 14px 20px
+            rgba(0, 0, 0, 0.7)
+        );
+}
+
+
+/* Button click */
+
+.mosswood-enter:active {
+    transform:
+        translateY(1px)
+        scale(0.99);
+}
+
+
+/* ==================================================
+   SAVE NOTE
+================================================== */
+
+.mosswood-save-note {
+    position: relative;
+
+    z-index: 4;
+
+    margin:
+        8px
+        0
+        0;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 0.52rem;
+
+    letter-spacing: 0.14em;
+
+    text-transform: uppercase;
+
+    color: #a99e80;
+
+    opacity: 0.6;
+
+    text-shadow:
+        0 2px 5px
+        rgba(0, 0, 0, 0.9);
+}
+
+
+/* ==================================================
+   ENTRANCE ANIMATIONS
+================================================== */
+
+@keyframes mosswood-sign-enter {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(-25px)
+            scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+    }
+
+}
+
+
+@keyframes mosswood-copy-enter {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0);
+    }
+
+}
+
+
+@keyframes mosswood-button-enter {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(20px)
+            scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+    }
+
+}
+
+
+/* ==================================================
+   MOBILE
+================================================== */
+
+@media (max-width: 700px) {
+
+    .mosswood-entrance {
+        min-height: 600px;
+    }
+
+
+    .mosswood-background {
+        background-position:
+            57% center;
+    }
+
+
+    .mosswood-sign {
+        width: 92vw;
+
+        margin-top: -50px;
+    }
+
+
+    .mosswood-intro-copy {
+        width: 76vw;
+
+        margin-top: -14px;
+    }
+
+
+    .mosswood-intro-copy p {
+        font-size: 0.78rem;
+
+        line-height: 1.45;
+    }
+
+
+    .mosswood-intro-copy span {
+        max-width: 320px;
+
+        font-size: 0.48rem;
+
+        letter-spacing: 0.12em;
+
+        line-height: 1.6;
+    }
+
+
+    .mosswood-enter {
+        width: 65vw;
+
+        margin-top: 20px;
+    }
+
+
+    .mosswood-save-note {
+        font-size: 0.47rem;
+
+        letter-spacing: 0.11em;
+    }
+
+}
