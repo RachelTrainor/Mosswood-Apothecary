@@ -9,16 +9,16 @@
 // CUSTOMER DATA
 // ==========================================
 //
-// Customers are NOT tied to specific potions.
+// Customers are not tied to specific potions.
 //
-// customers.js will randomly choose:
-// 1. A customer
-// 2. A potion the player has discovered
-// 3. A quantity
-// 4. A reward
+// customers.js chooses:
+// - a random customer
+// - a random discovered potion
+// - a quantity
+// - a bonus reward
 //
-// Dialogue belongs to the customer, so the
-// same customer can request any potion.
+// Dialogue stays with the customer regardless
+// of which potion they request.
 // ==========================================
 
 const CUSTOMER_DATA = {
@@ -138,21 +138,19 @@ const CUSTOMER_DATA = {
 
 
 // ==========================================
-// CUSTOMER REQUEST SETTINGS
+// REQUEST SETTINGS
 // ==========================================
 
 const CUSTOMER_REQUEST_SETTINGS = {
 
-    // How long a customer waits.
-    // 10 minutes.
+    // Customer stays for 10 minutes.
 
     requestDuration:
         10 * 60 * 1000,
 
 
-    // Delay before another customer arrives
-    // after an order is completed or expires.
-    // Random between 30 and 90 seconds.
+    // Another customer arrives between
+    // 30 and 90 seconds later.
 
     minArrivalDelay:
         30 * 1000,
@@ -161,8 +159,8 @@ const CUSTOMER_REQUEST_SETTINGS = {
         90 * 1000,
 
 
-    // Customers pay more than the normal
-    // Apothecary sell value.
+    // Customer requests pay more than
+    // selling directly from the shelf.
 
     minRewardMultiplier:
         1.20,
@@ -171,8 +169,7 @@ const CUSTOMER_REQUEST_SETTINGS = {
         1.60,
 
 
-    // Maximum number of potions that can
-    // currently be requested.
+    // Current maximum order size.
 
     maxQuantity:
         3
@@ -184,15 +181,23 @@ const CUSTOMER_REQUEST_SETTINGS = {
 // CUSTOMER HELPERS
 // ==========================================
 
-function getCustomerData(customerId) {
+function getCustomerData(
+    customerId
+) {
 
-    return CUSTOMER_DATA[customerId] || null;
+    return (
+        CUSTOMER_DATA[
+            customerId
+        ] || null
+    );
 
 }
 
 
 function getAllCustomers() {
 
-    return Object.values(CUSTOMER_DATA);
+    return Object.values(
+        CUSTOMER_DATA
+    );
 
 }
