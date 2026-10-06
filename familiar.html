@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Familiar | Mosswood Apothecary
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body>
+
+    <div class="game">
+
+        <!-- ==================================
+             SIDEBAR
+        =================================== -->
+
+        <aside
+            class="sidebar"
+            id="sidebar">
+        </aside>
+
+
+        <!-- ==================================
+             MAIN CONTENT
+        =================================== -->
+
+        <div class="content">
+
+            <!-- RESOURCE BAR -->
+
+            <header
+                class="topbar"
+                id="topbar">
+            </header>
+
+
+            <!-- FAMILIAR PAGE -->
+
+            <main class="page">
+
+                <div class="page-header">
+
+                    <span class="eyebrow">
+                        YOUR COMPANION
+                    </span>
+
+                    <h2>
+                        Familiar
+                    </h2>
+
+                    <p>
+                        Care for the little shadow that
+                        accompanies you through Mosswood.
+                    </p>
+
+                </div>
+
+
+                <!-- FAMILIAR CARD -->
+
+                <section class="familiar-section">
+
+                    <div class="familiar-card">
+
+                        <div class="familiar-portrait">
+
+                            <div class="familiar-placeholder">
+                                🐈‍⬛
+                            </div>
+
+                        </div>
+
+
+                        <div class="familiar-info">
+
+                            <span class="card-label">
+                                BLACK CAT FAMILIAR
+                            </span>
+
+                            <h3 id="familiarName">
+                                Your Familiar
+                            </h3>
+
+                            <p id="familiarStatus">
+                                A watchful little shadow
+                                that has chosen to remain
+                                by your side.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- CARE STATUS -->
+
+                <section class="familiar-section">
+
+                    <div class="shop-section-heading">
+
+                        <div>
+
+                            <span class="card-label">
+                                CARE
+                            </span>
+
+                            <h3>
+                                Familiar Needs
+                            </h3>
+
+                        </div>
+
+                        <p>
+                            Keep your familiar rested,
+                            fed, and happy.
+                        </p>
+
+                    </div>
+
+
+                    <div class="familiar-needs">
+
+                        <!-- ENERGY -->
+
+                        <div class="familiar-need">
+
+                            <div class="familiar-need-header">
+
+                                <span>
+                                    ⚡ Energy
+                                </span>
+
+                                <strong id="energyValue">
+                                    100 / 100
+                                </strong>
+
+                            </div>
+
+                            <div class="familiar-meter">
+
+                                <div
+                                    class="familiar-meter-fill"
+                                    id="energyBar"
+                                    style="width: 100%;">
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- HUNGER -->
+
+                        <div class="familiar-need">
+
+                            <div class="familiar-need-header">
+
+                                <span>
+                                    🐟 Hunger
+                                </span>
+
+                                <strong id="hungerValue">
+                                    100 / 100
+                                </strong>
+
+                            </div>
+
+                            <div class="familiar-meter">
+
+                                <div
+                                    class="familiar-meter-fill"
+                                    id="hungerBar"
+                                    style="width: 100%;">
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- HAPPINESS -->
+
+                        <div class="familiar-need">
+
+                            <div class="familiar-need-header">
+
+                                <span>
+                                    ♥ Happiness
+                                </span>
+
+                                <strong id="happinessValue">
+                                    100 / 100
+                                </strong>
+
+                            </div>
+
+                            <div class="familiar-meter">
+
+                                <div
+                                    class="familiar-meter-fill"
+                                    id="happinessBar"
+                                    style="width: 100%;">
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- BOND -->
+
+                        <div class="familiar-need">
+
+                            <div class="familiar-need-header">
+
+                                <span>
+                                    ✨ Bond
+                                </span>
+
+                                <strong id="bondValue">
+                                    Level 1
+                                </strong>
+
+                            </div>
+
+                            <div class="familiar-meter">
+
+                                <div
+                                    class="familiar-meter-fill"
+                                    id="bondBar"
+                                    style="width: 0%;">
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- INTERACTIONS -->
+
+                <section class="familiar-section">
+
+                    <div class="shop-section-heading">
+
+                        <div>
+
+                            <span class="card-label">
+                                INTERACT
+                            </span>
+
+                            <h3>
+                                Care for Your Familiar
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="familiar-actions">
+
+                        <button
+                            class="familiar-action-button"
+                            id="feedFamiliar">
+
+                            🐟 Feed
+
+                        </button>
+
+
+                        <button
+                            class="familiar-action-button"
+                            id="petFamiliar">
+
+                            ♥ Pet
+
+                        </button>
+
+
+                        <button
+                            class="familiar-action-button"
+                            id="playFamiliar">
+
+                            🧶 Play
+
+                        </button>
+
+
+                        <button
+                            class="familiar-action-button"
+                            id="restFamiliar">
+
+                            💤 Rest
+
+                        </button>
+
+                    </div>
+
+
+                    <p
+                        class="familiar-message"
+                        id="familiarMessage">
+
+                        Your familiar watches you quietly.
+
+                    </p>
+
+                </section>
+
+            </main>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==================================
+         SCRIPTS
+    =================================== -->
+
+    <script src="js/data.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/familiar.js"></script>
+
+</body>
