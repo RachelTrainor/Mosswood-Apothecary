@@ -1,7 +1,7 @@
 // ==========================================
 // MOSSWOOD APOTHECARY
 // Familiar System
-// V4 - Passive Care + Play Fix
+// V5 - Care Cooldowns
 // ==========================================
 
 
@@ -11,21 +11,35 @@
 
 const FAMILIAR_MAX_STAT = 100;
 
-const FEED_COST = 5;
+
+// Feed
+const FEED_COST = 2;
 const FEED_HUNGER_GAIN = 20;
 const FEED_ENERGY_GAIN = 10;
 
+
+// Pet
 const PET_HAPPINESS_GAIN = 10;
 const PET_BOND_GAIN = 2;
-const PET_COOLDOWN = 2 * 60 * 1000;
+const PET_COOLDOWN =
+    2 * 60 * 1000;
 
+
+// Play
 const PLAY_ENERGY_COST = 10;
 const PLAY_HAPPINESS_GAIN = 20;
 const PLAY_BOND_GAIN = 5;
+const PLAY_COOLDOWN =
+    2 * 60 * 1000;
 
+
+// Rest
 const REST_ENERGY_GAIN = 20;
-const REST_COOLDOWN = 2 * 60 * 1000;
+const REST_COOLDOWN =
+    2 * 60 * 1000;
 
+
+// Bond
 const BOND_XP_PER_LEVEL = 25;
 
 
@@ -33,26 +47,25 @@ const BOND_XP_PER_LEVEL = 25;
 // PASSIVE CARE SETTINGS
 // ==========================================
 
-// Hunger loses 1 point every 5 minutes.
+// Hunger loses 1 every 5 minutes.
 
 const HUNGER_INTERVAL =
     5 * 60 * 1000;
 
 
-// Happiness loses 1 point every 10 minutes.
+// Happiness loses 1 every 10 minutes.
 
 const HAPPINESS_INTERVAL =
     10 * 60 * 1000;
 
 
-// Energy gains 1 point every 3 minutes.
+// Energy restores 1 every 3 minutes.
 
 const ENERGY_RECOVERY_INTERVAL =
     3 * 60 * 1000;
 
 
-// Only calculate a maximum of 8 hours
-// of offline care changes.
+// Maximum offline calculation: 8 hours.
 
 const MAX_OFFLINE_TIME =
     8 * 60 * 60 * 1000;
@@ -172,7 +185,7 @@ function clampFamiliarStat(
 
 
 // ==========================================
-// GET DISPLAY NAME
+// FAMILIAR DISPLAY NAME
 // ==========================================
 
 function getFamiliarDisplayName() {
@@ -194,7 +207,7 @@ function getFamiliarDisplayName() {
 
 
 // ==========================================
-// DISPLAY MESSAGE
+// MESSAGE
 // ==========================================
 
 function setFamiliarMessage(
@@ -280,7 +293,9 @@ function applyPassiveCare() {
         - game.familiar.lastCareUpdate;
 
 
-    if (elapsed <= 0) {
+    if (
+        elapsed <= 0
+    ) {
 
         return;
 
@@ -294,10 +309,6 @@ function applyPassiveCare() {
         );
 
 
-    // --------------------------------------
-    // HUNGER
-    // --------------------------------------
-
     const hungerLost =
         Math.floor(
             elapsed
@@ -305,20 +316,12 @@ function applyPassiveCare() {
         );
 
 
-    // --------------------------------------
-    // HAPPINESS
-    // --------------------------------------
-
     const happinessLost =
         Math.floor(
             elapsed
             / HAPPINESS_INTERVAL
         );
 
-
-    // --------------------------------------
-    // ENERGY
-    // --------------------------------------
 
     const energyRecovered =
         Math.floor(
@@ -353,9 +356,6 @@ function applyPassiveCare() {
     }
 
 
-    // Familiar does not recover energy
-    // while actively foraging.
-
     if (
         energyRecovered > 0 &&
         !game.forage.active
@@ -380,7 +380,7 @@ function applyPassiveCare() {
 
 
 // ==========================================
-// FAMILIAR NAME
+// RENDER NAME
 // ==========================================
 
 function renderFamiliarName() {
@@ -430,7 +430,7 @@ function renderFamiliarName() {
 
 
 // ==========================================
-// SAVE FAMILIAR NAME
+// SAVE NAME
 // ==========================================
 
 function saveFamiliarName() {
@@ -473,7 +473,7 @@ function saveFamiliarName() {
 
 
 // ==========================================
-// FAMILIAR STATUS
+// STATUS
 // ==========================================
 
 function renderFamiliarStatus() {
@@ -566,10 +566,6 @@ function updateBondLevel() {
 
         saveGame();
 
-        setFamiliarMessage(
-            `${getFamiliarDisplayName()}'s bond with you has grown stronger.`
-        );
-
     }
 
     else {
@@ -594,13 +590,11 @@ function addFamiliarBond(
         amount;
 
 
-    if (
-        game.familiar.bondXP < 0
-    ) {
-
-        game.familiar.bondXP = 0;
-
-    }
+    game.familiar.bondXP =
+        Math.max(
+            0,
+            game.familiar.bondXP
+        );
 
 
     updateBondLevel();
@@ -619,10 +613,12 @@ function renderFamiliarStats() {
             game.familiar.energy
         );
 
+
     game.familiar.hunger =
         clampFamiliarStat(
             game.familiar.hunger
         );
+
 
     game.familiar.happiness =
         clampFamiliarStat(
@@ -630,15 +626,31 @@ function renderFamiliarStats() {
         );
 
 
-    // --------------------------------------
-    // ENERGY
-    // --------------------------------------
-
     if (energyValue) {
 
         energyValue.textContent =
             `${Math.round(
                 game.familiar.energy
+            )} / 100`;
+
+    }
+
+
+    if (hungerValue) {
+
+        hungerValue.textContent =
+            `${Math.round(
+                game.familiar.hunger
+            )} / 100`;
+
+    }
+
+
+    if (happinessValue) {
+
+        happinessValue.textContent =
+            `${Math.round(
+                game.familiar.happiness
             )} / 100`;
 
     }
@@ -652,38 +664,10 @@ function renderFamiliarStats() {
     }
 
 
-    // --------------------------------------
-    // HUNGER
-    // --------------------------------------
-
-    if (hungerValue) {
-
-        hungerValue.textContent =
-            `${Math.round(
-                game.familiar.hunger
-            )} / 100`;
-
-    }
-
-
     if (hungerBar) {
 
         hungerBar.style.width =
             `${game.familiar.hunger}%`;
-
-    }
-
-
-    // --------------------------------------
-    // HAPPINESS
-    // --------------------------------------
-
-    if (happinessValue) {
-
-        happinessValue.textContent =
-            `${Math.round(
-                game.familiar.happiness
-            )} / 100`;
 
     }
 
@@ -695,10 +679,6 @@ function renderFamiliarStats() {
 
     }
 
-
-    // --------------------------------------
-    // BOND
-    // --------------------------------------
 
     const currentLevel =
         game.familiar.bondLevel;
@@ -831,25 +811,18 @@ function petFamiliar() {
     const now =
         Date.now();
 
-    const timeSinceLastPet =
+
+    const elapsed =
         now
         - game.familiar.lastPet;
 
 
     if (
-        timeSinceLastPet <
-        PET_COOLDOWN
+        elapsed < PET_COOLDOWN
     ) {
 
-        const remaining =
-            PET_COOLDOWN
-            - timeSinceLastPet;
-
-
         setFamiliarMessage(
-            `${name} has had enough attention for the moment. Try again in ${formatCooldown(
-                remaining
-            )}.`
+            `${name} has had enough attention for the moment.`
         );
 
         return;
@@ -896,13 +869,27 @@ function playWithFamiliar() {
     const name =
         getFamiliarDisplayName();
 
+    const now =
+        Date.now();
 
-    // Playing always works as long as the
-    // familiar has enough Energy.
-    //
-    // Happiness may already be 100.
-    // In that case it simply stays at 100
-    // while Energy is spent and Bond grows.
+
+    const elapsed =
+        now
+        - game.familiar.lastPlay;
+
+
+    if (
+        elapsed < PLAY_COOLDOWN
+    ) {
+
+        setFamiliarMessage(
+            `${name} isn't ready to play again yet.`
+        );
+
+        return;
+
+    }
+
 
     if (
         game.familiar.energy <
@@ -930,6 +917,10 @@ function playWithFamiliar() {
             game.familiar.happiness
             + PLAY_HAPPINESS_GAIN
         );
+
+
+    game.familiar.lastPlay =
+        now;
 
 
     addFamiliarBond(
@@ -963,7 +954,8 @@ function restFamiliar() {
     const now =
         Date.now();
 
-    const timeSinceLastRest =
+
+    const elapsed =
         now
         - game.familiar.lastRest;
 
@@ -982,19 +974,11 @@ function restFamiliar() {
 
 
     if (
-        timeSinceLastRest <
-        REST_COOLDOWN
+        elapsed < REST_COOLDOWN
     ) {
 
-        const remaining =
-            REST_COOLDOWN
-            - timeSinceLastRest;
-
-
         setFamiliarMessage(
-            `${name} isn't ready to rest again yet. Try again in ${formatCooldown(
-                remaining
-            )}.`
+            `${name} isn't ready to rest again yet.`
         );
 
         return;
@@ -1043,7 +1027,7 @@ function updateFamiliarButtons() {
 
     if (petButton) {
 
-        const petRemaining =
+        const remaining =
             PET_COOLDOWN
             - (
                 now
@@ -1052,7 +1036,7 @@ function updateFamiliarButtons() {
 
 
         if (
-            petRemaining > 0
+            remaining > 0
         ) {
 
             petButton.disabled =
@@ -1060,7 +1044,7 @@ function updateFamiliarButtons() {
 
             petButton.textContent =
                 `♥ Pet (${formatCooldown(
-                    petRemaining
+                    remaining
                 )})`;
 
         }
@@ -1079,12 +1063,66 @@ function updateFamiliarButtons() {
 
 
     // --------------------------------------
+    // PLAY
+    // --------------------------------------
+
+    if (playButton) {
+
+        const remaining =
+            PLAY_COOLDOWN
+            - (
+                now
+                - game.familiar.lastPlay
+            );
+
+
+        if (
+            remaining > 0
+        ) {
+
+            playButton.disabled =
+                true;
+
+            playButton.textContent =
+                `🧶 Play (${formatCooldown(
+                    remaining
+                )})`;
+
+        }
+
+        else if (
+            game.familiar.energy
+            < PLAY_ENERGY_COST
+        ) {
+
+            playButton.disabled =
+                true;
+
+            playButton.textContent =
+                "🧶 Play";
+
+        }
+
+        else {
+
+            playButton.disabled =
+                false;
+
+            playButton.textContent =
+                "🧶 Play";
+
+        }
+
+    }
+
+
+    // --------------------------------------
     // REST
     // --------------------------------------
 
     if (restButton) {
 
-        const restRemaining =
+        const remaining =
             REST_COOLDOWN
             - (
                 now
@@ -1093,7 +1131,7 @@ function updateFamiliarButtons() {
 
 
         if (
-            restRemaining > 0
+            remaining > 0
         ) {
 
             restButton.disabled =
@@ -1101,7 +1139,7 @@ function updateFamiliarButtons() {
 
             restButton.textContent =
                 `💤 Rest (${formatCooldown(
-                    restRemaining
+                    remaining
                 )})`;
 
         }
@@ -1120,19 +1158,6 @@ function updateFamiliarButtons() {
 
 
     // --------------------------------------
-    // PLAY
-    // --------------------------------------
-
-    if (playButton) {
-
-        playButton.disabled =
-            game.familiar.energy
-            < PLAY_ENERGY_COST;
-
-    }
-
-
-    // --------------------------------------
     // FEED
     // --------------------------------------
 
@@ -1140,6 +1165,9 @@ function updateFamiliarButtons() {
 
         feedButton.disabled =
             game.coins < FEED_COST;
+
+        feedButton.textContent =
+            `🐟 Feed (${FEED_COST} 🪙)`;
 
     }
 
@@ -1240,10 +1268,7 @@ updateFamiliarButtons();
 
 
 // ==========================================
-// LIVE CARE TIMER
-// ==========================================
-//
-// Passive care is checked once per minute.
+// PASSIVE CARE TIMER
 // ==========================================
 
 setInterval(
@@ -1256,16 +1281,13 @@ setInterval(
         updateFamiliarButtons();
 
     },
+
     60 * 1000
 );
 
 
 // ==========================================
-// BUTTON COOLDOWN TIMER
-// ==========================================
-//
-// Updates the Pet and Rest countdowns
-// every second.
+// COOLDOWN TIMER
 // ==========================================
 
 setInterval(
