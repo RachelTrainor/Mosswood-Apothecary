@@ -1,7 +1,7 @@
 // ==========================================
 // MOSSWOOD APOTHECARY
-// Foraging V8
-// Familiar Energy + Energy Display
+// Foraging V9
+// Familiar Energy + Live Energy Display
 // ==========================================
 
 const FORAGE_ACTIVE_CLICK_BOOST = 1000;
@@ -16,11 +16,6 @@ const FORAGE_ENERGY_COSTS = {
     marsh: 20,
     ruins: 30
 };
-
-
-// Forest is always available.
-// If the familiar is too tired, the trip
-// takes longer instead of being blocked.
 
 const EXHAUSTED_FOREST_MULTIPLIER = 1.75;
 
@@ -48,9 +43,9 @@ if (!game.forage) {
 }
 
 
-// ------------------------------------------
+// ==========================================
 // OLDER SAVE SUPPORT
-// ------------------------------------------
+// ==========================================
 
 if (
     game.forage.lastResult === undefined
@@ -82,9 +77,9 @@ if (
 }
 
 
-// ------------------------------------------
+// ==========================================
 // ADD DEFAULT LOCATIONS
-// ------------------------------------------
+// ==========================================
 
 Object.values(
     FORAGE_LOCATION_DATA
@@ -127,9 +122,9 @@ function getFamiliarEnergy() {
 
     if (
         !game.familiar ||
-        typeof game.familiar.energy
-        !== "number"
+        typeof game.familiar.energy !== "number"
     ) {
+
         return 100;
     }
 
@@ -147,8 +142,6 @@ function getFamiliarEnergy() {
 function canFamiliarForage(
     locationId
 ) {
-
-    // Forest can always be explored.
 
     if (
         locationId === "forest"
@@ -168,6 +161,54 @@ function canFamiliarForage(
 
 
     return energy >= cost;
+}
+
+
+// ==========================================
+// UPDATE FORAGE ENERGY DISPLAY
+// ==========================================
+
+function updateForageEnergyDisplay() {
+
+    const energyValue =
+        document.getElementById(
+            "forageEnergyValue"
+        );
+
+
+    const energyBar =
+        document.getElementById(
+            "forageEnergyBar"
+        );
+
+
+    const currentEnergy =
+        (
+            game.familiar &&
+            typeof game.familiar.energy === "number"
+        )
+            ? Math.max(
+                0,
+                Math.min(
+                    100,
+                    game.familiar.energy
+                )
+            )
+            : 100;
+
+
+    if (energyValue) {
+
+        energyValue.textContent =
+            `${Math.round(currentEnergy)} / 100`;
+    }
+
+
+    if (energyBar) {
+
+        energyBar.style.width =
+            `${currentEnergy}%`;
+    }
 }
 
 
@@ -360,8 +401,6 @@ function startForage(
         locationId === "forest"
     ) {
 
-        // Enough Energy for a normal trip.
-
         if (
             currentEnergy >=
             energyCost
@@ -373,13 +412,7 @@ function startForage(
                     currentEnergy -
                     energyCost
                 );
-
         }
-
-
-        // Not enough Energy.
-        // Forest remains available, but
-        // the trip takes longer.
 
         else {
 
@@ -393,7 +426,6 @@ function startForage(
                     EXHAUSTED_FOREST_MULTIPLIER
                 );
         }
-
     }
 
 
@@ -449,7 +481,13 @@ function startForage(
         exhausted;
 
 
+    // Save the new Energy immediately.
     saveGame();
+
+
+    // Update the Energy number immediately.
+    updateForageEnergyDisplay();
+
 
     updateResourceBar();
 
@@ -753,10 +791,6 @@ function giveForageReward(
             );
 
 
-        // ----------------------------------
-        // BOTANICAL ALREADY DISCOVERED
-        // ----------------------------------
-
         if (discovered) {
 
             addSeeds(
@@ -799,11 +833,6 @@ function giveForageReward(
                     reward.plantId
                 );
         }
-
-
-        // ----------------------------------
-        // BOTANICAL NOT DISCOVERED
-        // ----------------------------------
 
         else {
 
@@ -1384,18 +1413,6 @@ function renderFamiliar() {
         );
 
 
-    const energyValue =
-        document.getElementById(
-            "forageEnergyValue"
-        );
-
-
-    const energyBar =
-        document.getElementById(
-            "forageEnergyBar"
-        );
-
-
     const name =
         (
             game.familiar &&
@@ -1406,13 +1423,17 @@ function renderFamiliar() {
             : "Your Familiar";
 
 
+    // Always update directly from game.familiar.
+    updateForageEnergyDisplay();
+
+
     const energy =
         getFamiliarEnergy();
 
 
-    // --------------------------------------
+    // ======================================
     // NAME
-    // --------------------------------------
+    // ======================================
 
     if (nameElement) {
 
@@ -1421,33 +1442,9 @@ function renderFamiliar() {
     }
 
 
-    // --------------------------------------
-    // ENERGY NUMBER
-    // --------------------------------------
-
-    if (energyValue) {
-
-        energyValue.textContent =
-            `${Math.round(
-                energy
-            )} / 100`;
-    }
-
-
-    // --------------------------------------
-    // ENERGY BAR
-    // --------------------------------------
-
-    if (energyBar) {
-
-        energyBar.style.width =
-            `${energy}%`;
-    }
-
-
-    // --------------------------------------
+    // ======================================
     // ACTIVE FORAGING
-    // --------------------------------------
+    // ======================================
 
     if (
         game.forage.active
@@ -1481,16 +1478,16 @@ function renderFamiliar() {
     }
 
 
-    // --------------------------------------
+    // ======================================
     // READY
-    // --------------------------------------
+    // ======================================
 
     else {
 
         if (status) {
 
             if (
-                energy <= 10
+                energy < 10
             ) {
 
                 status.textContent =
@@ -1631,6 +1628,7 @@ function renderForageProgress() {
             progressBar.style.width =
                 "0%";
         }
+
 
         return;
     }
@@ -1780,6 +1778,8 @@ function renderForage() {
 
     updateResourceBar();
 
+    updateForageEnergyDisplay();
+
     renderLocations();
 
     renderFamiliar();
@@ -1817,6 +1817,10 @@ if (activeForageButton) {
 
 function updateForage() {
 
+    // Always refresh Energy first.
+    updateForageEnergyDisplay();
+
+
     if (
         game.forage.active &&
         Date.now() >=
@@ -1831,6 +1835,41 @@ function updateForage() {
 
     renderForage();
 }
+
+
+// ==========================================
+// UPDATE WHEN RETURNING TO THIS TAB
+// ==========================================
+
+window.addEventListener(
+    "focus",
+    () => {
+
+        updateForageEnergyDisplay();
+
+        renderForage();
+    }
+);
+
+
+// ==========================================
+// UPDATE WHEN PAGE BECOMES VISIBLE
+// ==========================================
+
+document.addEventListener(
+    "visibilitychange",
+    () => {
+
+        if (
+            !document.hidden
+        ) {
+
+            updateForageEnergyDisplay();
+
+            renderForage();
+        }
+    }
+);
 
 
 // ==========================================
