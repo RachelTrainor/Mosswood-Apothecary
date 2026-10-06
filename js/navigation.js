@@ -71,23 +71,25 @@ function createNavigation() {
             <!-- APOTHECARY -->
 
             <a
-    class="nav-button nav-link
-    ${currentPage === "apothecary.html" ? "active" : ""}"
-    href="apothecary.html">
+                class="nav-button nav-link
+                ${currentPage === "apothecary.html" ? "active" : ""}"
+                href="apothecary.html">
 
-    🏚 Apothecary
+                🏚 Apothecary
 
-</a>
+            </a>
 
+
+            <!-- FORAGE -->
 
             <a
-    class="nav-button nav-link
-    ${currentPage === "forage.html" ? "active" : ""}"
-    href="forage.html">
+                class="nav-button nav-link
+                ${currentPage === "forage.html" ? "active" : ""}"
+                href="forage.html">
 
-    🌲 Forage
+                🌲 Forage
 
-</a>
+            </a>
 
 
             <!-- GRIMOIRE -->
@@ -105,25 +107,25 @@ function createNavigation() {
             <!-- UPGRADES -->
 
             <a
-    class="nav-button nav-link
-    ${currentPage === "upgrades.html" ? "active" : ""}"
-    href="upgrades.html">
+                class="nav-button nav-link
+                ${currentPage === "upgrades.html" ? "active" : ""}"
+                href="upgrades.html">
 
-    ⚒ Upgrades
+                ⚒ Upgrades
 
-</a>
+            </a>
 
 
             <!-- INVENTORY -->
 
             <a
-    class="nav-button nav-link
-    ${currentPage === "inventory.html" ? "active" : ""}"
-    href="inventory.html">
+                class="nav-button nav-link
+                ${currentPage === "inventory.html" ? "active" : ""}"
+                href="inventory.html">
 
-    🎒 Inventory
+                🎒 Inventory
 
-</a>
+            </a>
 
         </nav>
 
