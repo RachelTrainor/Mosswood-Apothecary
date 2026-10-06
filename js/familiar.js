@@ -1,7 +1,7 @@
 // ==========================================
 // MOSSWOOD APOTHECARY
 // Familiar System
-// V2 - Care, Stats + Bond
+// V3 - Passive Care + Offline Progress
 // ==========================================
 
 
@@ -27,6 +27,35 @@ const REST_ENERGY_GAIN = 20;
 const REST_COOLDOWN = 2 * 60 * 1000;
 
 const BOND_XP_PER_LEVEL = 25;
+
+
+// ==========================================
+// PASSIVE CARE SETTINGS
+// ==========================================
+
+// Hunger loses 1 point every 5 minutes.
+
+const HUNGER_INTERVAL =
+    5 * 60 * 1000;
+
+
+// Happiness loses 1 point every 10 minutes.
+
+const HAPPINESS_INTERVAL =
+    10 * 60 * 1000;
+
+
+// Energy gains 1 point every 3 minutes.
+
+const ENERGY_RECOVERY_INTERVAL =
+    3 * 60 * 1000;
+
+
+// Only calculate a maximum of 8 hours
+// of offline care changes.
+
+const MAX_OFFLINE_TIME =
+    8 * 60 * 60 * 1000;
 
 
 // ==========================================
@@ -209,27 +238,139 @@ function formatCooldown(
         totalSeconds % 60;
 
 
-    if (minutes > 0) {
-
-        return (
-            minutes
-            + ":"
-            + String(seconds).padStart(
-                2,
-                "0"
-            )
-        );
-
-    }
-
-
     return (
-        "0:"
+        minutes
+        + ":"
         + String(seconds).padStart(
             2,
             "0"
         )
     );
+
+}
+
+
+// ==========================================
+// PASSIVE CARE
+// ==========================================
+
+function applyPassiveCare() {
+
+    const now =
+        Date.now();
+
+
+    if (
+        typeof game.familiar.lastCareUpdate
+        !== "number"
+    ) {
+
+        game.familiar.lastCareUpdate =
+            now;
+
+        saveGame();
+
+        return;
+
+    }
+
+
+    let elapsed =
+        now
+        - game.familiar.lastCareUpdate;
+
+
+    if (elapsed <= 0) {
+
+        return;
+
+    }
+
+
+    elapsed =
+        Math.min(
+            elapsed,
+            MAX_OFFLINE_TIME
+        );
+
+
+    // --------------------------------------
+    // HUNGER
+    // --------------------------------------
+
+    const hungerLost =
+        Math.floor(
+            elapsed
+            / HUNGER_INTERVAL
+        );
+
+
+    // --------------------------------------
+    // HAPPINESS
+    // --------------------------------------
+
+    const happinessLost =
+        Math.floor(
+            elapsed
+            / HAPPINESS_INTERVAL
+        );
+
+
+    // --------------------------------------
+    // ENERGY
+    // --------------------------------------
+
+    const energyRecovered =
+        Math.floor(
+            elapsed
+            / ENERGY_RECOVERY_INTERVAL
+        );
+
+
+    if (hungerLost > 0) {
+
+        game.familiar.hunger =
+            clampFamiliarStat(
+                game.familiar.hunger
+                - hungerLost
+            );
+
+    }
+
+
+    if (happinessLost > 0) {
+
+        game.familiar.happiness =
+            clampFamiliarStat(
+                game.familiar.happiness
+                - happinessLost
+            );
+
+    }
+
+
+    // Familiar does not recover energy
+    // while actively foraging.
+
+    if (
+        energyRecovered > 0 &&
+        !game.forage.active
+    ) {
+
+        game.familiar.energy =
+            clampFamiliarStat(
+                game.familiar.energy
+                + energyRecovered
+            );
+
+    }
+
+
+    game.familiar.lastCareUpdate =
+        now;
+
+
+    saveGame();
 
 }
 
@@ -542,9 +683,11 @@ function renderFamiliarStats() {
     const currentLevel =
         game.familiar.bondLevel;
 
+
     const currentLevelStartXP =
         (currentLevel - 1)
         * BOND_XP_PER_LEVEL;
+
 
     const xpIntoLevel =
         Math.max(
@@ -552,6 +695,7 @@ function renderFamiliarStats() {
             game.familiar.bondXP
             - currentLevelStartXP
         );
+
 
     const bondPercent =
         Math.min(
@@ -871,9 +1015,7 @@ function updateFamiliarButtons() {
         Date.now();
 
 
-    // --------------------------------------
     // PET
-    // --------------------------------------
 
     if (petButton) {
 
@@ -912,9 +1054,7 @@ function updateFamiliarButtons() {
     }
 
 
-    // --------------------------------------
     // REST
-    // --------------------------------------
 
     if (restButton) {
 
@@ -953,53 +1093,23 @@ function updateFamiliarButtons() {
     }
 
 
-    // --------------------------------------
     // PLAY
-    // --------------------------------------
 
     if (playButton) {
 
-        if (
-            game.familiar.energy <
-            PLAY_ENERGY_COST
-        ) {
-
-            playButton.disabled =
-                true;
-
-        }
-
-        else {
-
-            playButton.disabled =
-                false;
-
-        }
+        playButton.disabled =
+            game.familiar.energy
+            < PLAY_ENERGY_COST;
 
     }
 
 
-    // --------------------------------------
     // FEED
-    // --------------------------------------
 
     if (feedButton) {
 
-        if (
-            game.coins < FEED_COST
-        ) {
-
-            feedButton.disabled =
-                true;
-
-        }
-
-        else {
-
-            feedButton.disabled =
-                false;
-
-        }
+        feedButton.disabled =
+            game.coins < FEED_COST;
 
     }
 
@@ -1088,6 +1198,10 @@ if (restButton) {
 // INITIALIZE
 // ==========================================
 
+// Calculate changes since the last visit.
+
+applyPassiveCare();
+
 updateBondLevel();
 
 renderFamiliarName();
@@ -1098,11 +1212,29 @@ updateFamiliarButtons();
 
 
 // ==========================================
-// COOLDOWN TIMER
+// LIVE CARE TIMER
 // ==========================================
 //
-// Updates the Pet and Rest countdowns while
-// the Familiar page is open.
+// Re-check passive care once per minute.
+// This also saves the new care timestamp.
+// ==========================================
+
+setInterval(
+    () => {
+
+        applyPassiveCare();
+
+        renderFamiliarStats();
+
+        updateFamiliarButtons();
+
+    },
+    60 * 1000
+);
+
+
+// ==========================================
+// BUTTON COOLDOWN TIMER
 // ==========================================
 
 setInterval(
