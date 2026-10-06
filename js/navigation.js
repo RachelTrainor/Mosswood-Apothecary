@@ -92,6 +92,18 @@ function createNavigation() {
             </a>
 
 
+            <!-- FAMILIAR -->
+
+            <a
+                class="nav-button nav-link
+                ${currentPage === "familiar.html" ? "active" : ""}"
+                href="familiar.html">
+
+                🐈‍⬛ Familiar
+
+            </a>
+
+
             <!-- GRIMOIRE -->
 
             <a
