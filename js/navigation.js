@@ -17,9 +17,6 @@ function createNavigation() {
         return;
     }
 
-
-    // Figure out which page we're on.
-
     const currentPage =
         window.location.pathname
             .split("/")
@@ -28,102 +25,83 @@ function createNavigation() {
 
     sidebar.innerHTML = `
 
-        <div class="logo">
-
-            <span class="moon">
-                ☾
-            </span>
-
-            <h1>
-                Mosswood<br>
-                Apothecary
-            </h1>
-
-        </div>
-
-
-        <nav>
-
-            <!-- GREENHOUSE -->
+        <nav class="mosswood-nav">
 
             <a
                 class="nav-button nav-link
                 ${currentPage === "greenhouse.html" ? "active" : ""}"
                 href="greenhouse.html">
 
-                🌿 Greenhouse
+                <span class="nav-icon">🌿</span>
+                <span>Greenhouse</span>
 
             </a>
 
-
-            <!-- POTION ROOM -->
 
             <a
                 class="nav-button nav-link
                 ${currentPage === "potion-room.html" ? "active" : ""}"
                 href="potion-room.html">
 
-                ⚗ Potion Room
+                <span class="nav-icon">⚗</span>
+                <span>Potion Room</span>
 
             </a>
 
 
-            <!-- APOTHECARY -->
+            <a
+                class="nav-button nav-link
+                ${currentPage === "apothecary.html" ? "active" : ""}"
+                href="apothecary.html">
+
+                <span class="nav-icon">🏚</span>
+                <span>Apothecary</span>
+
+            </a>
+
 
             <a
-    class="nav-button nav-link
-    ${currentPage === "apothecary.html" ? "active" : ""}"
-    href="apothecary.html">
+                class="nav-button nav-link
+                ${currentPage === "forage.html" ? "active" : ""}"
+                href="forage.html">
 
-    🏚 Apothecary
+                <span class="nav-icon">🌲</span>
+                <span>Forage</span>
 
-</a>
+            </a>
 
-
-            <a
-    class="nav-button nav-link
-    ${currentPage === "forage.html" ? "active" : ""}"
-    href="forage.html">
-
-    🌲 Forage
-
-</a>
-
-
-            <!-- GRIMOIRE -->
 
             <a
                 class="nav-button nav-link
                 ${currentPage === "grimoire.html" ? "active" : ""}"
                 href="grimoire.html">
 
-                📖 Grimoire
+                <span class="nav-icon">📖</span>
+                <span>Grimoire</span>
 
             </a>
 
 
-            <!-- UPGRADES -->
+            <a
+                class="nav-button nav-link
+                ${currentPage === "upgrades.html" ? "active" : ""}"
+                href="upgrades.html">
+
+                <span class="nav-icon">⚒</span>
+                <span>Upgrades</span>
+
+            </a>
+
 
             <a
-    class="nav-button nav-link
-    ${currentPage === "upgrades.html" ? "active" : ""}"
-    href="upgrades.html">
+                class="nav-button nav-link
+                ${currentPage === "inventory.html" ? "active" : ""}"
+                href="inventory.html">
 
-    ⚒ Upgrades
+                <span class="nav-icon">🎒</span>
+                <span>Inventory</span>
 
-</a>
-
-
-            <!-- INVENTORY -->
-
-            <a
-    class="nav-button nav-link
-    ${currentPage === "inventory.html" ? "active" : ""}"
-    href="inventory.html">
-
-    🎒 Inventory
-
-</a>
+            </a>
 
         </nav>
 
@@ -194,15 +172,6 @@ createResourceBar();
 // ==========================================
 // UPDATE RESOURCE VALUES
 // ==========================================
-
-// game.js loads before navigation.js.
-//
-// That means the resource elements did not
-// exist when game.js first tried to update
-// them.
-//
-// Now that navigation.js has created them,
-// update them again.
 
 if (
     typeof updateResourceBar
