@@ -1,7 +1,7 @@
 // ==========================================
 // MOSSWOOD APOTHECARY
 // Shared Game Data + Save System
-// V3 - Mystery Seed System
+// V4 - Customer Request Support
 // ==========================================
 
 const SAVE_KEY = "mosswoodSave";
@@ -137,6 +137,18 @@ const defaultGame = {
         expansion: 0,
         irrigation: 0,
         growth: 0
+
+    },
+
+    // --------------------------------------
+    // CUSTOMER REQUEST SYSTEM
+    // --------------------------------------
+
+    customers: {
+
+        active: null,
+
+        nextCustomerAt: 0
 
     },
 
@@ -399,6 +411,25 @@ function loadGame() {
 
 
         // ----------------------------------
+        // CUSTOMERS
+        // ----------------------------------
+
+        if (
+            oldGame.customers &&
+            typeof oldGame.customers === "object"
+        ) {
+
+            newGame.customers = {
+
+                ...newGame.customers,
+                ...oldGame.customers
+
+            };
+
+        }
+
+
+        // ----------------------------------
         // MIGRATION FLAGS
         // ----------------------------------
 
@@ -447,6 +478,45 @@ function loadGame() {
         ) {
 
             newGame.upgrades.growth = 0;
+
+        }
+
+
+        // ==================================
+        // CUSTOMER SAFETY
+        // ==================================
+
+        if (
+            !newGame.customers ||
+            typeof newGame.customers !== "object"
+        ) {
+
+            newGame.customers = {
+
+                active: null,
+                nextCustomerAt: 0
+
+            };
+
+        }
+
+
+        if (
+            typeof newGame.customers.nextCustomerAt
+            !== "number"
+        ) {
+
+            newGame.customers.nextCustomerAt = 0;
+
+        }
+
+
+        if (
+            newGame.customers.active !== null &&
+            typeof newGame.customers.active !== "object"
+        ) {
+
+            newGame.customers.active = null;
 
         }
 
