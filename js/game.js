@@ -1,7 +1,7 @@
 // ==========================================
 // MOSSWOOD APOTHECARY
 // Shared Game Data + Save System
-// V5 - Familiar Save Support
+// V6 - Familiar Passive Care Support
 // ==========================================
 
 const SAVE_KEY = "mosswoodSave";
@@ -30,13 +30,6 @@ function buildDefaultInventory() {
 
 // ==========================================
 // BUILD DEFAULT SEEDS
-// ==========================================
-//
-// Normal KNOWN seeds are stored here.
-//
-// Mystery / Strange Seeds are NOT stored
-// here anymore. They are stored individually
-// in game.mysterySeeds.
 // ==========================================
 
 function buildDefaultSeeds() {
@@ -163,7 +156,10 @@ const defaultGame = {
 
         lastPet: 0,
 
-        lastRest: 0
+        lastRest: 0,
+
+        lastCareUpdate:
+            Date.now()
 
     },
 
@@ -559,18 +555,32 @@ function loadGame() {
             newGame.familiar = {
 
                 name: "",
+
                 energy: 100,
+
                 hunger: 100,
+
                 happiness: 100,
+
                 bondXP: 0,
+
                 bondLevel: 1,
+
                 lastPet: 0,
-                lastRest: 0
+
+                lastRest: 0,
+
+                lastCareUpdate:
+                    Date.now()
 
             };
 
         }
 
+
+        // ----------------------------------
+        // FAMILIAR NAME
+        // ----------------------------------
 
         if (
             typeof newGame.familiar.name
@@ -582,6 +592,10 @@ function loadGame() {
         }
 
 
+        // ----------------------------------
+        // ENERGY
+        // ----------------------------------
+
         if (
             typeof newGame.familiar.energy
             !== "number"
@@ -591,6 +605,10 @@ function loadGame() {
 
         }
 
+
+        // ----------------------------------
+        // HUNGER
+        // ----------------------------------
 
         if (
             typeof newGame.familiar.hunger
@@ -602,6 +620,10 @@ function loadGame() {
         }
 
 
+        // ----------------------------------
+        // HAPPINESS
+        // ----------------------------------
+
         if (
             typeof newGame.familiar.happiness
             !== "number"
@@ -611,6 +633,10 @@ function loadGame() {
 
         }
 
+
+        // ----------------------------------
+        // BOND XP
+        // ----------------------------------
 
         if (
             typeof newGame.familiar.bondXP
@@ -622,6 +648,10 @@ function loadGame() {
         }
 
 
+        // ----------------------------------
+        // BOND LEVEL
+        // ----------------------------------
+
         if (
             typeof newGame.familiar.bondLevel
             !== "number"
@@ -631,6 +661,10 @@ function loadGame() {
 
         }
 
+
+        // ----------------------------------
+        // LAST PET
+        // ----------------------------------
 
         if (
             typeof newGame.familiar.lastPet
@@ -642,6 +676,10 @@ function loadGame() {
         }
 
 
+        // ----------------------------------
+        // LAST REST
+        // ----------------------------------
+
         if (
             typeof newGame.familiar.lastRest
             !== "number"
@@ -652,7 +690,24 @@ function loadGame() {
         }
 
 
-        // Keep needs inside their valid range.
+        // ----------------------------------
+        // LAST CARE UPDATE
+        // ----------------------------------
+
+        if (
+            typeof newGame.familiar.lastCareUpdate
+            !== "number"
+        ) {
+
+            newGame.familiar.lastCareUpdate =
+                Date.now();
+
+        }
+
+
+        // ----------------------------------
+        // CLAMP FAMILIAR STATS
+        // ----------------------------------
 
         newGame.familiar.energy =
             Math.max(
@@ -1183,14 +1238,6 @@ function addSeeds(
 ) {
 
     // Compatibility for old code.
-    //
-    // If something tries to add an
-    // "unknown" seed before forage.js
-    // is updated, create Nightbell
-    // mystery seeds instead.
-    //
-    // Once forage.js is updated it will
-    // call addMysterySeed() directly.
 
     if (
         seed === "unknown"
@@ -1327,18 +1374,6 @@ function getMysterySeedAmount() {
 // ==========================================
 // ADD MYSTERY SEED
 // ==========================================
-//
-// This is what forage.js will eventually
-// use.
-//
-// Example:
-//
-// addMysterySeed("nightbell");
-//
-// Later:
-//
-// addMysterySeed("ghostcap");
-// ==========================================
 
 function addMysterySeed(
     revealsPlant
@@ -1399,10 +1434,6 @@ function addMysterySeed(
 // ==========================================
 // PEEK AT NEXT MYSTERY SEED
 // ==========================================
-//
-// Used internally by the game.
-// The player is not shown revealsPlant.
-// ==========================================
 
 function peekMysterySeed() {
 
@@ -1426,11 +1457,6 @@ function peekMysterySeed() {
 
 // ==========================================
 // TAKE MYSTERY SEED
-// ==========================================
-//
-// Removes and returns one Strange Seed.
-// Greenhouse will use this when the player
-// plants one.
 // ==========================================
 
 function takeMysterySeed() {
@@ -1673,6 +1699,6 @@ function resetMosswoodSave() {
 updateResourceBar();
 
 
-// Save migrated data immediately.
+// Save migrated/new data immediately.
 
 saveGame();
