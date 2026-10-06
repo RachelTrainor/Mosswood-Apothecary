@@ -58,108 +58,207 @@ body {
 
 
 /* ==========================================
-   SIDEBAR
+   MOSSWOOD SIDEBAR
    ========================================== */
 
 .sidebar {
-    width: 260px;
-
-    background: rgba(10, 12, 9, .97);
-
-    border-right: 1px solid var(--border);
-
-    padding: 38px 20px;
+    width: 300px;
+    min-height: 100vh;
 
     flex-shrink: 0;
+
+    position: relative;
+
+    padding:
+        150px
+        55px
+        145px;
+
+    background-color: #0d1711;
+
+    background-image:
+        url("assets/images/mosswood-sidebar.png");
+
+    background-repeat: no-repeat;
+
+    background-position:
+        top center;
+
+    background-size:
+        100% 100%;
+
+    overflow: hidden;
 }
 
 
-.logo {
-    text-align: center;
-    margin-bottom: 45px;
-}
+/* ==========================================
+   NAVIGATION
+   ========================================== */
 
+.mosswood-nav {
+    position: relative;
 
-.logo .moon {
-    color: var(--gold);
-    font-size: 32px;
-}
+    z-index: 2;
 
-
-.logo h1 {
-    font-family: "Cormorant Garamond", serif;
-
-    text-transform: uppercase;
-
-    letter-spacing: 2px;
-
-    font-size: 27px;
-
-    line-height: 1;
-
-    margin-top: 10px;
-}
-
-
-nav {
     display: flex;
+
     flex-direction: column;
-    gap: 8px;
+
+    gap: 12px;
+
+    width: 100%;
 }
 
+
+/* ==========================================
+   NAVIGATION BUTTON
+   ========================================== */
 
 .nav-button {
     width: 100%;
 
-    border: none;
+    min-height: 52px;
 
-    background: transparent;
+    display: flex;
 
-    color: var(--muted);
+    align-items: center;
 
-    padding: 15px 18px;
+    gap: 11px;
 
-    text-align: left;
+    padding:
+        11px
+        14px;
 
-    font-family: "Cormorant Garamond", serif;
+    border:
+        1px solid
+        rgba(201, 164, 113, 0.32);
 
-    font-size: 20px;
+    border-radius: 3px;
 
-    border-radius: 5px;
-
-    cursor: pointer;
-}
-
-
-.nav-button:hover {
-    background: var(--panel);
-    color: var(--cream);
-}
-
-
-.nav-button.active {
     background:
         linear-gradient(
             90deg,
-            #30362a,
-            #22271f
+            rgba(13, 23, 17, 0.78),
+            rgba(27, 40, 29, 0.58)
         );
 
-    color: var(--cream);
+    color: #e6d1a8;
 
-    border-left: 3px solid var(--green-light);
+    font-family:
+        "Cormorant Garamond",
+        Georgia,
+        serif;
+
+    font-size: 19px;
+
+    font-weight: 600;
+
+    letter-spacing: 0.02em;
+
+    text-align: left;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    box-shadow:
+        inset 0 0 14px
+        rgba(0, 0, 0, 0.25);
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
 
+/* ICON */
+
+.nav-icon {
+    width: 25px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    font-size: 17px;
+}
+
+
+/* ==========================================
+   HOVER
+   ========================================== */
+
+.nav-button:hover {
+    color: #f0dfbc;
+
+    border-color:
+        rgba(201, 164, 113, 0.7);
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(46, 59, 38, 0.9),
+            rgba(27, 40, 29, 0.72)
+        );
+
+    transform:
+        translateX(3px);
+
+    box-shadow:
+        inset 0 0 15px
+        rgba(201, 164, 113, 0.05),
+        0 3px 12px
+        rgba(0, 0, 0, 0.25);
+}
+
+
+/* ==========================================
+   ACTIVE PAGE
+   ========================================== */
+
+.nav-button.active {
+    color: #f2dfb6;
+
+    border-color: #c9a471;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(74, 90, 58, 0.78),
+            rgba(31, 47, 34, 0.72)
+        );
+
+    box-shadow:
+        inset 3px 0 0
+        #c9a471,
+
+        inset 0 0 16px
+        rgba(201, 164, 113, 0.08),
+
+        0 3px 12px
+        rgba(0, 0, 0, 0.25);
+}
+
+
+/* ==========================================
+   LINKS
+   ========================================== */
+
 .nav-link {
-    display: block;
     text-decoration: none;
 }
 
 
 .nav-disabled {
     cursor: default;
-    opacity: .55;
+    opacity: 0.55;
 }
 
 
