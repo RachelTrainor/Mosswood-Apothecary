@@ -1,8 +1,9 @@
 // ==========================================
 // MOSSWOOD APOTHECARY
-// Greenhouse V5
+// Greenhouse V6
 // Dynamic Planting Materials
 // Generic Plants + Mystery Seeds
+// Mystery Seeds Do Not Return Seeds
 // ==========================================
 
 
@@ -102,7 +103,6 @@ function getPlotPlantData(
         return null;
     }
 
-
     if (
         plot.plant === "unknown"
     ) {
@@ -117,14 +117,12 @@ function getPlotPlantData(
 
         }
 
-
         // Old mystery plants were Nightbell.
         return getPlantData(
             "nightbell"
         );
 
     }
-
 
     return getPlantData(
         plot.plant
@@ -144,7 +142,6 @@ game.greenhouse.plots.forEach(
             return;
         }
 
-
         if (
             plot.plant === "unknown" &&
             !plot.revealsPlant
@@ -155,10 +152,8 @@ game.greenhouse.plots.forEach(
 
         }
 
-
         const now =
             Date.now();
-
 
         if (
             typeof plot.lastWatered !==
@@ -170,7 +165,6 @@ game.greenhouse.plots.forEach(
 
         }
 
-
         if (
             typeof plot.growthTime !==
             "number"
@@ -179,40 +173,33 @@ game.greenhouse.plots.forEach(
             const plantedAt =
                 plot.plantedAt || now;
 
-
             const plantData =
                 getPlotPlantData(
                     plot
                 );
-
 
             const baseDryTime =
                 plantData
                     ? plantData.dryTime
                     : 25 * 1000;
 
-
             const irrigationBonus =
                 game.upgrades.irrigation *
                 0.10;
-
 
             const dryTime =
                 baseDryTime *
                 (1 + irrigationBonus);
 
-
             const hydratedUntil =
                 plot.lastWatered +
                 dryTime;
-
 
             const activeUntil =
                 Math.min(
                     now,
                     hydratedUntil
                 );
-
 
             plot.growthTime =
                 Math.max(
@@ -222,7 +209,6 @@ game.greenhouse.plots.forEach(
                 );
 
         }
-
 
         if (
             typeof plot.lastGrowthUpdate !==
@@ -254,7 +240,6 @@ function getDryTime(
             plot
         );
 
-
     const baseDryTime =
         plant &&
         typeof plant.dryTime === "number"
@@ -263,11 +248,9 @@ function getDryTime(
 
             : 25 * 1000;
 
-
     const bonus =
         game.upgrades.irrigation *
         0.10;
-
 
     return (
         baseDryTime *
@@ -286,7 +269,6 @@ function getPlantGrowTime(
             plot
         );
 
-
     const baseTime =
         plant &&
         typeof plant.growTime === "number"
@@ -295,11 +277,9 @@ function getPlantGrowTime(
 
             : 60 * 1000;
 
-
     const reduction =
         game.upgrades.growth *
         0.05;
-
 
     return (
         baseTime *
@@ -321,7 +301,6 @@ function greenhouseMessage(
         document.getElementById(
             "gameMessage"
         );
-
 
     if (element) {
 
@@ -358,10 +337,8 @@ function updatePlantGrowth(
         return;
     }
 
-
     const now =
         Date.now();
-
 
     if (
         typeof plot.growthTime !==
@@ -371,7 +348,6 @@ function updatePlantGrowth(
         plot.growthTime = 0;
 
     }
-
 
     if (
         typeof plot.lastGrowthUpdate !==
@@ -383,22 +359,18 @@ function updatePlantGrowth(
 
     }
 
-
     const previousUpdate =
         plot.lastGrowthUpdate;
-
 
     const hydratedUntil =
         plot.lastWatered +
         getDryTime(plot);
-
 
     const growthEnd =
         Math.min(
             now,
             hydratedUntil
         );
-
 
     if (
         growthEnd >
@@ -410,7 +382,6 @@ function updatePlantGrowth(
             previousUpdate;
 
     }
-
 
     plot.lastGrowthUpdate =
         now;
@@ -430,12 +401,10 @@ function getGrowthProgress(
         plot
     );
 
-
     const growTime =
         getPlantGrowTime(
             plot
         );
-
 
     return Math.min(
         100,
@@ -460,12 +429,10 @@ function formatGrowthTime(
         plot
     );
 
-
     const growTime =
         getPlantGrowTime(
             plot
         );
-
 
     const remaining =
         Math.max(
@@ -473,7 +440,6 @@ function formatGrowthTime(
             growTime -
             plot.growthTime
         );
-
 
     if (
         remaining <= 0
@@ -483,12 +449,10 @@ function formatGrowthTime(
 
     }
 
-
     const seconds =
         Math.ceil(
             remaining / 1000
         );
-
 
     if (
         isPlantDry(
@@ -501,7 +465,6 @@ function formatGrowthTime(
         );
 
     }
-
 
     return (
         `${seconds}s remaining`
@@ -556,7 +519,6 @@ function canDisplayPlantSeed(
 
     }
 
-
     if (
         isPlantKnown(
             plant.id
@@ -566,7 +528,6 @@ function canDisplayPlantSeed(
         return true;
 
     }
-
 
     return (
         getSeedAmount(
@@ -589,7 +550,6 @@ function plantNormalSeed(
     const plots =
         game.greenhouse.plots;
 
-
     if (
         plots[index]
     ) {
@@ -598,12 +558,10 @@ function plantNormalSeed(
 
     }
 
-
     const plant =
         getPlantData(
             plantId
         );
-
 
     if (!plant) {
 
@@ -614,7 +572,6 @@ function plantNormalSeed(
         return;
 
     }
-
 
     if (
         getSeedAmount(
@@ -633,22 +590,18 @@ function plantNormalSeed(
 
     }
 
-
     const removed =
         removeSeeds(
             plantId,
             1
         );
 
-
     if (!removed) {
         return;
     }
 
-
     const now =
         Date.now();
-
 
     plots[index] = {
 
@@ -669,10 +622,8 @@ function plantNormalSeed(
 
     };
 
-
     selectedPlantPlot =
         null;
-
 
     greenhouseMessage(
         `You planted a ${getPlantingItemName(
@@ -680,7 +631,6 @@ function plantNormalSeed(
             1
         )}.`
     );
-
 
     saveGame();
 
@@ -700,7 +650,6 @@ function plantMysterySeed(
     const plots =
         game.greenhouse.plots;
 
-
     if (
         plots[index]
     ) {
@@ -708,7 +657,6 @@ function plantMysterySeed(
         return;
 
     }
-
 
     if (
         getMysterySeedAmount() <=
@@ -723,10 +671,8 @@ function plantMysterySeed(
 
     }
 
-
     const mysterySeed =
         takeMysterySeed();
-
 
     if (!mysterySeed) {
 
@@ -738,12 +684,10 @@ function plantMysterySeed(
 
     }
 
-
     const hiddenPlant =
         getPlantData(
             mysterySeed.revealsPlant
         );
-
 
     if (!hiddenPlant) {
 
@@ -751,9 +695,7 @@ function plantMysterySeed(
             mysterySeed
         );
 
-
         saveGame();
-
 
         greenhouseMessage(
             "Something is wrong with this Strange Seed."
@@ -763,10 +705,8 @@ function plantMysterySeed(
 
     }
 
-
     const now =
         Date.now();
-
 
     plots[index] = {
 
@@ -790,15 +730,12 @@ function plantMysterySeed(
 
     };
 
-
     selectedPlantPlot =
         null;
-
 
     greenhouseMessage(
         "You planted the Strange Seed. Something unfamiliar begins to take root."
     );
-
 
     saveGame();
 
@@ -832,7 +769,6 @@ function plantSeed(
 
     }
 
-
     plantNormalSeed(
         index,
         seedType
@@ -852,33 +788,26 @@ function waterPlant(
     const plot =
         game.greenhouse.plots[index];
 
-
     if (!plot) {
         return;
     }
-
 
     updatePlantGrowth(
         plot
     );
 
-
     const now =
         Date.now();
-
 
     plot.lastWatered =
         now;
 
-
     plot.lastGrowthUpdate =
         now;
-
 
     greenhouseMessage(
         "The soil is damp again. Growth resumes."
     );
-
 
     saveGame();
 
@@ -900,7 +829,6 @@ function harvestNormalPlant(
             plot.plant
         );
 
-
     if (!plant) {
 
         greenhouseMessage(
@@ -911,16 +839,13 @@ function harvestNormalPlant(
 
     }
 
-
     addIngredient(
         plant.id,
         1
     );
 
-
     let discoveredNow =
         false;
-
 
     if (
         !plant.alwaysKnown &&
@@ -938,14 +863,12 @@ function harvestNormalPlant(
 
     }
 
-
     const foundSeed =
         Math.random() <
         (
             plant.seedReturnChance ||
             0
         );
-
 
     if (
         foundSeed
@@ -958,13 +881,11 @@ function harvestNormalPlant(
 
     }
 
-
     const recoveredItem =
         getPlantingItemName(
             plant.id,
             1
         );
-
 
     if (
         discoveredNow
@@ -1008,7 +929,6 @@ function harvestNormalPlant(
 
     }
 
-
     return true;
 
 }
@@ -1016,6 +936,12 @@ function harvestNormalPlant(
 
 // ==========================================
 // HARVEST MYSTERY PLANT
+// ==========================================
+//
+// IMPORTANT:
+// A plant grown from a Strange Seed does NOT
+// return another seed or spore when harvested.
+// Strange Seeds must be discovered elsewhere.
 // ==========================================
 
 function harvestMysteryPlant(
@@ -1025,12 +951,10 @@ function harvestMysteryPlant(
     const revealedPlantId =
         plot.revealsPlant;
 
-
     const plant =
         getPlantData(
             revealedPlantId
         );
-
 
     if (!plant) {
 
@@ -1042,19 +966,18 @@ function harvestMysteryPlant(
 
     }
 
-
+    // Harvest the actual ingredient.
     addIngredient(
         plant.id,
         1
     );
-
 
     const alreadyKnown =
         isPlantKnown(
             plant.id
         );
 
-
+    // Reveal the plant in the Grimoire.
     if (
         !alreadyKnown
     ) {
@@ -1065,64 +988,17 @@ function harvestMysteryPlant(
 
     }
 
-
-    const foundSeed =
-        Math.random() <
-        (
-            plant.seedReturnChance ||
-            0
-        );
-
-
-    if (
-        foundSeed
-    ) {
-
-        addSeeds(
-            plant.id,
-            1
-        );
-
-    }
-
-
-    const recoveredItem =
-        getPlantingItemName(
-            plant.id,
-            1
-        );
-
+    // IMPORTANT:
+    // No seedReturnChance here.
+    // Mystery plants do not return planting
+    // materials when harvested.
 
     if (
         !alreadyKnown
     ) {
 
-        if (
-            foundSeed
-        ) {
-
-            greenhouseMessage(
-                `Discovery! The Strange Seed has revealed ${plant.name}. You also recovered a ${recoveredItem}.`
-            );
-
-        }
-
-        else {
-
-            greenhouseMessage(
-                `Discovery! The Strange Seed has revealed ${plant.name}.`
-            );
-
-        }
-
-    }
-
-    else if (
-        foundSeed
-    ) {
-
         greenhouseMessage(
-            `The Strange Seed grew into ${plant.name}. You recovered a ${recoveredItem}.`
+            `Discovery! The Strange Seed has revealed ${plant.name}.`
         );
 
     }
@@ -1134,7 +1010,6 @@ function harvestMysteryPlant(
         );
 
     }
-
 
     return true;
 
@@ -1152,17 +1027,14 @@ function harvestPlant(
     const plot =
         game.greenhouse.plots[index];
 
-
     if (!plot) {
         return;
     }
-
 
     const progress =
         getGrowthProgress(
             plot
         );
-
 
     if (
         progress < 100
@@ -1176,10 +1048,8 @@ function harvestPlant(
 
     }
 
-
     let harvested =
         false;
-
 
     if (
         plot.plant === "unknown"
@@ -1201,15 +1071,12 @@ function harvestPlant(
 
     }
 
-
     if (!harvested) {
         return;
     }
 
-
     game.greenhouse.plots[index] =
         null;
-
 
     saveGame();
 
@@ -1241,7 +1108,6 @@ function getGreenhousePlantIcon(
 
         }
 
-
         if (
             progress >= 35
         ) {
@@ -1250,24 +1116,20 @@ function getGreenhousePlantIcon(
 
         }
 
-
         return "🌱";
 
     }
-
 
     const plant =
         getPlantData(
             plot.plant
         );
 
-
     if (!plant) {
 
         return "❔";
 
     }
-
 
     if (
         progress >= 100
@@ -1277,7 +1139,6 @@ function getGreenhousePlantIcon(
 
     }
 
-
     if (
         progress >= 65
     ) {
@@ -1286,7 +1147,6 @@ function getGreenhousePlantIcon(
 
     }
 
-
     if (
         progress >= 30
     ) {
@@ -1294,7 +1154,6 @@ function getGreenhousePlantIcon(
         return "☘️";
 
     }
-
 
     return "🌱";
 
@@ -1317,19 +1176,16 @@ function getGreenhousePlantName(
 
     }
 
-
     const plant =
         getPlantData(
             plot.plant
         );
-
 
     if (!plant) {
 
         return "Unknown Plant";
 
     }
-
 
     return plant.name;
 
@@ -1350,13 +1206,11 @@ function createNormalSeedChoiceHTML(
             plant.id
         );
 
-
     const plantingName =
         getPlantingItemName(
             plant.id,
             1
         );
-
 
     const plantingCountName =
         getPlantingItemGenericName(
@@ -1364,12 +1218,10 @@ function createNormalSeedChoiceHTML(
             seedAmount
         );
 
-
     const plantingIcon =
         getPlantingItemIcon(
             plant.id
         );
-
 
     return `
 
@@ -1412,7 +1264,6 @@ function getSeedMenuHTML(
     let normalSeedChoices =
         "";
 
-
     Object.values(
         PLANT_DATA
     ).forEach(
@@ -1428,7 +1279,6 @@ function getSeedMenuHTML(
 
             }
 
-
             normalSeedChoices +=
                 createNormalSeedChoiceHTML(
                     index,
@@ -1438,32 +1288,26 @@ function getSeedMenuHTML(
         }
     );
 
-
     const mysterySeedAmount =
         getMysterySeedAmount();
-
 
     const specialSeed =
         getSpecialSeedData(
             "unknown"
         );
 
-
     const mysteryIcon =
         specialSeed
             ? specialSeed.icon
             : "✦";
-
 
     const mysteryName =
         specialSeed
             ? specialSeed.name
             : "Strange Seed";
 
-
     let mysterySeedChoice =
         "";
-
 
     if (
         mysterySeedAmount > 0
@@ -1502,7 +1346,6 @@ function getSeedMenuHTML(
 
     }
 
-
     return `
 
         <div class="seed-menu">
@@ -1511,11 +1354,9 @@ function getSeedMenuHTML(
                 Choose Planting Material
             </div>
 
-
             ${normalSeedChoices}
 
             ${mysterySeedChoice}
-
 
             <button
                 class="seed-menu-cancel"
@@ -1543,15 +1384,12 @@ function renderGreenhousePlots() {
             "plots"
         );
 
-
     if (!container) {
         return;
     }
 
-
     container.innerHTML =
         "";
-
 
     game.greenhouse.plots.forEach(
         (plot, index) => {
@@ -1560,7 +1398,6 @@ function renderGreenhousePlots() {
                 document.createElement(
                     "div"
                 );
-
 
             card.className =
                 "plot";
@@ -1573,7 +1410,6 @@ function renderGreenhousePlots() {
             if (!plot) {
 
                 let actions;
-
 
                 if (
                     selectedPlantPlot ===
@@ -1603,7 +1439,6 @@ function renderGreenhousePlots() {
 
                 }
 
-
                 card.innerHTML = `
 
                     <div class="plot-content">
@@ -1612,23 +1447,19 @@ function renderGreenhousePlots() {
                             PLOT ${index + 1}
                         </div>
 
-
                         <div class="plant-icon">
                             ◌
                         </div>
 
-
                         <h4>
                             Empty Plot
                         </h4>
-
 
                         <div class="plot-status">
                             Rich soil waits beneath the glass.
                         </div>
 
                     </div>
-
 
                     <div class="plot-actions">
 
@@ -1638,11 +1469,9 @@ function renderGreenhousePlots() {
 
                 `;
 
-
                 container.appendChild(
                     card
                 );
-
 
                 return;
 
@@ -1658,12 +1487,10 @@ function renderGreenhousePlots() {
                     plot
                 );
 
-
             const dry =
                 isPlantDry(
                     plot
                 );
-
 
             const icon =
                 getGreenhousePlantIcon(
@@ -1671,18 +1498,15 @@ function renderGreenhousePlots() {
                     progress
                 );
 
-
             const plantName =
                 getGreenhousePlantName(
                     plot
                 );
 
-
             let status =
                 formatGrowthTime(
                     plot
                 );
-
 
             if (
                 dry &&
@@ -1695,9 +1519,7 @@ function renderGreenhousePlots() {
 
             }
 
-
             let actionButton;
-
 
             if (
                 progress >= 100
@@ -1738,7 +1560,6 @@ function renderGreenhousePlots() {
 
             }
 
-
             card.innerHTML = `
 
                 <div class="plot-content">
@@ -1747,21 +1568,17 @@ function renderGreenhousePlots() {
                         PLOT ${index + 1}
                     </div>
 
-
                     <div class="plant-icon">
                         ${icon}
                     </div>
-
 
                     <h4>
                         ${plantName}
                     </h4>
 
-
                     <div class="plot-status">
                         ${status}
                     </div>
-
 
                     <div class="progress-track">
 
@@ -1774,7 +1591,6 @@ function renderGreenhousePlots() {
 
                 </div>
 
-
                 <div class="plot-actions">
 
                     ${actionButton}
@@ -1782,7 +1598,6 @@ function renderGreenhousePlots() {
                 </div>
 
             `;
-
 
             container.appendChild(
                 card
@@ -1805,7 +1620,6 @@ function renderGreenhouseInfo() {
             "moonmintSeeds"
         );
 
-
     if (seedElement) {
 
         seedElement.textContent =
@@ -1815,12 +1629,10 @@ function renderGreenhouseInfo() {
 
     }
 
-
     const inventoryElement =
         document.getElementById(
             "moonmintInventory"
         );
-
 
     if (inventoryElement) {
 
@@ -1831,12 +1643,10 @@ function renderGreenhouseInfo() {
 
     }
 
-
     const levelElement =
         document.getElementById(
             "greenhouseLevel"
         );
-
 
     if (levelElement) {
 
