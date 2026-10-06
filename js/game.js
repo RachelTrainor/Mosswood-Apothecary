@@ -1,7 +1,7 @@
 // ==========================================
 // MOSSWOOD APOTHECARY
 // Shared Game Data + Save System
-// V6 - Familiar Passive Care Support
+// V7 - Familiar Play Cooldown
 // ==========================================
 
 const SAVE_KEY = "mosswoodSave";
@@ -86,15 +86,6 @@ const defaultGame = {
     seeds:
         buildDefaultSeeds(),
 
-    // Each Strange Seed is stored separately.
-    //
-    // Example:
-    //
-    // {
-    //     id: "mystery_12345_1",
-    //     revealsPlant: "nightbell"
-    // }
-
     mysterySeeds: [],
 
     potions:
@@ -156,6 +147,8 @@ const defaultGame = {
 
         lastPet: 0,
 
+        lastPlay: 0,
+
         lastRest: 0,
 
         lastCareUpdate:
@@ -178,7 +171,7 @@ const defaultGame = {
 
 
     // --------------------------------------
-    // CUSTOMER REQUEST SYSTEM
+    // CUSTOMERS
     // --------------------------------------
 
     customers: {
@@ -191,7 +184,7 @@ const defaultGame = {
 
 
     // --------------------------------------
-    // MIGRATION FLAGS
+    // MIGRATIONS
     // --------------------------------------
 
     migrations: {
@@ -299,7 +292,7 @@ function loadGame() {
 
 
         // ----------------------------------
-        // NORMAL SEEDS
+        // SEEDS
         // ----------------------------------
 
         if (
@@ -371,9 +364,6 @@ function loadGame() {
         // ----------------------------------
         // GREENHOUSE
         // ----------------------------------
-
-        // Support older saves that stored
-        // plots directly on the game object.
 
         if (
             Array.isArray(
@@ -491,7 +481,7 @@ function loadGame() {
 
 
         // ----------------------------------
-        // MIGRATION FLAGS
+        // MIGRATIONS
         // ----------------------------------
 
         if (
@@ -568,6 +558,8 @@ function loadGame() {
 
                 lastPet: 0,
 
+                lastPlay: 0,
+
                 lastRest: 0,
 
                 lastCareUpdate:
@@ -577,10 +569,6 @@ function loadGame() {
 
         }
 
-
-        // ----------------------------------
-        // FAMILIAR NAME
-        // ----------------------------------
 
         if (
             typeof newGame.familiar.name
@@ -592,10 +580,6 @@ function loadGame() {
         }
 
 
-        // ----------------------------------
-        // ENERGY
-        // ----------------------------------
-
         if (
             typeof newGame.familiar.energy
             !== "number"
@@ -605,10 +589,6 @@ function loadGame() {
 
         }
 
-
-        // ----------------------------------
-        // HUNGER
-        // ----------------------------------
 
         if (
             typeof newGame.familiar.hunger
@@ -620,10 +600,6 @@ function loadGame() {
         }
 
 
-        // ----------------------------------
-        // HAPPINESS
-        // ----------------------------------
-
         if (
             typeof newGame.familiar.happiness
             !== "number"
@@ -633,10 +609,6 @@ function loadGame() {
 
         }
 
-
-        // ----------------------------------
-        // BOND XP
-        // ----------------------------------
 
         if (
             typeof newGame.familiar.bondXP
@@ -648,10 +620,6 @@ function loadGame() {
         }
 
 
-        // ----------------------------------
-        // BOND LEVEL
-        // ----------------------------------
-
         if (
             typeof newGame.familiar.bondLevel
             !== "number"
@@ -661,10 +629,6 @@ function loadGame() {
 
         }
 
-
-        // ----------------------------------
-        // LAST PET
-        // ----------------------------------
 
         if (
             typeof newGame.familiar.lastPet
@@ -676,9 +640,15 @@ function loadGame() {
         }
 
 
-        // ----------------------------------
-        // LAST REST
-        // ----------------------------------
+        if (
+            typeof newGame.familiar.lastPlay
+            !== "number"
+        ) {
+
+            newGame.familiar.lastPlay = 0;
+
+        }
+
 
         if (
             typeof newGame.familiar.lastRest
@@ -689,10 +659,6 @@ function loadGame() {
 
         }
 
-
-        // ----------------------------------
-        // LAST CARE UPDATE
-        // ----------------------------------
 
         if (
             typeof newGame.familiar.lastCareUpdate
@@ -856,20 +822,6 @@ function loadGame() {
         // ==================================
         // OLD STRANGE SEED MIGRATION
         // ==================================
-        //
-        // Old versions stored Strange Seeds
-        // as:
-        //
-        // game.seeds.unknown = number
-        //
-        // At that point Nightbell was the
-        // only possible mystery plant.
-        //
-        // Convert those old seeds into
-        // individual mystery seed objects.
-        //
-        // This migration only runs once.
-        // ==================================
 
         if (
             !newGame.migrations.mysterySeedsV1
@@ -920,9 +872,6 @@ function loadGame() {
         }
 
 
-        // Old "unknown" seed count is no
-        // longer used after migration.
-
         if (
             Object.prototype.hasOwnProperty.call(
                 newGame.seeds,
@@ -949,8 +898,6 @@ function loadGame() {
 
         }
 
-
-        // Remove malformed mystery seeds.
 
         newGame.mysterySeeds =
             newGame.mysterySeeds.filter(
@@ -1207,14 +1154,6 @@ function getSeedAmount(
     seed
 ) {
 
-    // Compatibility:
-    //
-    // Existing pages still ask for
-    // getSeedAmount("unknown").
-    //
-    // Return the number of individual
-    // mystery seeds instead.
-
     if (
         seed === "unknown"
     ) {
@@ -1236,8 +1175,6 @@ function addSeeds(
     seed,
     amount = 1
 ) {
-
-    // Compatibility for old code.
 
     if (
         seed === "unknown"
@@ -1287,8 +1224,6 @@ function removeSeeds(
     seed,
     amount = 1
 ) {
-
-    // Compatibility for old code.
 
     if (
         seed === "unknown"
@@ -1606,7 +1541,7 @@ function addDiscovery(
 
 
 // ==========================================
-// PLANT DISCOVERY HELPER
+// PLANT DISCOVERY
 // ==========================================
 
 function isPlantKnown(
@@ -1643,7 +1578,7 @@ function isPlantKnown(
 
 
 // ==========================================
-// RECIPE DISCOVERY HELPER
+// RECIPE DISCOVERY
 // ==========================================
 
 function isRecipeKnown(
@@ -1697,8 +1632,5 @@ function resetMosswoodSave() {
 // ==========================================
 
 updateResourceBar();
-
-
-// Save migrated/new data immediately.
 
 saveGame();
