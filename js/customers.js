@@ -1,7 +1,7 @@
 // ==========================================
 // MOSSWOOD APOTHECARY
 // Customer Request System
-// V2
+// V3
 // ==========================================
 
 
@@ -218,6 +218,12 @@ function calculateCustomerReward(
 // ==========================================
 
 function generateCustomerRequest() {
+
+    // Clear the previous customer's message
+    // when a new visitor arrives.
+
+    setCustomerMessage("");
+
 
     const customer =
         chooseRandomCustomer();
