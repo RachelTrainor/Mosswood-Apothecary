@@ -5006,38 +5006,31 @@ nav {
     .familiar-actions {
         grid-template-columns: 1fr;
     }
-    /* ==========================================
+/* ==========================================
    FAMILIAR PAGE SPACING
 ========================================== */
 
-.page {
+.familiar-page {
     padding: 36px 48px 60px;
 }
 
 
-/* Keep Familiar content from becoming
-   excessively wide on large monitors */
-
-.familiar-section {
+.familiar-page .page-header,
+.familiar-page .familiar-section {
     max-width: 1250px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 
-/* Give the page header the same width */
-
-.page-header {
-    max-width: 1250px;
+.familiar-page .page-header {
     margin-bottom: 30px;
 }
 
 
-/* ==========================================
-   FAMILIAR MOBILE SPACING
-========================================== */
-
 @media (max-width: 800px) {
 
-    .page {
+    .familiar-page {
         padding: 28px 22px 45px;
     }
 
@@ -5046,10 +5039,8 @@ nav {
 
 @media (max-width: 500px) {
 
-    .page {
+    .familiar-page {
         padding: 22px 16px 40px;
     }
 
 }
-
-
