@@ -1,7 +1,7 @@
 // ==========================================
 // MOSSWOOD APOTHECARY
 // Shared Game Data + Save System
-// V4 - Customer Request Support
+// V5 - Familiar Save Support
 // ==========================================
 
 const SAVE_KEY = "mosswoodSave";
@@ -109,6 +109,11 @@ const defaultGame = {
 
     discoveries: [],
 
+
+    // --------------------------------------
+    // GREENHOUSE
+    // --------------------------------------
+
     greenhouse: {
 
         level: 1,
@@ -122,6 +127,11 @@ const defaultGame = {
 
     },
 
+
+    // --------------------------------------
+    // FORAGING
+    // --------------------------------------
+
     forage: {
 
         active: false,
@@ -132,6 +142,36 @@ const defaultGame = {
 
     },
 
+
+    // --------------------------------------
+    // FAMILIAR
+    // --------------------------------------
+
+    familiar: {
+
+        name: "",
+
+        energy: 100,
+
+        hunger: 100,
+
+        happiness: 100,
+
+        bondXP: 0,
+
+        bondLevel: 1,
+
+        lastPet: 0,
+
+        lastRest: 0
+
+    },
+
+
+    // --------------------------------------
+    // UPGRADES
+    // --------------------------------------
+
     upgrades: {
 
         expansion: 0,
@@ -139,6 +179,7 @@ const defaultGame = {
         growth: 0
 
     },
+
 
     // --------------------------------------
     // CUSTOMER REQUEST SYSTEM
@@ -151,6 +192,11 @@ const defaultGame = {
         nextCustomerAt: 0
 
     },
+
+
+    // --------------------------------------
+    // MIGRATION FLAGS
+    // --------------------------------------
 
     migrations: {
 
@@ -392,6 +438,25 @@ function loadGame() {
 
 
         // ----------------------------------
+        // FAMILIAR
+        // ----------------------------------
+
+        if (
+            oldGame.familiar &&
+            typeof oldGame.familiar === "object"
+        ) {
+
+            newGame.familiar = {
+
+                ...newGame.familiar,
+                ...oldGame.familiar
+
+            };
+
+        }
+
+
+        // ----------------------------------
         // UPGRADES
         // ----------------------------------
 
@@ -480,6 +545,159 @@ function loadGame() {
             newGame.upgrades.growth = 0;
 
         }
+
+
+        // ==================================
+        // FAMILIAR SAFETY
+        // ==================================
+
+        if (
+            !newGame.familiar ||
+            typeof newGame.familiar !== "object"
+        ) {
+
+            newGame.familiar = {
+
+                name: "",
+                energy: 100,
+                hunger: 100,
+                happiness: 100,
+                bondXP: 0,
+                bondLevel: 1,
+                lastPet: 0,
+                lastRest: 0
+
+            };
+
+        }
+
+
+        if (
+            typeof newGame.familiar.name
+            !== "string"
+        ) {
+
+            newGame.familiar.name = "";
+
+        }
+
+
+        if (
+            typeof newGame.familiar.energy
+            !== "number"
+        ) {
+
+            newGame.familiar.energy = 100;
+
+        }
+
+
+        if (
+            typeof newGame.familiar.hunger
+            !== "number"
+        ) {
+
+            newGame.familiar.hunger = 100;
+
+        }
+
+
+        if (
+            typeof newGame.familiar.happiness
+            !== "number"
+        ) {
+
+            newGame.familiar.happiness = 100;
+
+        }
+
+
+        if (
+            typeof newGame.familiar.bondXP
+            !== "number"
+        ) {
+
+            newGame.familiar.bondXP = 0;
+
+        }
+
+
+        if (
+            typeof newGame.familiar.bondLevel
+            !== "number"
+        ) {
+
+            newGame.familiar.bondLevel = 1;
+
+        }
+
+
+        if (
+            typeof newGame.familiar.lastPet
+            !== "number"
+        ) {
+
+            newGame.familiar.lastPet = 0;
+
+        }
+
+
+        if (
+            typeof newGame.familiar.lastRest
+            !== "number"
+        ) {
+
+            newGame.familiar.lastRest = 0;
+
+        }
+
+
+        // Keep needs inside their valid range.
+
+        newGame.familiar.energy =
+            Math.max(
+                0,
+                Math.min(
+                    100,
+                    newGame.familiar.energy
+                )
+            );
+
+
+        newGame.familiar.hunger =
+            Math.max(
+                0,
+                Math.min(
+                    100,
+                    newGame.familiar.hunger
+                )
+            );
+
+
+        newGame.familiar.happiness =
+            Math.max(
+                0,
+                Math.min(
+                    100,
+                    newGame.familiar.happiness
+                )
+            );
+
+
+        newGame.familiar.bondXP =
+            Math.max(
+                0,
+                newGame.familiar.bondXP
+            );
+
+
+        newGame.familiar.bondLevel =
+            Math.max(
+                1,
+                Math.floor(
+                    newGame.familiar.bondLevel
+                )
+            );
 
 
         // ==================================
