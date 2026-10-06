@@ -5011,27 +5011,63 @@ nav {
 ========================================== */
 
 .familiar-page {
-    padding: 36px 48px 60px;
+    padding: 0;
 }
 
 
-.familiar-page .page-header,
-.familiar-page .familiar-section {
-    max-width: 1250px;
+.familiar-page-inner {
+    width: calc(100% - 80px);
+    max-width: 1200px;
+
     margin-left: auto;
     margin-right: auto;
+
+    padding-top: 38px;
+    padding-bottom: 60px;
 }
 
+
+/* Header */
 
 .familiar-page .page-header {
-    margin-bottom: 30px;
+    max-width: none;
+    margin: 0 0 32px;
 }
 
+
+/* Familiar sections */
+
+.familiar-page .familiar-section {
+    max-width: none;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+
+/* ==========================================
+   TABLET
+========================================== */
+
+@media (max-width: 1000px) {
+
+    .familiar-page-inner {
+        width: calc(100% - 48px);
+    }
+
+}
+
+
+/* ==========================================
+   MOBILE
+========================================== */
 
 @media (max-width: 800px) {
 
-    .familiar-page {
-        padding: 28px 22px 45px;
+    .familiar-page-inner {
+        width: calc(100% - 36px);
+
+        padding-top: 28px;
+        padding-bottom: 45px;
     }
 
 }
@@ -5039,8 +5075,8 @@ nav {
 
 @media (max-width: 500px) {
 
-    .familiar-page {
-        padding: 22px 16px 40px;
+    .familiar-page-inner {
+        width: calc(100% - 28px);
     }
 
 }
