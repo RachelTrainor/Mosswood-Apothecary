@@ -1,10 +1,32 @@
 // ==========================================
 // MOSSWOOD APOTHECARY
-// Foraging V6
-// Dynamic Planting Materials
-// Discovery Seeds + Active Foraging
+// Foraging V7
+// Familiar Energy System
 // ==========================================
-const FORAGE_ACTIVE_CLICK_BOOST = 1000;
+
+const FORAGE_ACTIVE_CLICK_BOOST =
+    1000;
+
+
+// ==========================================
+// ENERGY SETTINGS
+// ==========================================
+
+const FORAGE_ENERGY_COSTS = {
+
+    forest: 10,
+    marsh: 20,
+    ruins: 30
+
+};
+
+
+// Forest remains available even when the
+// familiar does not have enough Energy.
+
+const EXHAUSTED_FOREST_MULTIPLIER =
+    1.75;
+
 
 // ==========================================
 // FORAGE SAVE SETUP / MIGRATION
@@ -13,64 +35,196 @@ const FORAGE_ACTIVE_CLICK_BOOST = 1000;
 if (!game.forage) {
 
     game.forage = {
+
         active: false,
+
         location: null,
+
         locationId: null,
+
         startedAt: null,
+
         finishesAt: null,
+
         lastResult: null,
+
+        exhausted: false,
+
         unlockedLocations: [
             "forest"
         ]
+
     };
 
+
     saveGame();
+
 }
 
 
-// ------------------------------------------
+// ==========================================
 // OLDER SAVE SUPPORT
-// ------------------------------------------
+// ==========================================
 
-if (game.forage.lastResult === undefined) {
-    game.forage.lastResult = null;
+if (
+    game.forage.lastResult ===
+    undefined
+) {
+
+    game.forage.lastResult =
+        null;
+
 }
 
-if (game.forage.locationId === undefined) {
-    game.forage.locationId = null;
+
+if (
+    game.forage.locationId ===
+    undefined
+) {
+
+    game.forage.locationId =
+        null;
+
 }
 
-if (!Array.isArray(game.forage.unlockedLocations)) {
-    game.forage.unlockedLocations = [];
+
+if (
+    game.forage.exhausted ===
+    undefined
+) {
+
+    game.forage.exhausted =
+        false;
+
 }
 
 
-// ------------------------------------------
+if (
+    !Array.isArray(
+        game.forage.unlockedLocations
+    )
+) {
+
+    game.forage.unlockedLocations =
+        [];
+
+}
+
+
+// ==========================================
 // ADD DEFAULT LOCATIONS
-// ------------------------------------------
+// ==========================================
 
-Object.values(FORAGE_LOCATION_DATA).forEach(location => {
+Object.values(
+    FORAGE_LOCATION_DATA
+).forEach(
+    location => {
 
-    if (
-        location.unlockedByDefault &&
-        !game.forage.unlockedLocations.includes(location.id)
-    ) {
+        if (
+            location.unlockedByDefault &&
+            !game.forage.unlockedLocations.includes(
+                location.id
+            )
+        ) {
 
-        game.forage.unlockedLocations.push(location.id);
+            game.forage.unlockedLocations.push(
+                location.id
+            );
+
+        }
+
     }
+);
 
-});
 
 saveGame();
+
+
+// ==========================================
+// ENERGY HELPERS
+// ==========================================
+
+function getForageEnergyCost(
+    locationId
+) {
+
+    return (
+        FORAGE_ENERGY_COSTS[
+            locationId
+        ] || 10
+    );
+
+}
+
+
+function getFamiliarEnergy() {
+
+    if (
+        !game.familiar ||
+        typeof game.familiar.energy
+        !== "number"
+    ) {
+
+        return 100;
+
+    }
+
+
+    return Math.max(
+        0,
+        Math.min(
+            100,
+            game.familiar.energy
+        )
+    );
+
+}
+
+
+function canFamiliarForage(
+    locationId
+) {
+
+    const energy =
+        getFamiliarEnergy();
+
+    const cost =
+        getForageEnergyCost(
+            locationId
+        );
+
+
+    // Mosswood Forest can always be used.
+
+    if (
+        locationId ===
+        "forest"
+    ) {
+
+        return true;
+
+    }
+
+
+    return energy >= cost;
+
+}
 
 
 // ==========================================
 // LOCATION UNLOCK CHECK
 // ==========================================
 
-function isLocationUnlocked(locationId) {
+function isLocationUnlocked(
+    locationId
+) {
 
-    return game.forage.unlockedLocations.includes(locationId);
+    return game.forage
+        .unlockedLocations
+        .includes(
+            locationId
+        );
+
 }
 
 
@@ -78,13 +232,23 @@ function isLocationUnlocked(locationId) {
 // LOCATION REQUIREMENT CHECK
 // ==========================================
 
-function meetsLocationRequirement(location) {
+function meetsLocationRequirement(
+    location
+) {
 
-    if (!location.discoveryRequirement) {
+    if (
+        !location.discoveryRequirement
+    ) {
+
         return true;
+
     }
 
-    return hasDiscovered(location.discoveryRequirement);
+
+    return hasDiscovered(
+        location.discoveryRequirement
+    );
+
 }
 
 
@@ -92,39 +256,62 @@ function meetsLocationRequirement(location) {
 // UNLOCK LOCATION
 // ==========================================
 
-function unlockForageLocation(locationId) {
+function unlockForageLocation(
+    locationId
+) {
 
     const location =
-        getForageLocationData(locationId);
+        getForageLocationData(
+            locationId
+        );
 
 
     if (
         !location ||
-        isLocationUnlocked(locationId)
+        isLocationUnlocked(
+            locationId
+        )
     ) {
+
         return;
+
     }
 
 
-    if (location.requirementHidden) {
+    if (
+        location.requirementHidden
+    ) {
+
         return;
+
     }
 
 
-    if (!meetsLocationRequirement(location)) {
+    if (
+        !meetsLocationRequirement(
+            location
+        )
+    ) {
 
         const requirementName =
-            location.discoveryRequirementName ||
+            location
+                .discoveryRequirementName ||
             "the required botanical";
 
 
         showForageMessage(
+
             "Path Still Hidden",
+
             `Discover ${requirementName} before attempting to travel deeper into Mosswood.`,
+
             location.icon
+
         );
 
+
         return;
+
     }
 
 
@@ -132,23 +319,36 @@ function unlockForageLocation(locationId) {
         location.unlockCost || 0;
 
 
-    if (game.coins < cost) {
+    if (
+        game.coins <
+        cost
+    ) {
 
         showForageMessage(
+
             "Not Enough Coins",
+
             `Opening the route to ${location.name} requires ${cost} coins.`,
+
             "🪙"
+
         );
 
+
         return;
+
     }
 
 
-    game.coins -= cost;
+    game.coins -=
+        cost;
 
-    game.forage.unlockedLocations.push(
-        locationId
-    );
+
+    game.forage
+        .unlockedLocations
+        .push(
+            locationId
+        );
 
 
     saveGame();
@@ -159,10 +359,15 @@ function unlockForageLocation(locationId) {
 
 
     showForageMessage(
+
         `${location.name} Unlocked`,
+
         `A new route has opened. Your familiar can now explore ${location.name}.`,
+
         location.icon
+
     );
+
 }
 
 
@@ -170,24 +375,144 @@ function unlockForageLocation(locationId) {
 // START FORAGE
 // ==========================================
 
-function startForage(locationId) {
+function startForage(
+    locationId
+) {
 
-    if (game.forage.active) {
+    if (
+        game.forage.active
+    ) {
+
         return;
+
     }
 
 
-    if (!isLocationUnlocked(locationId)) {
+    if (
+        !isLocationUnlocked(
+            locationId
+        )
+    ) {
+
         return;
+
     }
 
 
     const location =
-        getForageLocationData(locationId);
+        getForageLocationData(
+            locationId
+        );
 
 
     if (!location) {
+
         return;
+
+    }
+
+
+    const energy =
+        getFamiliarEnergy();
+
+
+    const energyCost =
+        getForageEnergyCost(
+            locationId
+        );
+
+
+    // ======================================
+    // NON-FOREST ENERGY REQUIREMENT
+    // ======================================
+
+    if (
+        locationId !== "forest" &&
+        energy < energyCost
+    ) {
+
+        showForageMessage(
+
+            "Familiar Too Tired",
+
+            `Your familiar needs ${energyCost} Energy to explore ${location.name}. Rest or feed them before sending them out again.`,
+
+            "💤"
+
+        );
+
+
+        return;
+
+    }
+
+
+    let exhausted =
+        false;
+
+
+    let duration =
+        location.duration;
+
+
+    // ======================================
+    // FOREST ENERGY
+    // ======================================
+
+    if (
+        locationId === "forest"
+    ) {
+
+        if (
+            energy >= energyCost
+        ) {
+
+            game.familiar.energy =
+                Math.max(
+                    0,
+                    energy -
+                    energyCost
+                );
+
+        }
+
+        else {
+
+            // Forest never hard-locks.
+            // Use whatever Energy remains.
+
+            game.familiar.energy =
+                0;
+
+
+            exhausted =
+                true;
+
+
+            duration =
+                Math.round(
+                    location.duration *
+                    EXHAUSTED_FOREST_MULTIPLIER
+                );
+
+        }
+
+    }
+
+
+    // ======================================
+    // OTHER LOCATIONS
+    // ======================================
+
+    else {
+
+        game.familiar.energy =
+            Math.max(
+                0,
+                energy -
+                energyCost
+            );
+
     }
 
 
@@ -195,24 +520,37 @@ function startForage(locationId) {
         Date.now();
 
 
-    game.forage.active = true;
+    game.forage.active =
+        true;
+
 
     game.forage.locationId =
         locationId;
 
+
     game.forage.location =
         location.name;
+
 
     game.forage.startedAt =
         now;
 
+
     game.forage.finishesAt =
-        now + location.duration;
+        now +
+        duration;
+
+
+    game.forage.exhausted =
+        exhausted;
 
 
     saveGame();
 
+    updateResourceBar();
+
     renderForage();
+
 }
 
 
@@ -222,8 +560,12 @@ function startForage(locationId) {
 
 function activeForageClick() {
 
-    if (!game.forage.active) {
+    if (
+        !game.forage.active
+    ) {
+
         return;
+
     }
 
 
@@ -239,12 +581,14 @@ function activeForageClick() {
         completeForage();
 
         return;
+
     }
 
 
     saveGame();
 
     renderForageProgress();
+
 }
 
 
@@ -254,8 +598,12 @@ function activeForageClick() {
 
 function completeForage() {
 
-    if (!game.forage.active) {
+    if (
+        !game.forage.active
+    ) {
+
         return;
+
     }
 
 
@@ -263,7 +611,9 @@ function completeForage() {
         Date.now() <
         game.forage.finishesAt
     ) {
+
         return;
+
     }
 
 
@@ -272,23 +622,33 @@ function completeForage() {
         "forest";
 
 
-    rollForageReward(locationId);
+    rollForageReward(
+        locationId
+    );
 
 
     game.forage.active =
         false;
 
+
     game.forage.location =
         null;
+
 
     game.forage.locationId =
         null;
 
+
     game.forage.startedAt =
         null;
 
+
     game.forage.finishesAt =
         null;
+
+
+    game.forage.exhausted =
+        false;
 
 
     saveGame();
@@ -296,6 +656,7 @@ function completeForage() {
     updateResourceBar();
 
     renderForage();
+
 }
 
 
@@ -311,10 +672,15 @@ function getRandomAmount(
     return (
         Math.floor(
             Math.random() *
-            (maximum - minimum + 1)
+            (
+                maximum -
+                minimum +
+                1
+            )
         ) +
         minimum
     );
+
 }
 
 
@@ -322,10 +688,14 @@ function getRandomAmount(
 // ROLL FORAGE REWARD
 // ==========================================
 
-function rollForageReward(locationId) {
+function rollForageReward(
+    locationId
+) {
 
     const rewards =
-        getForageRewardTable(locationId);
+        getForageRewardTable(
+            locationId
+        );
 
 
     if (
@@ -334,12 +704,18 @@ function rollForageReward(locationId) {
     ) {
 
         saveForageResult(
+
             "Nothing This Time",
+
             "Your familiar returned without finding anything useful.",
+
             "🐈‍⬛"
+
         );
 
+
         return;
+
     }
 
 
@@ -357,7 +733,9 @@ function rollForageReward(locationId) {
         ];
 
 
-    for (const reward of rewards) {
+    for (
+        const reward of rewards
+    ) {
 
         cumulativeChance +=
             reward.chance;
@@ -372,13 +750,16 @@ function rollForageReward(locationId) {
                 reward;
 
             break;
+
         }
+
     }
 
 
     giveForageReward(
         selectedReward
     );
+
 }
 
 
@@ -386,14 +767,17 @@ function rollForageReward(locationId) {
 // GIVE FORAGE REWARD
 // ==========================================
 
-function giveForageReward(reward) {
+function giveForageReward(
+    reward
+) {
 
     const minimum =
         reward.minAmount || 1;
 
 
     const maximum =
-        reward.maxAmount || minimum;
+        reward.maxAmount ||
+        minimum;
 
 
     const amount =
@@ -444,6 +828,7 @@ function giveForageReward(reward) {
 
         title =
             `Found ${amount} ${plantName}`;
+
     }
 
 
@@ -473,6 +858,7 @@ function giveForageReward(reward) {
             getPlantingItemIcon(
                 reward.itemId
             );
+
     }
 
 
@@ -496,10 +882,6 @@ function giveForageReward(reward) {
                 reward.plantId
             );
 
-
-        // ----------------------------------
-        // BOTANICAL ALREADY DISCOVERED
-        // ----------------------------------
 
         if (discovered) {
 
@@ -542,12 +924,8 @@ function giveForageReward(reward) {
                 getPlantingItemIcon(
                     reward.plantId
                 );
+
         }
-
-
-        // ----------------------------------
-        // BOTANICAL NOT DISCOVERED
-        // ----------------------------------
 
         else {
 
@@ -560,6 +938,7 @@ function giveForageReward(reward) {
                 addMysterySeed(
                     reward.plantId
                 );
+
             }
 
 
@@ -580,7 +959,9 @@ function giveForageReward(reward) {
             icon =
                 reward.mysteryIcon ||
                 "✦";
+
         }
+
     }
 
 
@@ -602,6 +983,7 @@ function giveForageReward(reward) {
             addMysterySeed(
                 reward.revealsPlant
             );
+
         }
 
 
@@ -612,6 +994,7 @@ function giveForageReward(reward) {
                     ? "Found a Strange Seed"
                     : `Found ${amount} Strange Seeds`
             );
+
     }
 
 
@@ -627,6 +1010,7 @@ function giveForageReward(reward) {
         title =
             reward.title ||
             "Nothing This Time";
+
     }
 
 
@@ -635,6 +1019,7 @@ function giveForageReward(reward) {
         text,
         icon
     );
+
 }
 
 
@@ -663,6 +1048,7 @@ function saveForageResult(
             Date.now()
 
     };
+
 }
 
 
@@ -696,6 +1082,7 @@ function showForageMessage(
     saveGame();
 
     renderForageResult();
+
 }
 
 
@@ -703,7 +1090,9 @@ function showForageMessage(
 // FORMAT COUNTDOWN
 // ==========================================
 
-function formatForageTime(milliseconds) {
+function formatForageTime(
+    milliseconds
+) {
 
     const totalSeconds =
         Math.max(
@@ -729,13 +1118,18 @@ function formatForageTime(milliseconds) {
 
     return (
         String(minutes)
-            .padStart(2, "0")
-        +
-        ":"
-        +
+            .padStart(
+                2,
+                "0"
+            ) +
+        ":" +
         String(seconds)
-            .padStart(2, "0")
+            .padStart(
+                2,
+                "0"
+            )
     );
+
 }
 
 
@@ -751,7 +1145,10 @@ function getLocationRequirementText(
         location.requirementHidden
     ) {
 
-        return "🔒 Requirement Unknown";
+        return (
+            "🔒 Requirement Unknown"
+        );
+
     }
 
 
@@ -765,10 +1162,13 @@ function getLocationRequirementText(
 
         requirements.push(
             `Discover ${
-                location.discoveryRequirementName ||
-                location.discoveryRequirement
+                location
+                    .discoveryRequirementName ||
+                location
+                    .discoveryRequirement
             }`
         );
+
     }
 
 
@@ -779,6 +1179,7 @@ function getLocationRequirementText(
         requirements.push(
             `${location.unlockCost} coins`
         );
+
     }
 
 
@@ -787,13 +1188,17 @@ function getLocationRequirementText(
     ) {
 
         return "🔒 Locked";
+
     }
 
 
     return (
         "🔒 " +
-        requirements.join(" + ")
+        requirements.join(
+            " + "
+        )
     );
+
 }
 
 
@@ -801,7 +1206,9 @@ function getLocationRequirementText(
 // CREATE LOCATION CARD
 // ==========================================
 
-function createLocationCard(location) {
+function createLocationCard(
+    location
+) {
 
     const unlocked =
         isLocationUnlocked(
@@ -854,6 +1261,12 @@ function createLocationCard(location) {
         );
 
 
+    const energyCost =
+        getForageEnergyCost(
+            location.id
+        );
+
+
     card.innerHTML = `
 
         <div class="location-art">
@@ -892,6 +1305,10 @@ function createLocationCard(location) {
                             <span>
                                 ⏱ ${seconds} seconds
                             </span>
+
+                            <span>
+                                ⚡ ${energyCost} Energy
+                            </span>
                         `
                         : ""
                 }
@@ -929,14 +1346,52 @@ function createLocationCard(location) {
 
     if (unlocked) {
 
+        const enoughEnergy =
+            canFamiliarForage(
+                location.id
+            );
+
+
         button.disabled =
-            game.forage.active;
+            game.forage.active ||
+            !enoughEnergy;
 
 
-        button.textContent =
+        if (
             game.forage.active
-                ? "Familiar Away"
-                : "Send Familiar";
+        ) {
+
+            button.textContent =
+                "Familiar Away";
+
+        }
+
+        else if (
+            !enoughEnergy
+        ) {
+
+            button.textContent =
+                "Needs More Energy";
+
+        }
+
+        else if (
+            location.id === "forest" &&
+            getFamiliarEnergy() <
+            energyCost
+        ) {
+
+            button.textContent =
+                "Send Familiar — Tired";
+
+        }
+
+        else {
+
+            button.textContent =
+                "Send Familiar";
+
+        }
 
 
         button.addEventListener(
@@ -946,8 +1401,10 @@ function createLocationCard(location) {
                 startForage(
                     location.id
                 );
+
             }
         );
+
     }
 
 
@@ -964,6 +1421,7 @@ function createLocationCard(location) {
 
         button.textContent =
             "Locked";
+
     }
 
 
@@ -982,6 +1440,7 @@ function createLocationCard(location) {
 
         button.textContent =
             "Locked";
+
     }
 
 
@@ -1006,8 +1465,10 @@ function createLocationCard(location) {
                 unlockForageLocation(
                     location.id
                 );
+
             }
         );
+
     }
 
 
@@ -1017,6 +1478,7 @@ function createLocationCard(location) {
 
 
     return card;
+
 }
 
 
@@ -1051,8 +1513,10 @@ function renderLocations() {
                     location
                 )
             );
+
         }
     );
+
 }
 
 
@@ -1074,20 +1538,49 @@ function renderFamiliar() {
         );
 
 
-    if (game.forage.active) {
+    const name =
+        (
+            game.familiar &&
+            game.familiar.name
+        )
+            ? game.familiar.name
+            : "Your familiar";
+
+
+    if (
+        game.forage.active
+    ) {
 
         if (status) {
 
-            status.textContent =
-                `Your familiar is exploring ${game.forage.location}.`;
+            if (
+                game.forage.exhausted
+            ) {
+
+                status.textContent =
+                    `${name} is tired, but is slowly exploring ${game.forage.location}.`;
+
+            }
+
+            else {
+
+                status.textContent =
+                    `${name} is exploring ${game.forage.location}.`;
+
+            }
+
         }
 
 
         if (state) {
 
             state.textContent =
-                "FORAGING";
+                game.forage.exhausted
+                    ? "TIRED"
+                    : "FORAGING";
+
         }
+
     }
 
     else {
@@ -1095,7 +1588,8 @@ function renderFamiliar() {
         if (status) {
 
             status.textContent =
-                "Your familiar waits patiently for somewhere to explore.";
+                `${name} waits patiently for somewhere to explore.`;
+
         }
 
 
@@ -1103,8 +1597,11 @@ function renderFamiliar() {
 
             state.textContent =
                 "READY";
+
         }
+
     }
+
 }
 
 
@@ -1131,7 +1628,9 @@ function renderActiveForaging() {
     }
 
 
-    if (!game.forage.active) {
+    if (
+        !game.forage.active
+    ) {
 
         button.disabled =
             true;
@@ -1144,14 +1643,18 @@ function renderActiveForaging() {
 
             help.textContent =
                 "Begin an expedition to actively help your familiar search.";
+
         }
 
+
         return;
+
     }
 
 
     button.disabled =
         false;
+
 
     button.textContent =
         "Search the Path";
@@ -1161,7 +1664,9 @@ function renderActiveForaging() {
 
         help.textContent =
             "Click to help your familiar search faster. Each search advances the expedition by 1 second.";
+
     }
+
 }
 
 
@@ -1195,12 +1700,15 @@ function renderForageProgress() {
         );
 
 
-    if (!game.forage.active) {
+    if (
+        !game.forage.active
+    ) {
 
         if (title) {
 
             title.textContent =
                 "No Active Forage";
+
         }
 
 
@@ -1208,6 +1716,7 @@ function renderForageProgress() {
 
             text.textContent =
                 "Send your familiar somewhere to begin searching.";
+
         }
 
 
@@ -1215,6 +1724,7 @@ function renderForageProgress() {
 
             timer.textContent =
                 "--:--";
+
         }
 
 
@@ -1222,9 +1732,12 @@ function renderForageProgress() {
 
             progressBar.style.width =
                 "0%";
+
         }
 
+
         return;
+
     }
 
 
@@ -1247,12 +1760,11 @@ function renderForageProgress() {
 
 
     const totalTime =
-        location
-            ? location.duration
-            : (
-                game.forage.finishesAt -
-                game.forage.startedAt
-            );
+        Math.max(
+            1,
+            game.forage.finishesAt -
+            game.forage.startedAt
+        );
 
 
     const progress =
@@ -1275,15 +1787,30 @@ function renderForageProgress() {
 
         title.textContent =
             game.forage.location;
+
     }
 
 
     if (text) {
 
-        text.textContent =
-            location
-                ? location.activeText
-                : "Your familiar is searching the wilds.";
+        if (
+            game.forage.exhausted
+        ) {
+
+            text.textContent =
+                "Your familiar is tired and moving more slowly, but continues searching the forest.";
+
+        }
+
+        else {
+
+            text.textContent =
+                location
+                    ? location.activeText
+                    : "Your familiar is searching the wilds.";
+
+        }
+
     }
 
 
@@ -1293,6 +1820,7 @@ function renderForageProgress() {
             formatForageTime(
                 remaining
             );
+
     }
 
 
@@ -1300,7 +1828,9 @@ function renderForageProgress() {
 
         progressBar.style.width =
             `${progress}%`;
+
     }
+
 }
 
 
@@ -1322,6 +1852,7 @@ function renderForageResult() {
     ) {
 
         return;
+
     }
 
 
@@ -1352,6 +1883,7 @@ function renderForageResult() {
         </div>
 
     `;
+
 }
 
 
@@ -1372,6 +1904,7 @@ function renderForage() {
     renderActiveForaging();
 
     renderForageResult();
+
 }
 
 
@@ -1391,6 +1924,7 @@ if (activeForageButton) {
         "click",
         activeForageClick
     );
+
 }
 
 
@@ -1409,10 +1943,12 @@ function updateForage() {
         completeForage();
 
         return;
+
     }
 
 
     renderForage();
+
 }
 
 
