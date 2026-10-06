@@ -58,154 +58,108 @@ body {
 
 
 /* ==========================================
-   MOSSWOOD SIDEBAR
+   SIDEBAR
    ========================================== */
 
 .sidebar {
-    width: 300px;
-    height: 100vh;
+    width: 260px;
 
-    position: fixed;
-    top: 0;
-    left: 0;
+    background: rgba(10, 12, 9, .97);
+
+    border-right: 1px solid var(--border);
+
+    padding: 38px 20px;
 
     flex-shrink: 0;
-
-    padding: 150px 55px 145px;
-
-    background-color: #0d1711;
-    background-image: url("assets/images/mosswood-sidebar.png");
-    background-repeat: no-repeat;
-    background-position: top center;
-
-    /* Keeps the sidebar artwork at its original proportions. */
-    background-size: 300px auto;
-
-    overflow: hidden;
-    z-index: 100;
 }
 
 
-/* ==========================================
-   NAVIGATION
-   ========================================== */
+.logo {
+    text-align: center;
+    margin-bottom: 45px;
+}
 
-.mosswood-nav {
-    position: relative;
-    z-index: 2;
 
+.logo .moon {
+    color: var(--gold);
+    font-size: 32px;
+}
+
+
+.logo h1 {
+    font-family: "Cormorant Garamond", serif;
+
+    text-transform: uppercase;
+
+    letter-spacing: 2px;
+
+    font-size: 27px;
+
+    line-height: 1;
+
+    margin-top: 10px;
+}
+
+
+nav {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-
-    width: 100%;
+    gap: 8px;
 }
 
 
 .nav-button {
     width: 100%;
-    min-height: 52px;
 
-    display: flex;
-    align-items: center;
-    gap: 11px;
+    border: none;
 
-    padding: 11px 14px;
+    background: transparent;
 
-    border: 1px solid rgba(201, 164, 113, 0.32);
-    border-radius: 3px;
+    color: var(--muted);
 
-    background:
-        linear-gradient(
-            90deg,
-            rgba(13, 23, 17, 0.78),
-            rgba(27, 40, 29, 0.58)
-        );
-
-    color: #e6d1a8;
-
-    font-family: "Cormorant Garamond", Georgia, serif;
-    font-size: 19px;
-    font-weight: 600;
-    letter-spacing: 0.02em;
+    padding: 15px 18px;
 
     text-align: left;
-    text-decoration: none;
+
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: 20px;
+
+    border-radius: 5px;
 
     cursor: pointer;
-
-    box-shadow:
-        inset 0 0 14px rgba(0, 0, 0, 0.25);
-
-    transition:
-        background 0.2s ease,
-        border-color 0.2s ease,
-        color 0.2s ease,
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-
-.nav-icon {
-    width: 25px;
-
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    flex-shrink: 0;
-
-    font-size: 17px;
 }
 
 
 .nav-button:hover {
-    color: #f0dfbc;
-
-    border-color: rgba(201, 164, 113, 0.7);
-
-    background:
-        linear-gradient(
-            90deg,
-            rgba(46, 59, 38, 0.9),
-            rgba(27, 40, 29, 0.72)
-        );
-
-    transform: translateX(3px);
-
-    box-shadow:
-        inset 0 0 15px rgba(201, 164, 113, 0.05),
-        0 3px 12px rgba(0, 0, 0, 0.25);
+    background: var(--panel);
+    color: var(--cream);
 }
 
 
 .nav-button.active {
-    color: #f2dfb6;
-
-    border-color: #c9a471;
-
     background:
         linear-gradient(
             90deg,
-            rgba(74, 90, 58, 0.78),
-            rgba(31, 47, 34, 0.72)
+            #30362a,
+            #22271f
         );
 
-    box-shadow:
-        inset 3px 0 0 #c9a471,
-        inset 0 0 16px rgba(201, 164, 113, 0.08),
-        0 3px 12px rgba(0, 0, 0, 0.25);
+    color: var(--cream);
+
+    border-left: 3px solid var(--green-light);
 }
 
 
 .nav-link {
+    display: block;
     text-decoration: none;
 }
 
 
 .nav-disabled {
     cursor: default;
-    opacity: 0.55;
+    opacity: .55;
 }
 
 
@@ -216,7 +170,6 @@ body {
 .content {
     flex: 1;
     min-width: 0;
-    margin-left: 300px;
 }
 
 
@@ -1094,22 +1047,8 @@ body {
 
     .sidebar {
         width: 100%;
-        height: auto;
-        min-height: 0;
-
-        position: relative;
-        top: auto;
-        left: auto;
 
         padding: 20px;
-
-        background-image: none;
-        overflow: visible;
-    }
-
-
-    .content {
-        margin-left: 0;
     }
 
 
@@ -2860,69 +2799,2300 @@ body {
     }
 
 }
-
 /* ==========================================
-   FORAGE FAMILIAR ENERGY
+   APOTHECARY
 ========================================== */
 
-.forage-familiar-energy {
-    width: min(360px, 100%);
-    margin-top: 18px;
-}
-
-.forage-energy-header {
+.shop-status-panel {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 20px;
-    margin-bottom: 8px;
+    gap: 30px;
+
+    margin-top: 40px;
+    padding: 26px 30px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(102, 120, 77, 0.10),
+            rgba(196, 164, 106, 0.03)
+        ),
+        var(--panel);
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
 }
 
-.forage-energy-label {
-    color: var(--gold);
-    font-family: "Inter", sans-serif;
+.shop-status-panel h3 {
+    margin: 5px 0 5px;
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 29px;
+    font-weight: 600;
+
+    color: var(--cream);
+}
+
+.shop-status-panel p {
+    margin: 0;
+
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+.shop-status {
+    flex-shrink: 0;
+
+    padding: 10px 16px;
+
+    background:
+        rgba(102, 120, 77, 0.12);
+
+    border:
+        1px solid
+        rgba(139, 156, 107, 0.35);
+
+    border-radius: 4px;
+}
+
+.shop-status span {
+    color: var(--green-light);
+
     font-size: 10px;
     font-weight: 600;
+
+    letter-spacing: 2px;
+}
+
+
+/* ==========================================
+   SHOP SECTION
+========================================== */
+
+.shop-section {
+    margin-top: 25px;
+    padding: 30px;
+
+    background: var(--panel);
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.shop-section-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 30px;
+
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+
+    border-bottom:
+        1px solid var(--border);
+}
+
+.shop-section-heading h3 {
+    margin: 5px 0 0;
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 30px;
+    font-weight: 600;
+
+    color: var(--cream);
+}
+
+.shop-section-heading p {
+    max-width: 400px;
+    margin: 0;
+
+    text-align: right;
+
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+
+/* ==========================================
+   POTION SHELF
+========================================== */
+
+.shop-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 17px;
+}
+
+.shop-potion-card {
+    display: flex;
+    flex-direction: column;
+
+    min-height: 390px;
+
+    padding: 25px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(102, 120, 77, 0.05),
+            transparent 55%
+        ),
+        #12150f;
+
+    border:
+        1px solid
+        rgba(139, 156, 107, 0.35);
+
+    border-radius: 7px;
+}
+
+.shop-potion-card.locked {
+    opacity: 0.48;
+
+    border-color: var(--border);
+}
+
+.shop-potion-icon {
+    width: 72px;
+    height: 72px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 21px;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 34px;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(102, 120, 77, 0.17),
+            rgba(102, 120, 77, 0.04)
+        );
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 50%;
+}
+
+.shop-potion-content {
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.shop-potion-content h4 {
+    margin: 5px 0 9px;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 27px;
+    font-weight: 600;
+
+    color: var(--cream);
+}
+
+.shop-potion-content > p {
+    margin: 0;
+
+    color: var(--muted);
+
+    font-size: 13px;
+    line-height: 1.65;
+}
+
+
+/* ==========================================
+   STOCK + VALUE
+========================================== */
+
+.shop-potion-details {
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 10px;
+
+    margin-top: 23px;
+}
+
+.shop-potion-details > div {
+    padding: 13px;
+
+    background:
+        rgba(255, 255, 255, 0.015);
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 4px;
+}
+
+.shop-potion-details span {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: var(--muted);
+
+    font-size: 9px;
+    letter-spacing: 1.7px;
+}
+
+.shop-potion-details strong {
+    display: block;
+
+    color: var(--cream);
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 20px;
+    font-weight: 600;
+}
+
+
+/* ==========================================
+   SELL BUTTON
+========================================== */
+
+.sell-potion-button {
+    width: 100%;
+
+    margin-top: auto;
+    padding: 12px 15px;
+
+    color: var(--cream);
+
+    background:
+        var(--green-dark);
+
+    border:
+        1px solid #718259;
+
+    border-radius: 4px;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 18px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.sell-potion-button:hover:not(:disabled) {
+    background: var(--green);
+
+    border-color:
+        var(--green-light);
+
+    transform:
+        translateY(-1px);
+}
+
+.sell-potion-button:disabled {
+    color: var(--muted);
+
+    background: #1c201a;
+
+    border-color: var(--border);
+
+    cursor: default;
+}
+
+
+/* ==========================================
+   SALES JOURNAL
+========================================== */
+
+.sale-result {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    margin-top: 20px;
+    padding: 24px 28px;
+
+    background:
+        linear-gradient(
+            120deg,
+            rgba(196, 164, 106, 0.035),
+            transparent
+        ),
+        #12150f;
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 8px;
+}
+
+.sale-result-icon {
+    width: 62px;
+    height: 62px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    font-size: 28px;
+
+    background:
+        rgba(196, 164, 106, 0.07);
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 50%;
+}
+
+.sale-result h3 {
+    margin: 4px 0 5px;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 26px;
+    font-weight: 600;
+
+    color: var(--cream);
+}
+
+.sale-result p {
+    margin: 0;
+
+    color: var(--muted);
+
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+
+/* ==========================================
+   APOTHECARY RESPONSIVE
+========================================== */
+
+@media (max-width: 1050px) {
+
+    .shop-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .shop-potion-card {
+        min-height: 330px;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .shop-status-panel {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .shop-section-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .shop-section-heading p {
+        text-align: left;
+    }
+
+    .sale-result {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+}
+/* ==========================================
+   UPGRADES
+========================================== */
+
+.upgrade-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+
+    margin-top: 40px;
+    padding: 27px 30px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(102, 120, 77, 0.10),
+            rgba(196, 164, 106, 0.03)
+        ),
+        var(--panel);
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.upgrade-summary h3 {
+    margin: 5px 0 5px;
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 29px;
+    font-weight: 600;
+
+    color: var(--cream);
+}
+
+.upgrade-summary p {
+    margin: 0;
+
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+
+/* ==========================================
+   UPGRADE WALLET
+========================================== */
+
+.upgrade-wallet {
+    min-width: 165px;
+
+    padding: 15px 20px;
+
+    text-align: center;
+
+    background:
+        rgba(196, 164, 106, 0.04);
+
+    border: 1px solid var(--border);
+    border-radius: 5px;
+}
+
+.upgrade-wallet > span {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: var(--muted);
+
+    font-size: 9px;
     letter-spacing: 1.8px;
 }
 
-.forage-energy-value {
-    color: var(--cream);
+.upgrade-wallet strong {
+    display: block;
+
+    color: var(--gold);
+
     font-family: "Cormorant Garamond", serif;
+    font-size: 25px;
+    font-weight: 600;
+}
+
+
+/* ==========================================
+   UPGRADE SECTION
+========================================== */
+
+.upgrade-section {
+    margin-top: 25px;
+    padding: 30px;
+
+    background: var(--panel);
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.upgrade-section-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 30px;
+
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+
+    border-bottom:
+        1px solid var(--border);
+}
+
+.upgrade-section-heading h3 {
+    margin: 5px 0 0;
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 30px;
+    font-weight: 600;
+
+    color: var(--cream);
+}
+
+.upgrade-section-heading p {
+    max-width: 400px;
+    margin: 0;
+
+    text-align: right;
+
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+
+/* ==========================================
+   UPGRADE GRID
+========================================== */
+
+.upgrade-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 17px;
+}
+
+
+/* ==========================================
+   UPGRADE CARDS
+========================================== */
+
+.upgrade-card {
+    display: flex;
+    flex-direction: column;
+
+    min-height: 470px;
+
+    padding: 25px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(102, 120, 77, 0.055),
+            transparent 55%
+        ),
+        #12150f;
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 7px;
+
+    transition:
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.upgrade-card:hover {
+    border-color:
+        rgba(139, 156, 107, 0.45);
+
+    transform:
+        translateY(-2px);
+}
+
+
+/* ==========================================
+   UPGRADE ICON
+========================================== */
+
+.upgrade-icon {
+    width: 72px;
+    height: 72px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 20px;
+
+    font-size: 31px;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(102, 120, 77, 0.17),
+            rgba(102, 120, 77, 0.035)
+        );
+
+    border: 1px solid var(--border);
+
+    border-radius: 50%;
+}
+
+
+/* ==========================================
+   UPGRADE TEXT
+========================================== */
+
+.upgrade-card h4 {
+    margin: 5px 0 9px;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 27px;
+    font-weight: 600;
+
+    color: var(--cream);
+}
+
+.upgrade-card > p {
+    min-height: 66px;
+
+    margin: 0 0 20px;
+
+    color: var(--muted);
+
+    font-size: 13px;
+    line-height: 1.65;
+}
+
+
+/* ==========================================
+   UPGRADE LEVEL
+========================================== */
+
+.upgrade-level {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 13px 14px;
+
+    background:
+        rgba(255, 255, 255, 0.015);
+
+    border: 1px solid var(--border);
+
+    border-radius: 4px;
+}
+
+.upgrade-level span {
+    color: var(--muted);
+
+    font-size: 9px;
+    letter-spacing: 1.6px;
+}
+
+.upgrade-level strong {
+    color: var(--cream);
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 20px;
+    font-weight: 600;
+}
+
+
+/* ==========================================
+   NEXT BENEFIT
+========================================== */
+
+.upgrade-benefit {
+    margin-top: 11px;
+    padding: 13px 14px;
+
+    background:
+        rgba(102, 120, 77, 0.05);
+
+    border:
+        1px solid
+        rgba(139, 156, 107, 0.16);
+
+    border-radius: 4px;
+}
+
+.upgrade-benefit span {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: var(--green-light);
+
+    font-size: 9px;
+    letter-spacing: 1.6px;
+}
+
+.upgrade-benefit p {
+    margin: 0;
+
+    color: var(--muted);
+
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+
+/* ==========================================
+   UPGRADE BUTTON
+========================================== */
+
+.upgrade-button {
+    width: 100%;
+
+    margin-top: auto;
+    padding: 13px 15px;
+
+    color: var(--cream);
+
+    background:
+        var(--green-dark);
+
+    border:
+        1px solid #718259;
+
+    border-radius: 4px;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 18px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.upgrade-button:hover:not(:disabled) {
+    background: var(--green);
+
+    border-color:
+        var(--green-light);
+
+    transform:
+        translateY(-1px);
+}
+
+.upgrade-button:disabled {
+    color: var(--muted);
+
+    background: #1c201a;
+
+    border-color: var(--border);
+
+    cursor: default;
+
+    opacity: 0.55;
+}
+
+
+/* ==========================================
+   RESTORATION JOURNAL
+========================================== */
+
+.upgrade-result {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    margin-top: 20px;
+    padding: 24px 28px;
+
+    background:
+        linear-gradient(
+            120deg,
+            rgba(102, 120, 77, 0.06),
+            transparent
+        ),
+        #12150f;
+
+    border: 1px solid var(--border);
+
+    border-radius: 8px;
+}
+
+.upgrade-result-icon {
+    width: 62px;
+    height: 62px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    font-size: 28px;
+
+    background:
+        rgba(102, 120, 77, 0.10);
+
+    border: 1px solid var(--border);
+
+    border-radius: 50%;
+}
+
+.upgrade-result h3 {
+    margin: 4px 0 5px;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 26px;
+    font-weight: 600;
+
+    color: var(--cream);
+}
+
+.upgrade-result p {
+    margin: 0;
+
+    color: var(--muted);
+
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+
+/* ==========================================
+   UPGRADES RESPONSIVE
+========================================== */
+
+@media (max-width: 1050px) {
+
+    .upgrade-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .upgrade-card {
+        min-height: 400px;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .upgrade-summary {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .upgrade-wallet {
+        width: 100%;
+    }
+
+    .upgrade-section-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .upgrade-section-heading p {
+        text-align: left;
+    }
+
+    .upgrade-result {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+}
+/* ==========================================
+   INVENTORY
+========================================== */
+
+.inventory-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+
+    margin-top: 40px;
+    padding: 27px 30px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(102, 120, 77, 0.10),
+            rgba(196, 164, 106, 0.03)
+        ),
+        var(--panel);
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.inventory-summary h3 {
+    margin: 5px 0 5px;
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 29px;
+    font-weight: 600;
+
+    color: var(--cream);
+}
+
+.inventory-summary p {
+    margin: 0;
+
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+
+/* ==========================================
+   TOTAL ITEMS
+========================================== */
+
+.inventory-total {
+    min-width: 145px;
+
+    padding: 15px 20px;
+
+    text-align: center;
+
+    background:
+        rgba(196, 164, 106, 0.04);
+
+    border: 1px solid var(--border);
+    border-radius: 5px;
+}
+
+.inventory-total span {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: var(--muted);
+
+    font-size: 9px;
+    letter-spacing: 1.8px;
+}
+
+.inventory-total strong {
+    display: block;
+
+    color: var(--gold);
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 27px;
+    font-weight: 600;
+}
+
+
+/* ==========================================
+   INVENTORY SECTIONS
+========================================== */
+
+.inventory-section {
+    margin-top: 25px;
+    padding: 30px;
+
+    background: var(--panel);
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.inventory-section-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 30px;
+
+    margin-bottom: 22px;
+    padding-bottom: 18px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.inventory-section-heading h3 {
+    margin: 5px 0 0;
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 29px;
+    font-weight: 600;
+
+    color: var(--cream);
+}
+
+.inventory-section-heading p {
+    max-width: 390px;
+    margin: 0;
+
+    text-align: right;
+
+    color: var(--muted);
+
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+
+/* ==========================================
+   INVENTORY GRID
+========================================== */
+
+.inventory-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 15px;
+}
+
+
+/* ==========================================
+   INVENTORY CARD
+========================================== */
+
+.inventory-card {
+    position: relative;
+
+    display: grid;
+
+    grid-template-columns:
+        68px 1fr auto;
+
+    align-items: center;
+
+    gap: 18px;
+
+    min-height: 135px;
+
+    padding: 20px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(102, 120, 77, 0.05),
+            transparent 55%
+        ),
+        #12150f;
+
+    border: 1px solid var(--border);
+    border-radius: 6px;
+
+    transition:
+        border-color 0.2s ease,
+        transform 0.2s ease,
+        background 0.2s ease;
+}
+
+.inventory-card:hover {
+    border-color:
+        rgba(139, 156, 107, 0.42);
+
+    transform:
+        translateY(-2px);
+}
+
+
+/* ==========================================
+   ITEM ICON
+========================================== */
+
+.inventory-icon {
+    width: 62px;
+    height: 62px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 28px;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(102, 120, 77, 0.15),
+            rgba(102, 120, 77, 0.025)
+        );
+
+    border: 1px solid var(--border);
+    border-radius: 50%;
+}
+
+
+/* ==========================================
+   ITEM INFORMATION
+========================================== */
+
+.inventory-card-content {
+    min-width: 0;
+}
+
+.inventory-card-content h4 {
+    margin: 4px 0 6px;
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 23px;
+    font-weight: 600;
+
+    color: var(--cream);
+}
+
+.inventory-card-content p {
+    max-width: 430px;
+    margin: 0;
+
+    color: var(--muted);
+
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+
+/* ==========================================
+   ITEM QUANTITY
+========================================== */
+
+.inventory-quantity {
+    min-width: 65px;
+
+    padding-left: 15px;
+
+    text-align: center;
+
+    border-left: 1px solid var(--border);
+}
+
+.inventory-quantity span {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: var(--muted);
+
+    font-size: 8px;
+    letter-spacing: 1.5px;
+}
+
+.inventory-quantity strong {
+    display: block;
+
+    color: var(--cream);
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 26px;
+    font-weight: 600;
+}
+
+
+/* ==========================================
+   STRANGE SEED
+========================================== */
+
+.strange-seed-card {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(95, 77, 116, 0.06),
+            transparent 60%
+        ),
+        #12150f;
+}
+
+.strange-seed-card .inventory-icon {
+    color: #b9a3c7;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(122, 94, 145, 0.14),
+            rgba(122, 94, 145, 0.025)
+        );
+}
+
+
+/* Strange Seed becomes more noticeable
+   once the player actually owns one. */
+
+.strange-seed-card.discovered-item {
+    border-color:
+        rgba(154, 126, 174, 0.38);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(111, 84, 133, 0.11),
+            transparent 65%
+        ),
+        #12150f;
+}
+
+.strange-seed-card.discovered-item
+.inventory-icon {
+    border-color:
+        rgba(154, 126, 174, 0.38);
+
+    box-shadow:
+        0 0 18px
+        rgba(117, 88, 139, 0.10);
+}
+
+
+/* ==========================================
+   EMPTY ITEM STATE
+========================================== */
+
+.inventory-card:has(
+    .inventory-quantity strong
+) {
+    overflow: hidden;
+}
+
+
+/* ==========================================
+   INVENTORY RESPONSIVE
+========================================== */
+
+@media (max-width: 1050px) {
+
+    .inventory-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .inventory-summary {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .inventory-total {
+        width: 100%;
+    }
+
+    .inventory-section {
+        padding: 22px;
+    }
+
+    .inventory-section-heading {
+        align-items: flex-start;
+        flex-direction: column;
+
+        gap: 10px;
+    }
+
+    .inventory-section-heading p {
+        text-align: left;
+    }
+
+    .inventory-card {
+        grid-template-columns:
+            55px 1fr;
+
+        gap: 15px;
+    }
+
+    .inventory-icon {
+        width: 52px;
+        height: 52px;
+
+        font-size: 24px;
+    }
+
+    .inventory-quantity {
+        grid-column: 1 / -1;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        width: 100%;
+
+        padding:
+            12px 0 0;
+
+        border-left: none;
+        border-top:
+            1px solid var(--border);
+    }
+
+    .inventory-quantity span {
+        margin: 0;
+    }
+
+}
+/* ==========================================
+   GREENHOUSE SEED SELECTION
+========================================== */
+
+.seed-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    width: 100%;
+}
+
+.seed-menu-title {
+    margin-bottom: 3px;
+
+    color: var(--muted);
+
+    font-size: 9px;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+}
+
+.seed-choice {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+
+    width: 100%;
+
+    padding: 10px 12px;
+
+    text-align: left;
+
+    color: var(--cream);
+    background: #171a14;
+
+    border: 1px solid var(--border);
+    border-radius: 4px;
+
+    cursor: pointer;
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease;
+}
+
+.seed-choice:hover:not(:disabled) {
+    background:
+        rgba(102, 120, 77, 0.12);
+
+    border-color:
+        var(--green-light);
+}
+
+.seed-choice:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+.seed-choice-icon {
+    width: 30px;
+
+    text-align: center;
+
+    font-size: 20px;
+}
+
+.seed-choice strong {
+    display: block;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
     font-size: 17px;
     font-weight: 600;
+}
+
+.seed-choice small {
+    display: block;
+
+    margin-top: 1px;
+
+    color: var(--muted);
+
+    font-size: 10px;
+}
+
+.strange-seed-choice {
+    background:
+        linear-gradient(
+            120deg,
+            rgba(111, 84, 133, 0.10),
+            transparent
+        ),
+        #171a14;
+}
+
+.strange-seed-choice:hover:not(:disabled) {
+    border-color:
+        rgba(154, 126, 174, 0.55);
+
+    background:
+        rgba(111, 84, 133, 0.14);
+}
+
+.seed-menu-cancel {
+    padding: 7px;
+
+    color: var(--muted);
+    background: transparent;
+
+    border: none;
+
+    font-size: 11px;
+
+    cursor: pointer;
+}
+
+.seed-menu-cancel:hover {
+    color: var(--cream);
+}
+/* ==================================================
+   MOSSWOOD INTRO
+   Rustic Woodland Entrance
+================================================== */
+
+.mosswood-intro {
+    margin: 0;
+    padding: 0;
+
+    width: 100%;
+    min-height: 100vh;
+
+    overflow: hidden;
+
+    background: #0b100b;
+}
+
+
+/* ==================================================
+   MAIN ENTRANCE
+================================================== */
+
+.mosswood-entrance {
+    position: relative;
+
+    width: 100%;
+    height: 100vh;
+    min-height: 650px;
+
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* ==================================================
+   BACKGROUND
+================================================== */
+
+.mosswood-background {
+    position: absolute;
+
+    inset: 0;
+
+    background-image:
+        url("assets/images/mosswood-intro-bg.png");
+
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+
+    z-index: 0;
+
+    transform: scale(1.02);
+}
+
+
+/* ==================================================
+   DARK VIGNETTE
+================================================== */
+
+.mosswood-vignette {
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        radial-gradient(
+            ellipse at center,
+            transparent 38%,
+            rgba(4, 7, 4, 0.12) 65%,
+            rgba(3, 5, 3, 0.58) 100%
+        );
+
+    pointer-events: none;
+
+    z-index: 1;
+}
+
+
+/* ==================================================
+   MOSSWOOD SIGN
+================================================== */
+
+.mosswood-sign {
+    position: relative;
+
+    z-index: 3;
+
+    width: min(64vw, 760px);
+    height: auto;
+
+    margin-top: -70px;
+
+    filter:
+        drop-shadow(
+            0 18px 28px
+            rgba(0, 0, 0, 0.65)
+        );
+
+    animation:
+        mosswood-sign-enter
+        1.2s
+        ease-out
+        both;
+}
+
+
+/* ==================================================
+   INTRO TEXT
+================================================== */
+
+.mosswood-intro-copy {
+    position: relative;
+
+    z-index: 4;
+
+    width: min(470px, 62vw);
+
+    margin-top: -8px;
+
+    text-align: center;
+
+    color: #d6c9a8;
+
+    text-shadow:
+        0 2px 5px rgba(0, 0, 0, 0.95);
+
+    animation:
+        mosswood-copy-enter
+        1.2s
+        0.25s
+        ease-out
+        both;
+}
+
+
+/* Main story line */
+
+.mosswood-intro-copy p {
+    margin: 0;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size:
+        clamp(
+            0.72rem,
+            1vw,
+            0.92rem
+        );
+
+    font-style: italic;
+    font-weight: normal;
+
+    line-height: 1.45;
+
+    color: #e0d4b8;
+
+    opacity: 0.88;
+
+    letter-spacing: 0.015em;
+}
+
+
+/* Grow / Forage / Brew line */
+
+.mosswood-intro-copy span {
+    display: block;
+
+    max-width: 440px;
+
+    margin:
+        9px
+        auto
+        0;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size:
+        clamp(
+            0.48rem,
+            0.6vw,
+            0.58rem
+        );
+
+    font-weight: normal;
+
+    letter-spacing: 0.16em;
+
+    line-height: 1.65;
+
+    text-transform: uppercase;
+
+    color: #b9ad8b;
+
+    opacity: 0.72;
+}
+
+
+/* ==================================================
+   ENTER MOSSWOOD BUTTON
+================================================== */
+
+.mosswood-enter {
+    position: relative;
+
+    z-index: 5;
+
+    display: block;
+
+    width: min(360px, 52vw);
+
+    margin-top: 24px;
+
+    transition:
+        transform 0.25s ease,
+        filter 0.25s ease;
+
+    animation:
+        mosswood-button-enter
+        1.2s
+        0.45s
+        ease-out
+        both;
+}
+
+
+.mosswood-enter img {
+    display: block;
+
+    width: 100%;
+    height: auto;
+
+    filter:
+        drop-shadow(
+            0 10px 14px
+            rgba(0, 0, 0, 0.65)
+        );
+}
+
+
+/* Button hover */
+
+.mosswood-enter:hover {
+    transform:
+        translateY(-4px)
+        scale(1.025);
+
+    filter:
+        brightness(1.08)
+        drop-shadow(
+            0 14px 20px
+            rgba(0, 0, 0, 0.7)
+        );
+}
+
+
+/* Button click */
+
+.mosswood-enter:active {
+    transform:
+        translateY(1px)
+        scale(0.99);
+}
+
+
+/* ==================================================
+   SAVE NOTE
+================================================== */
+
+.mosswood-save-note {
+    position: relative;
+
+    z-index: 4;
+
+    margin:
+        8px
+        0
+        0;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 0.52rem;
+
+    letter-spacing: 0.14em;
+
+    text-transform: uppercase;
+
+    color: #a99e80;
+
+    opacity: 0.6;
+
+    text-shadow:
+        0 2px 5px
+        rgba(0, 0, 0, 0.9);
+}
+
+
+/* ==================================================
+   ENTRANCE ANIMATIONS
+================================================== */
+
+@keyframes mosswood-sign-enter {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(-25px)
+            scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+    }
+
+}
+
+
+@keyframes mosswood-copy-enter {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0);
+    }
+
+}
+
+
+@keyframes mosswood-button-enter {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(20px)
+            scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+    }
+
+}
+
+
+/* ==================================================
+   MOBILE
+================================================== */
+
+@media (max-width: 700px) {
+
+    .mosswood-entrance {
+        min-height: 600px;
+    }
+
+
+    .mosswood-background {
+        background-position:
+            57% center;
+    }
+
+
+    .mosswood-sign {
+        width: 92vw;
+
+        margin-top: -50px;
+    }
+
+
+    .mosswood-intro-copy {
+        width: 76vw;
+
+        margin-top: -14px;
+    }
+
+
+    .mosswood-intro-copy p {
+        font-size: 0.78rem;
+
+        line-height: 1.45;
+    }
+
+
+    .mosswood-intro-copy span {
+        max-width: 320px;
+
+        font-size: 0.48rem;
+
+        letter-spacing: 0.12em;
+
+        line-height: 1.6;
+    }
+
+
+    .mosswood-enter {
+        width: 65vw;
+
+        margin-top: 20px;
+    }
+
+
+    .mosswood-save-note {
+        font-size: 0.47rem;
+
+        letter-spacing: 0.11em;
+    }
+
+}
+/* ==========================================
+   FAMILIAR PAGE
+========================================== */
+
+.familiar-section {
+    margin-top: 28px;
+}
+
+
+/* ==========================================
+   FAMILIAR PROFILE
+========================================== */
+
+.familiar-card {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 34px;
+    align-items: center;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(32, 37, 28, .95),
+            rgba(20, 23, 18, .95)
+        );
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+
+    padding: 28px;
+}
+
+
+.familiar-portrait {
+    min-height: 210px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(102, 120, 77, .16),
+            rgba(10, 12, 9, .65)
+        );
+
+    border: 1px solid var(--border);
+    border-radius: 7px;
+}
+
+
+.familiar-placeholder {
+    font-size: 82px;
     line-height: 1;
 }
 
-.forage-energy-meter {
-    width: 100%;
-    height: 10px;
-    padding: 2px;
-    overflow: hidden;
-    background: rgba(7, 9, 7, 0.82);
-    border: 1px solid rgba(196, 164, 106, 0.24);
-    border-radius: 20px;
-    box-shadow:
-        inset 0 1px 3px rgba(0, 0, 0, 0.7),
-        0 1px 0 rgba(255, 255, 255, 0.02);
+
+.familiar-info h3 {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 34px;
+    margin: 8px 0 10px;
 }
 
-.forage-energy-fill {
+
+.familiar-info p {
+    color: var(--muted);
+    max-width: 560px;
+    line-height: 1.6;
+}
+
+
+/* ==========================================
+   FAMILIAR NEEDS
+========================================== */
+
+.familiar-needs {
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 18px;
+
+    margin-top: 22px;
+}
+
+
+.familiar-need {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+
+    padding: 18px 20px;
+}
+
+
+.familiar-need-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin-bottom: 12px;
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 19px;
+}
+
+
+.familiar-need-header span {
+    color: var(--cream);
+}
+
+
+.familiar-need-header strong {
+    color: var(--gold);
+    font-size: 17px;
+    font-weight: 600;
+}
+
+
+/* ==========================================
+   PROGRESS BARS
+========================================== */
+
+.familiar-meter {
+    width: 100%;
+    height: 14px;
+
+    background: #0c0e0b;
+
+    border: 1px solid var(--border);
+    border-radius: 20px;
+
+    overflow: hidden;
+
+    box-shadow:
+        inset 0 2px 4px
+        rgba(0, 0, 0, .55);
+}
+
+
+.familiar-meter-fill {
     width: 100%;
     height: 100%;
-    background: linear-gradient(
-        90deg,
-        #46563a,
-        #71805a
-    );
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--green-dark),
+            var(--green-light)
+        );
+
     border-radius: 20px;
-    box-shadow: 0 0 5px rgba(113, 128, 90, 0.22);
-    transition: width 0.35s ease;
+
+    transition:
+        width .35s ease;
 }
 
-@media (max-width: 700px) {
-    .forage-familiar-energy {
-        width: 100%;
-        max-width: 360px;
+
+/* Give Bond a slightly different look */
+
+#bondBar {
+    background:
+        linear-gradient(
+            90deg,
+            #725b39,
+            var(--gold)
+        );
+}
+
+
+/* ==========================================
+   CARE / INTERACTION AREA
+========================================== */
+
+.familiar-actions {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 12px;
+
+    margin-top: 20px;
+}
+
+
+.familiar-action-button {
+    min-height: 54px;
+
+    padding: 12px 16px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #30362a,
+            #22271f
+        );
+
+    color: var(--cream);
+
+    border: 1px solid var(--border);
+    border-radius: 6px;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 19px;
+
+    cursor: pointer;
+
+    transition:
+        border-color .2s ease,
+        background .2s ease,
+        transform .15s ease;
+}
+
+
+.familiar-action-button:hover {
+    border-color: var(--green-light);
+
+    background:
+        linear-gradient(
+            180deg,
+            #394331,
+            #282f24
+        );
+}
+
+
+.familiar-action-button:active {
+    transform: translateY(1px);
+}
+
+
+.familiar-action-button:disabled {
+    cursor: not-allowed;
+    opacity: .45;
+}
+
+
+/* ==========================================
+   FAMILIAR MESSAGE
+========================================== */
+
+.familiar-message {
+    margin-top: 18px;
+
+    padding: 15px 18px;
+
+    background:
+        rgba(10, 12, 9, .55);
+
+    border-left:
+        3px solid var(--green-light);
+
+    color: var(--muted);
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 18px;
+    font-style: italic;
+
+    line-height: 1.5;
+}
+
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media (max-width: 800px) {
+
+    .familiar-card {
+        grid-template-columns: 1fr;
     }
+
+
+    .familiar-portrait {
+        min-height: 180px;
+    }
+
+
+    .familiar-needs {
+        grid-template-columns: 1fr;
+    }
+
+
+    .familiar-actions {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+@media (max-width: 500px) {
+
+    .familiar-actions {
+        grid-template-columns: 1fr;
+    }
+}
+/* ==========================================
+   FAMILIAR NAME
+========================================== */
+
+.familiar-name-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 18px;
+    max-width: 430px;
+}
+
+
+.familiar-name-controls input {
+    flex: 1;
+    min-width: 0;
+
+    padding: 11px 13px;
+
+    background: #0c0e0b;
+    color: var(--cream);
+
+    border: 1px solid var(--border);
+    border-radius: 5px;
+
+    font-family: "Inter", sans-serif;
+    font-size: 14px;
+
+    outline: none;
+}
+
+
+.familiar-name-controls input::placeholder {
+    color: var(--muted);
+}
+
+
+.familiar-name-controls input:focus {
+    border-color: var(--green-light);
+}
+
+
+.familiar-name-button {
+    padding: 11px 17px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #30362a,
+            #22271f
+        );
+
+    color: var(--cream);
+
+    border: 1px solid var(--border);
+    border-radius: 5px;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 17px;
+
+    cursor: pointer;
+
+    white-space: nowrap;
+}
+
+
+.familiar-name-button:hover {
+    border-color: var(--green-light);
+
+    background:
+        linear-gradient(
+            180deg,
+            #394331,
+            #282f24
+        );
+}
+
+
+@media (max-width: 500px) {
+
+    .familiar-name-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
 }
