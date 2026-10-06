@@ -1,7 +1,7 @@
 // ==========================================
 // MOSSWOOD APOTHECARY
 // Familiar System
-// V5 - Care Cooldowns
+// V6 - Reliable Passive Care
 // ==========================================
 
 
@@ -90,7 +90,6 @@ const saveFamiliarNameButton =
         "saveFamiliarName"
     );
 
-
 const familiarStatus =
     document.getElementById(
         "familiarStatus"
@@ -100,7 +99,6 @@ const familiarMessage =
     document.getElementById(
         "familiarMessage"
     );
-
 
 const energyValue =
     document.getElementById(
@@ -122,7 +120,6 @@ const bondValue =
         "bondValue"
     );
 
-
 const energyBar =
     document.getElementById(
         "energyBar"
@@ -142,7 +139,6 @@ const bondBar =
     document.getElementById(
         "bondBar"
     );
-
 
 const feedButton =
     document.getElementById(
@@ -169,9 +165,7 @@ const restButton =
 // HELPERS
 // ==========================================
 
-function clampFamiliarStat(
-    value
-) {
+function clampFamiliarStat(value) {
 
     return Math.max(
         0,
@@ -184,40 +178,23 @@ function clampFamiliarStat(
 }
 
 
-// ==========================================
-// FAMILIAR DISPLAY NAME
-// ==========================================
-
 function getFamiliarDisplayName() {
 
     const name =
         game.familiar.name.trim();
 
-
-    if (name) {
-
-        return name;
-
-    }
-
-
-    return "Your familiar";
+    return name
+        ? name
+        : "Your familiar";
 
 }
 
 
-// ==========================================
-// MESSAGE
-// ==========================================
-
-function setFamiliarMessage(
-    message
-) {
+function setFamiliarMessage(message) {
 
     if (!familiarMessage) {
         return;
     }
-
 
     familiarMessage.textContent =
         message;
@@ -225,13 +202,7 @@ function setFamiliarMessage(
 }
 
 
-// ==========================================
-// FORMAT COOLDOWN
-// ==========================================
-
-function formatCooldown(
-    milliseconds
-) {
+function formatCooldown(milliseconds) {
 
     const totalSeconds =
         Math.max(
@@ -241,7 +212,6 @@ function formatCooldown(
             )
         );
 
-
     const minutes =
         Math.floor(
             totalSeconds / 60
@@ -250,11 +220,10 @@ function formatCooldown(
     const seconds =
         totalSeconds % 60;
 
-
     return (
-        minutes
-        + ":"
-        + String(seconds).padStart(
+        minutes +
+        ":" +
+        String(seconds).padStart(
             2,
             "0"
         )
@@ -272,7 +241,6 @@ function applyPassiveCare() {
     const now =
         Date.now();
 
-
     if (
         typeof game.familiar.lastCareUpdate
         !== "number"
@@ -289,16 +257,12 @@ function applyPassiveCare() {
 
 
     let elapsed =
-        now
-        - game.familiar.lastCareUpdate;
+        now -
+        game.familiar.lastCareUpdate;
 
 
-    if (
-        elapsed <= 0
-    ) {
-
+    if (elapsed <= 0) {
         return;
-
     }
 
 
@@ -309,62 +273,50 @@ function applyPassiveCare() {
         );
 
 
+    // Using fractional changes means time
+    // continues accumulating correctly even
+    // though this function runs every minute.
+
     const hungerLost =
-        Math.floor(
-            elapsed
-            / HUNGER_INTERVAL
-        );
+        elapsed /
+        HUNGER_INTERVAL;
 
 
     const happinessLost =
-        Math.floor(
-            elapsed
-            / HAPPINESS_INTERVAL
-        );
+        elapsed /
+        HAPPINESS_INTERVAL;
 
 
     const energyRecovered =
-        Math.floor(
-            elapsed
-            / ENERGY_RECOVERY_INTERVAL
+        elapsed /
+        ENERGY_RECOVERY_INTERVAL;
+
+
+    game.familiar.hunger =
+        clampFamiliarStat(
+            game.familiar.hunger -
+            hungerLost
         );
 
 
-    if (
-        hungerLost > 0
-    ) {
-
-        game.familiar.hunger =
-            clampFamiliarStat(
-                game.familiar.hunger
-                - hungerLost
-            );
-
-    }
+    game.familiar.happiness =
+        clampFamiliarStat(
+            game.familiar.happiness -
+            happinessLost
+        );
 
 
-    if (
-        happinessLost > 0
-    ) {
-
-        game.familiar.happiness =
-            clampFamiliarStat(
-                game.familiar.happiness
-                - happinessLost
-            );
-
-    }
+    const isForaging =
+        game.forage &&
+        game.forage.active;
 
 
-    if (
-        energyRecovered > 0 &&
-        !game.forage.active
-    ) {
+    if (!isForaging) {
 
         game.familiar.energy =
             clampFamiliarStat(
-                game.familiar.energy
-                + energyRecovered
+                game.familiar.energy +
+                energyRecovered
             );
 
     }
@@ -390,9 +342,7 @@ function renderFamiliarName() {
         !familiarNameInput ||
         !saveFamiliarNameButton
     ) {
-
         return;
-
     }
 
 
@@ -462,6 +412,7 @@ function saveFamiliarName() {
     saveGame();
 
     renderFamiliarName();
+
     renderFamiliarStatus();
 
 
@@ -551,29 +502,16 @@ function updateBondLevel() {
 
     const calculatedLevel =
         Math.floor(
-            game.familiar.bondXP
-            / BOND_XP_PER_LEVEL
+            game.familiar.bondXP /
+            BOND_XP_PER_LEVEL
         ) + 1;
 
 
-    if (
-        calculatedLevel >
-        game.familiar.bondLevel
-    ) {
-
-        game.familiar.bondLevel =
-            calculatedLevel;
-
-        saveGame();
-
-    }
-
-    else {
-
-        game.familiar.bondLevel =
-            calculatedLevel;
-
-    }
+    game.familiar.bondLevel =
+        Math.max(
+            1,
+            calculatedLevel
+        );
 
 }
 
@@ -582,9 +520,7 @@ function updateBondLevel() {
 // ADD BOND XP
 // ==========================================
 
-function addFamiliarBond(
-    amount
-) {
+function addFamiliarBond(amount) {
 
     game.familiar.bondXP +=
         amount;
@@ -613,12 +549,10 @@ function renderFamiliarStats() {
             game.familiar.energy
         );
 
-
     game.familiar.hunger =
         clampFamiliarStat(
             game.familiar.hunger
         );
-
 
     game.familiar.happiness =
         clampFamiliarStat(
@@ -685,15 +619,15 @@ function renderFamiliarStats() {
 
 
     const currentLevelStartXP =
-        (currentLevel - 1)
-        * BOND_XP_PER_LEVEL;
+        (currentLevel - 1) *
+        BOND_XP_PER_LEVEL;
 
 
     const xpIntoLevel =
         Math.max(
             0,
-            game.familiar.bondXP
-            - currentLevelStartXP
+            game.familiar.bondXP -
+            currentLevelStartXP
         );
 
 
@@ -701,8 +635,8 @@ function renderFamiliarStats() {
         Math.min(
             100,
             (
-                xpIntoLevel
-                / BOND_XP_PER_LEVEL
+                xpIntoLevel /
+                BOND_XP_PER_LEVEL
             ) * 100
         );
 
@@ -771,15 +705,15 @@ function feedFamiliar() {
 
     game.familiar.hunger =
         clampFamiliarStat(
-            game.familiar.hunger
-            + FEED_HUNGER_GAIN
+            game.familiar.hunger +
+            FEED_HUNGER_GAIN
         );
 
 
     game.familiar.energy =
         clampFamiliarStat(
-            game.familiar.energy
-            + FEED_ENERGY_GAIN
+            game.familiar.energy +
+            FEED_ENERGY_GAIN
         );
 
 
@@ -811,19 +745,15 @@ function petFamiliar() {
     const now =
         Date.now();
 
-
     const elapsed =
-        now
-        - game.familiar.lastPet;
+        now -
+        game.familiar.lastPet;
 
 
     if (
-        elapsed < PET_COOLDOWN
+        elapsed <
+        PET_COOLDOWN
     ) {
-
-        setFamiliarMessage(
-            `${name} has had enough attention for the moment.`
-        );
 
         return;
 
@@ -832,8 +762,8 @@ function petFamiliar() {
 
     game.familiar.happiness =
         clampFamiliarStat(
-            game.familiar.happiness
-            + PET_HAPPINESS_GAIN
+            game.familiar.happiness +
+            PET_HAPPINESS_GAIN
         );
 
 
@@ -872,19 +802,15 @@ function playWithFamiliar() {
     const now =
         Date.now();
 
-
     const elapsed =
-        now
-        - game.familiar.lastPlay;
+        now -
+        game.familiar.lastPlay;
 
 
     if (
-        elapsed < PLAY_COOLDOWN
+        elapsed <
+        PLAY_COOLDOWN
     ) {
-
-        setFamiliarMessage(
-            `${name} isn't ready to play again yet.`
-        );
 
         return;
 
@@ -907,15 +833,15 @@ function playWithFamiliar() {
 
     game.familiar.energy =
         clampFamiliarStat(
-            game.familiar.energy
-            - PLAY_ENERGY_COST
+            game.familiar.energy -
+            PLAY_ENERGY_COST
         );
 
 
     game.familiar.happiness =
         clampFamiliarStat(
-            game.familiar.happiness
-            + PLAY_HAPPINESS_GAIN
+            game.familiar.happiness +
+            PLAY_HAPPINESS_GAIN
         );
 
 
@@ -954,10 +880,9 @@ function restFamiliar() {
     const now =
         Date.now();
 
-
     const elapsed =
-        now
-        - game.familiar.lastRest;
+        now -
+        game.familiar.lastRest;
 
 
     if (
@@ -974,12 +899,9 @@ function restFamiliar() {
 
 
     if (
-        elapsed < REST_COOLDOWN
+        elapsed <
+        REST_COOLDOWN
     ) {
-
-        setFamiliarMessage(
-            `${name} isn't ready to rest again yet.`
-        );
 
         return;
 
@@ -988,8 +910,8 @@ function restFamiliar() {
 
     game.familiar.energy =
         clampFamiliarStat(
-            game.familiar.energy
-            + REST_ENERGY_GAIN
+            game.familiar.energy +
+            REST_ENERGY_GAIN
         );
 
 
@@ -1021,23 +943,19 @@ function updateFamiliarButtons() {
         Date.now();
 
 
-    // --------------------------------------
     // PET
-    // --------------------------------------
 
     if (petButton) {
 
         const remaining =
-            PET_COOLDOWN
-            - (
-                now
-                - game.familiar.lastPet
+            PET_COOLDOWN -
+            (
+                now -
+                game.familiar.lastPet
             );
 
 
-        if (
-            remaining > 0
-        ) {
+        if (remaining > 0) {
 
             petButton.disabled =
                 true;
@@ -1062,23 +980,19 @@ function updateFamiliarButtons() {
     }
 
 
-    // --------------------------------------
     // PLAY
-    // --------------------------------------
 
     if (playButton) {
 
         const remaining =
-            PLAY_COOLDOWN
-            - (
-                now
-                - game.familiar.lastPlay
+            PLAY_COOLDOWN -
+            (
+                now -
+                game.familiar.lastPlay
             );
 
 
-        if (
-            remaining > 0
-        ) {
+        if (remaining > 0) {
 
             playButton.disabled =
                 true;
@@ -1091,8 +1005,8 @@ function updateFamiliarButtons() {
         }
 
         else if (
-            game.familiar.energy
-            < PLAY_ENERGY_COST
+            game.familiar.energy <
+            PLAY_ENERGY_COST
         ) {
 
             playButton.disabled =
@@ -1116,23 +1030,19 @@ function updateFamiliarButtons() {
     }
 
 
-    // --------------------------------------
     // REST
-    // --------------------------------------
 
     if (restButton) {
 
         const remaining =
-            REST_COOLDOWN
-            - (
-                now
-                - game.familiar.lastRest
+            REST_COOLDOWN -
+            (
+                now -
+                game.familiar.lastRest
             );
 
 
-        if (
-            remaining > 0
-        ) {
+        if (remaining > 0) {
 
             restButton.disabled =
                 true;
@@ -1157,14 +1067,13 @@ function updateFamiliarButtons() {
     }
 
 
-    // --------------------------------------
     // FEED
-    // --------------------------------------
 
     if (feedButton) {
 
         feedButton.disabled =
-            game.coins < FEED_COST;
+            game.coins <
+            FEED_COST;
 
         feedButton.textContent =
             `🐟 Feed (${FEED_COST} 🪙)`;
@@ -1175,7 +1084,7 @@ function updateFamiliarButtons() {
 
 
 // ==========================================
-// NAME EVENTS
+// EVENTS
 // ==========================================
 
 if (saveFamiliarNameButton) {
@@ -1195,7 +1104,8 @@ if (familiarNameInput) {
         event => {
 
             if (
-                event.key === "Enter"
+                event.key ===
+                "Enter"
             ) {
 
                 saveFamiliarName();
@@ -1207,10 +1117,6 @@ if (familiarNameInput) {
 
 }
 
-
-// ==========================================
-// CARE EVENTS
-// ==========================================
 
 if (feedButton) {
 
@@ -1281,7 +1187,6 @@ setInterval(
         updateFamiliarButtons();
 
     },
-
     60 * 1000
 );
 
